@@ -156,6 +156,11 @@ app.get('/users/new', requireAdmin, (req, res) => {
   res.render('addUser', { error: null, user: req.session.user });
 });
 
+// Add user form - admin only
+app.get('/users/new', requireAdmin, (req, res) => {
+  res.render('addUser', { error: null, user: req.session.user });
+});
+
 // Add user submit - admin only, with photo upload
 app.post(
   '/users/new',
