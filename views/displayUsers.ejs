@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Users</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light p-4">
+
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Users</h2>
+    <div>
+      <span class="me-3">
+        Logged in as <strong><%= user.username %></strong>
+        (<%= user.role === 'A' ? 'Admin' : 'User' %>)
+      </span>
+      <a href="/" class="btn btn-secondary btn-sm me-2">Home</a>
+      <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
+    </div>
+  </div>
+
+  <% if (user.role === 'A') { %>
+    <a href="/users/new" class="btn btn-success mb-3">Add User</a>
+  <% } %>
+
+  <table class="table table-striped bg-white shadow-sm">
+    <thead>
+      <tr>
+        <th>UserID</th>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Photo</th>
+        <% if (user.role === 'A') { %>
+          <th>Actions</th>
+        <% } %>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(u => { %>
+        <tr>
+          <td><%= u.userid %></td>
+          <td><%= u.username %></td>
+          <td><%= u.role === 'A' ? 'Admin (A)' : 'User (U)' %></td>
+          <td>
+            <% if (u.photo) { %>
+              <img src="<%= u.photo %>" alt="photo"
+                   style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+            <% } else { %>
+              <span class="text-muted">No photo</span>
+            <% } %>
+          </td>
+          <% if (user.role === 'A') { %>
+            <td>
+              <a href="/users/<%= u.userid %>/edit" class="btn btn-sm btn-outline-primary me-1">Edit</a>
+
+              <form action="/users/<%= u.userid %>/delete" method="POST" style="display:inline;">
+                <button class="btn btn-sm btn-outline-danger"
+                        onclick="return confirm('Delete this user?');">
+                  Delete
+                </button>
+              </form>
+            </td>
+          <% } %>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>
