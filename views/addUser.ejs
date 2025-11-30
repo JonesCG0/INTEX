@@ -14,7 +14,7 @@
     <div class="alert alert-danger"><%= error %></div>
   <% } %>
 
-  <form action="/users/new" method="POST">
+  <form action="/users/new" method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm">
     <div class="mb-3">
       <label class="form-label">Username</label>
       <input name="username" class="form-control" required>
@@ -26,8 +26,8 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Photo (URL, optional)</label>
-      <input name="photo" class="form-control">
+      <label class="form-label">Photo (upload file, optional)</label>
+      <input name="photoFile" type="file" class="form-control">
     </div>
 
     <div class="mb-3">
