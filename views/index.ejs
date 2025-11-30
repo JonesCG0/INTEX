@@ -10,20 +10,22 @@
 <div class="container">
   <h1 class="mb-4">Home</h1>
 
-<% if (user) { %>
-  <p>
-    Welcome, <strong><%= user.username %></strong>
-    (<%= user.role === 'A' ? 'Admin' : 'User' %>)
-  </p>
+  <% if (user) { %>
+    <p>
+      Welcome, <strong><%= user.username %></strong>
+      (<%= user.role === 'A' ? 'Admin' : 'User' %>)
+    </p>
 
-  <a href="/users" class="btn btn-primary me-2">Users</a>
-  <a href="/video" class="btn btn-warning me-2">Watch Video</a>
-  <a href="/logout" class="btn btn-danger">Logout</a>
-<% } else { %>
-  <p>You are not logged in.</p>
-  <a href="/login" class="btn btn-primary me-2">Login</a>
-  <a href="/video" class="btn btn-warning">Watch Video</a>
-<% } %>
+    <a href="/users" class="btn btn-primary me-2">Users</a>
+    <a href="/video" class="btn btn-warning me-2">Watch Video</a>
+    <a href="/logout" class="btn btn-danger">Logout</a>
+
+  <% } else { %>
+
+    <p>You are not logged in.</p>
+
+    <a href="/login" class="btn btn-primary me-2">Login</a>
+    <a href="/video" class="btn btn-warning">Watch Video</a>
 
   <% } %>
 </div>
