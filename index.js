@@ -218,6 +218,14 @@ app.post('/users/:userid/delete', requireAdmin, async (req, res) => {
   }
 });
 
+// Video page - accessible to anyone (logged in or not)
+app.get('/video', (req, res) => {
+  res.render('video', {
+    user: req.session.user || null,
+    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' // <-- replace with your link
+  });
+});
+
 // ---------- START SERVER ----------
 const PORT = process.env.PORT || 3000;
 
