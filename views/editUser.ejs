@@ -14,7 +14,7 @@
     <div class="alert alert-danger"><%= error %></div>
   <% } %>
 
-  <form action="/users/<%= userRecord.userid %>/edit" method="POST">
+  <form action="/users/<%= userRecord.userid %>/edit" method="POST" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm">
     <div class="mb-3">
       <label class="form-label">Username</label>
       <input name="username" class="form-control" value="<%= userRecord.username %>" required>
@@ -26,14 +26,18 @@
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Photo (URL, optional)</label>
-      <input name="photo" class="form-control" value="<%= userRecord.photo || '' %>">
+      <label class="form-label">Photo (upload to change)</label>
+      <input name="photoFile" type="file" class="form-control">
+
       <% if (userRecord.photo) { %>
         <div class="mt-2">
           <img src="<%= userRecord.photo %>" alt="photo"
                style="width:60px;height:60px;border-radius:50%;object-fit:cover;">
         </div>
       <% } %>
+
+      <!-- Keep existing photo URL if no new file is chosen -->
+      <input type="hidden" name="existingPhoto" value="<%= userRecord.photo || '' %>">
     </div>
 
     <div class="mb-3">

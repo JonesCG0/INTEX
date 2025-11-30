@@ -1,5 +1,5 @@
 {
-  "name": "node-postgres-roles-demo",
+  "name": "intex-app",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -7,10 +7,12 @@
     "dev": "nodemon index.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.669.0",
     "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
     "express-session": "^1.17.3",
+    "multer": "^1.4.5-lts.1",
     "pg": "^8.12.0"
   }
 }
