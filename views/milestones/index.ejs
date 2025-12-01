@@ -19,19 +19,19 @@
         <tr>
           <th>ID</th>
           <th>Title</th>
-          <th>Actions</th>
+          <th>Date</th>
+          <th>Participant ID</th>
         </tr>
       </thead>
       <tbody>
-        <% milestones.forEach(milestone => { %>
+        <% milestones.forEach(m => { %>
           <tr>
-            <td><%= milestone.milestoneid %></td>
-            <td><%= milestone.title || 'N/A' %></td>
-            <td>
-              <a href="/milestones/<%= milestone.milestoneid %>">View</a>
-            </td>
+            <td><%= m.milestoneid %></td>
+            <td><%= m.milestonetitle || '—' %></td>
+            <td><%= m.milestonedate || '—' %></td>
+            <td><%= m.participantid || '—' %></td>
           </tr>
-        <% }); %>
+        <% }) %>
       </tbody>
     </table>
   </div>

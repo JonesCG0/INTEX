@@ -18,11 +18,19 @@
 
     <form action="/milestones/new" method="POST">
       <div class="form-group">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required>
+        <label for="milestonetitle">Title</label>
+        <input type="text" id="milestonetitle" name="milestonetitle">
       </div>
 
-      <!-- Add more milestone fields as needed -->
+      <div class="form-group">
+        <label for="milestonedate">Date</label>
+        <input type="text" id="milestonedate" name="milestonedate" placeholder="YYYY-MM-DD or text">
+      </div>
+
+      <div class="form-group">
+        <label for="participantid">Participant ID</label>
+        <input type="number" id="participantid" name="participantid">
+      </div>
 
       <button type="submit" class="btn">Create Milestone</button>
       <a href="/milestones" class="btn btn-secondary">Cancel</a>
