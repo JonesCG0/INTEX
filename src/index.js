@@ -85,8 +85,20 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+// Mount routers
 const eventsRouter = require("../routes/events");
+const participantsRouter = require("../routes/participants");
+const milestonesRouter = require("../routes/milestones");
+const dashboardRouter = require("../routes/dashboard");
+const donationsRouter = require("../routes/donations");
+const surveysRouter = require("../routes/surveys");
+
 app.use("/events", eventsRouter);
+app.use("/participants", participantsRouter);
+app.use("/milestones", milestonesRouter);
+app.use("/dashboard", dashboardRouter);
+app.use("/donations", donationsRouter);
+app.use("/surveys", surveysRouter);
 
 // ---------- ROUTES ----------
 
@@ -300,6 +312,23 @@ app.get("/support", (req, res) => {
   res.render("support", {
     user: req.session.user || null,
   });
+});
+
+// Handle volunteer application submission
+app.post("/volunteers/create", async (req, res) => {
+  const { firstName, lastName, email, phone, interests, availability, experience } = req.body;
+
+  try {
+    // TODO: Add logic to save volunteer application to database
+    // For now, just log it and redirect back to support page with a success message
+    console.log("Volunteer application received:", { firstName, lastName, email, phone, interests });
+
+    // Redirect back to support page (you can add a success query param later)
+    res.redirect("/support#volunteer-form");
+  } catch (err) {
+    console.error("Volunteer application error:", err);
+    res.status(500).send("Server error");
+  }
 });
 
 // ---------- START SERVER ----------

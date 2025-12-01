@@ -28,9 +28,8 @@ const EVENT_SELECT = `
 router.get("/", async (req, res) => {
   try {
     const result = await pool.query(
-      EVENT_SELECT + " ORDER BY eo.eventdatetimestart"
+      "SELECT * FROM eventoccurrences ORDER BY eventoccurrenceid"
     );
-
     res.render("events/index", {
       events: result.rows,
       user: req.session.user || null,
@@ -123,10 +122,9 @@ router.post("/new", requireAdmin, async (req, res) => {
 // ---------------------------------------------------------------------------
 router.get("/:id", requireAdmin, async (req, res) => {
   try {
-    const result = await pool.query(
-      EVENT_SELECT + " WHERE eo.eventoccurrenceid = $1",
-      [req.params.id]
-    );
+    const result = await pool.query("SELECT * FROM events WHERE eventid = $1", [
+      req.params.id,
+    ]);
 
     if (result.rows.length === 0) {
       return res.status(404).send("Event not found");
