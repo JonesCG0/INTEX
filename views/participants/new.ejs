@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Participant</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <h1>Add New Participant</h1>
+
+    <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+
+    <form action="/participants/new" method="POST">
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
+      <!-- Add more participant fields as needed -->
+
+      <button type="submit" class="btn">Create Participant</button>
+      <a href="/participants" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

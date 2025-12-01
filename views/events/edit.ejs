@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Event</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <h1>Edit Event</h1>
+
+    <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+
+    <form action="/events/<%= event.eventid %>/edit" method="POST">
+      <div class="form-group">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" value="<%= event.title %>" required>
+      </div>
+
+      <div class="form-group">
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" value="<%= event.date %>" required>
+      </div>
+
+      <!-- Add more event fields as needed -->
+
+      <button type="submit" class="btn">Update Event</button>
+      <a href="/events/<%= event.eventid %>" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

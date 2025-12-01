@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Survey</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <h1>Add New Survey</h1>
+
+    <% if (error) { %>
+      <div class="error"><%= error %></div>
+    <% } %>
+
+    <form action="/surveys/new" method="POST">
+      <div class="form-group">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+      </div>
+
+      <!-- Add more survey fields as needed -->
+
+      <button type="submit" class="btn">Create Survey</button>
+      <a href="/surveys" class="btn btn-secondary">Cancel</a>
+    </form>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participants</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <h1>Participants</h1>
+    <a href="/participants/new" class="btn">Add New Participant</a>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% participants.forEach(participant => { %>
+          <tr>
+            <td><%= participant.participantid %></td>
+            <td><%= participant.name || 'N/A' %></td>
+            <td>
+              <a href="/participants/<%= participant.participantid %>">View</a>
+              <a href="/participants/<%= participant.participantid %>/edit">Edit</a>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

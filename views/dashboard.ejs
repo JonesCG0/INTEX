@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <div class="container">
+    <h1>Dashboard</h1>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Participants</h3>
+        <p class="stat-number"><%= participantCount %></p>
+        <a href="/participants">View All</a>
+      </div>
+
+      <div class="stat-card">
+        <h3>Events</h3>
+        <p class="stat-number"><%= eventCount %></p>
+        <a href="/events">View All</a>
+      </div>
+
+      <div class="stat-card">
+        <h3>Total Donations</h3>
+        <p class="stat-number">$<%= donationTotal %></p>
+        <a href="/donations">View All</a>
+      </div>
+    </div>
+  </div>
+
+  <%- include('partials/footer') %>
+</body>
+</html>

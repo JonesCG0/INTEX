@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surveys</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <h1>Surveys</h1>
+    <a href="/surveys/new" class="btn">Add New Survey</a>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% surveys.forEach(survey => { %>
+          <tr>
+            <td><%= survey.surveyid %></td>
+            <td><%= survey.title || 'N/A' %></td>
+            <td>
+              <a href="/surveys/<%= survey.surveyid %>">View</a>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>

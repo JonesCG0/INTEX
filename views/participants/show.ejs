@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Participant Details</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <%- include('../partials/navbar') %>
+
+  <div class="container">
+    <h1>Participant Details</h1>
+
+    <div class="details">
+      <p><strong>ID:</strong> <%= participant.participantid %></p>
+      <p><strong>Name:</strong> <%= participant.name || 'N/A' %></p>
+      <!-- Add more participant fields as needed -->
+    </div>
+
+    <a href="/participants/<%= participant.participantid %>/edit" class="btn">Edit</a>
+    <a href="/participants" class="btn btn-secondary">Back to List</a>
+  </div>
+
+  <%- include('../partials/footer') %>
+</body>
+</html>
