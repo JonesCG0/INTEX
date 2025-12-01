@@ -14,8 +14,13 @@
 
     <div class="details">
       <p><strong>ID:</strong> <%= survey.surveyid %></p>
-      <p><strong>Title:</strong> <%= survey.title || 'N/A' %></p>
-      <!-- Add more survey fields as needed -->
+      <p><strong>Satisfaction Score:</strong> <%= survey.surveysatisfactionscore || '—' %></p>
+      <p><strong>Usefulness Score:</strong> <%= survey.surveyusefulnessscore || '—' %></p>
+      <p><strong>Instructor Score:</strong> <%= survey.surveyinstructorscore || '—' %></p>
+      <p><strong>Recommendation Score:</strong> <%= survey.surveyrecommendationscore || '—' %></p>
+      <p><strong>Overall Score:</strong> <%= survey.surveyoverallscore || '—' %></p>
+      <p><strong>Submission Date:</strong> <%= survey.surveysubmissiondate || '—' %></p>
+      <p><strong>Registration ID:</strong> <%= survey.registrationid || '—' %></p>
     </div>
 
     <a href="/surveys" class="btn btn-secondary">Back to List</a>

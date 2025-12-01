@@ -18,11 +18,39 @@
 
     <form action="/surveys/new" method="POST">
       <div class="form-group">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required>
+        <label for="surveysatisfactionscore">Satisfaction Score</label>
+        <input type="text" id="surveysatisfactionscore" name="surveysatisfactionscore">
       </div>
 
-      <!-- Add more survey fields as needed -->
+      <div class="form-group">
+        <label for="surveyusefulnessscore">Usefulness Score</label>
+        <input type="text" id="surveyusefulnessscore" name="surveyusefulnessscore">
+      </div>
+
+      <div class="form-group">
+        <label for="surveyinstructorscore">Instructor Score</label>
+        <input type="text" id="surveyinstructorscore" name="surveyinstructorscore">
+      </div>
+
+      <div class="form-group">
+        <label for="surveyrecommendationscore">Recommendation Score</label>
+        <input type="text" id="surveyrecommendationscore" name="surveyrecommendationscore">
+      </div>
+
+      <div class="form-group">
+        <label for="surveyoverallscore">Overall Score</label>
+        <input type="text" id="surveyoverallscore" name="surveyoverallscore">
+      </div>
+
+      <div class="form-group">
+        <label for="surveysubmissiondate">Submission Date</label>
+        <input type="text" id="surveysubmissiondate" name="surveysubmissiondate" placeholder="YYYY-MM-DD or text">
+      </div>
+
+      <div class="form-group">
+        <label for="registrationid">Registration ID</label>
+        <input type="number" id="registrationid" name="registrationid">
+      </div>
 
       <button type="submit" class="btn">Create Survey</button>
       <a href="/surveys" class="btn btn-secondary">Cancel</a>

@@ -17,20 +17,32 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Title</th>
+          <th>Satisfaction</th>
+          <th>Usefulness</th>
+          <th>Instructor</th>
+          <th>Recommendation</th>
+          <th>Overall</th>
+          <th>Submission Date</th>
+          <th>Registration ID</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <% surveys.forEach(survey => { %>
+        <% surveys.forEach(s => { %>
           <tr>
-            <td><%= survey.surveyid %></td>
-            <td><%= survey.title || 'N/A' %></td>
+            <td><%= s.surveyid %></td>
+            <td><%= s.surveysatisfactionscore || '—' %></td>
+            <td><%= s.surveyusefulnessscore || '—' %></td>
+            <td><%= s.surveyinstructorscore || '—' %></td>
+            <td><%= s.surveyrecommendationscore || '—' %></td>
+            <td><%= s.surveyoverallscore || '—' %></td>
+            <td><%= s.surveysubmissiondate || '—' %></td>
+            <td><%= s.registrationid || '—' %></td>
             <td>
-              <a href="/surveys/<%= survey.surveyid %>">View</a>
+              <a href="/surveys/<%= s.surveyid %>">View</a>
             </td>
           </tr>
-        <% }); %>
+        <% }) %>
       </tbody>
     </table>
   </div>
