@@ -342,10 +342,6 @@
                   <small class="text-muted"><%= user.role === 'A' ? 'Administrator' : 'User' %></small>
                 </span></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="/video">
-                  <i class="bi bi-play-circle"></i>Watch Video
-                </a></li>
-                <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item text-danger" href="/auth/logout">
                   <i class="bi bi-box-arrow-right"></i>Logout
                 </a></li>
@@ -354,13 +350,13 @@
           <% } else { %>
             <!-- Not logged in -->
             <li class="nav-item">
-              <a class="nav-link" href="/video">
-                <i class="bi bi-play-circle"></i>Video
+              <a class="nav-link" href="/auth/login">
+                <i class="bi bi-box-arrow-in-right"></i>Login
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/auth/login">
-                <i class="bi bi-box-arrow-in-right"></i>Login
+              <a class="nav-link" href="/auth/signup">
+                <i class="bi bi-person-plus-fill"></i>Sign Up
               </a>
             </li>
           <% } %>
