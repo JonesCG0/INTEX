@@ -14,8 +14,15 @@
 
     <div class="details">
       <p><strong>ID:</strong> <%= participant.participantid %></p>
-      <p><strong>Name:</strong> <%= participant.name || 'N/A' %></p>
-      <!-- Add more participant fields as needed -->
+      <p><strong>Email:</strong> <%= participant.participantemail || '—' %></p>
+      <p><strong>First Name:</strong> <%= participant.participantfirstname || '—' %></p>
+      <p><strong>Last Name:</strong> <%= participant.participantlastname || '—' %></p>
+      <p><strong>Date of Birth:</strong> <%= participant.participantdob || '—' %></p>
+      <p><strong>Role:</strong> <%= participant.participantrole || '—' %></p>
+      <p><strong>Phone:</strong> <%= participant.participantphone || '—' %></p>
+      <p><strong>ZIP:</strong> <%= participant.participantzip || '—' %></p>
+      <p><strong>School/Employer:</strong> <%= participant.participantschooloremployer || '—' %></p>
+      <p><strong>Field of Interest:</strong> <%= participant.participantfieldofinterest || '—' %></p>
     </div>
 
     <a href="/participants/<%= participant.participantid %>/edit" class="btn">Edit</a>
