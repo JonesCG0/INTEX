@@ -120,7 +120,7 @@ app.post("/login", async (req, res) => {
       photo: user.photo,
     };
 
-    res.redirect("/users");
+    res.redirect("/");
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).send("Server error");

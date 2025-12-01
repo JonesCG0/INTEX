@@ -14,4 +14,9 @@ router.get('/video', (req, res) => {
   });
 });
 
+// Easter egg: 418 I'm a teapot
+router.get('/teapot', (req, res) => {
+  res.status(418).render('teapot');
+});
+
 module.exports = router;
