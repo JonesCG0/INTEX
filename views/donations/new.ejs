@@ -18,18 +18,21 @@
 
     <form action="/donations/new" method="POST">
       <div class="form-group">
-        <label for="amount">Amount:</label>
-        <input type="number" id="amount" name="amount" step="0.01" required>
+        <label for="donationdate">Donation Date</label>
+        <input type="text" id="donationdate" name="donationdate" placeholder="YYYY-MM-DD or text">
       </div>
 
       <div class="form-group">
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required>
+        <label for="donationamount">Donation Amount</label>
+        <input type="text" id="donationamount" name="donationamount">
       </div>
 
-      <!-- Add more donation fields as needed -->
+      <div class="form-group">
+        <label for="participantid">Participant ID</label>
+        <input type="number" id="participantid" name="participantid">
+      </div>
 
-      <button type="submit" class="btn">Record Donation</button>
+      <button type="submit" class="btn">Create Donation</button>
       <a href="/donations" class="btn btn-secondary">Cancel</a>
     </form>
   </div>

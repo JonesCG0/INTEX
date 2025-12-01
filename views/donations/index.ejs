@@ -17,22 +17,27 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Amount</th>
           <th>Date</th>
+          <th>Amount</th>
+          <th>Participant ID</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <% donations.forEach(donation => { %>
+        <% donations.forEach(d => { %>
           <tr>
-            <td><%= donation.donationid %></td>
-            <td>$<%= donation.amount || '0.00' %></td>
-            <td><%= donation.date || 'N/A' %></td>
+            <td><%= d.donationid %></td>
+            <td><%= d.donationdate || '—' %></td>
+            <td><%= d.donationamount || '—' %></td>
+            <td><%= d.participantid || '—' %></td>
             <td>
-              <a href="/donations/<%= donation.donationid %>">View</a>
+              <!-- if you add show/edit routes later, link them here -->
+              <form action="/donations/<%= d.donationid %>/delete" method="POST" style="display:inline;">
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
             </td>
           </tr>
-        <% }); %>
+        <% }) %>
       </tbody>
     </table>
   </div>
