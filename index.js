@@ -21,6 +21,9 @@ app.use(
   })
 );
 
+// ---------- IMPORT MIDDLEWARE ----------
+const { requireAuth } = require('./middleware/auth');
+
 // ---------- IMPORT ROUTES ----------
 const authRoutes = require('./routes/auth');
 const usersRoutes = require('./routes/users');
@@ -33,15 +36,18 @@ const dashboardRoutes = require('./routes/dashboard');
 const publicRoutes = require('./routes/public');
 
 // ---------- USE ROUTES ----------
-app.use('/auth', authRoutes);
-app.use('/users', usersRoutes);
-app.use('/participants', participantsRoutes);
-app.use('/events', eventsRoutes);
-app.use('/surveys', surveysRoutes);
-app.use('/milestones', milestonesRoutes);
-app.use('/donations', donationsRoutes);
-app.use('/dashboard', dashboardRoutes);
+// Public routes (no auth required)
 app.use('/', publicRoutes);
+app.use('/auth', authRoutes);
+
+// Protected routes (auth required) - apply middleware at the app level
+app.use('/users', requireAuth, usersRoutes);
+app.use('/participants', requireAuth, participantsRoutes);
+app.use('/events', requireAuth, eventsRoutes);
+app.use('/surveys', requireAuth, surveysRoutes);
+app.use('/milestones', requireAuth, milestonesRoutes);
+app.use('/donations', requireAuth, donationsRoutes);
+app.use('/dashboard', requireAuth, dashboardRoutes);
 
 // ---------- START SERVER ----------
 const PORT = process.env.PORT || 3000;
