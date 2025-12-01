@@ -1,353 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>INTEX - Home</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary-color: #D4654C;      /* Warm coral/terracotta */
-      --secondary-color: #8B6F47;    /* Warm brown */
-      --accent-color: #E8A87C;       /* Light peach */
-      --dark-text: #2C2C2C;          /* Almost black */
-      --light-bg: #FAF8F5;           /* Warm off-white */
-      --white: #FFFFFF;
-      --success-color: #6B9080;      /* Sage green */
-      --info-color: #A4B8C4;         /* Soft blue-gray */
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>INTEX - Home</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #d4654c; /* Warm coral/terracotta */
+        --secondary-color: #8b6f47; /* Warm brown */
+        --accent-color: #e8a87c; /* Light peach */
+        --dark-text: #2c2c2c; /* Almost black */
+        --light-bg: #faf8f5; /* Warm off-white */
+        --white: #ffffff;
+        --success-color: #6b9080; /* Sage green */
+        --info-color: #a4b8c4; /* Soft blue-gray */
+      }
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      background-color: var(--light-bg);
-      color: var(--dark-text);
-      min-height: 100vh;
-    }
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--light-bg);
+        color: var(--dark-text);
+        min-height: 100vh;
+      }
 
-    .navbar {
-      background: var(--white) !important;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      padding: 1rem 0;
-    }
+      .navbar {
+        background: var(--white) !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        padding: 1rem 0;
+      }
 
-    .navbar-brand {
-      font-weight: 700;
-      font-size: 1.6rem;
-      color: var(--primary-color) !important;
-      letter-spacing: -0.5px;
-    }
+      .navbar-brand {
+        font-weight: 700;
+        font-size: 1.6rem;
+        color: var(--primary-color) !important;
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
 
-    .nav-link {
-      font-weight: 500;
-      color: var(--dark-text) !important;
-      padding: 0.5rem 1rem !important;
-      transition: color 0.3s ease;
-    }
+      .navbar-brand img {
+        height: 60px;
+        width: auto;
+      }
 
-    .nav-link:hover {
-      color: var(--primary-color) !important;
-    }
+      .nav-link {
+        font-weight: 500;
+        color: var(--dark-text) !important;
+        padding: 0.5rem 1rem !important;
+        transition: color 0.3s ease;
+      }
 
-    .nav-link i {
-      margin-right: 5px;
-    }
+      .nav-link:hover {
+        color: var(--primary-color) !important;
+      }
 
-    .hero-section {
-      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      padding: 100px 0 80px 0;
-      color: var(--white);
-      position: relative;
-      overflow: hidden;
-    }
+      .nav-link i {
+        margin-right: 5px;
+      }
 
-    .hero-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,138.7C1248,117,1344,75,1392,53.3L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
-      background-size: cover;
-      opacity: 0.3;
-    }
+      .hero-section {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color) 0%,
+          var(--secondary-color) 100%
+        );
+        padding: 100px 0 80px 0;
+        color: var(--white);
+        position: relative;
+        overflow: hidden;
+      }
 
-    .hero-section .container {
-      position: relative;
-      z-index: 1;
-    }
+      .hero-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.1)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,138.7C1248,117,1344,75,1392,53.3L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>')
+          no-repeat bottom;
+        background-size: cover;
+        opacity: 0.3;
+      }
 
-    .hero-section h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      line-height: 1.2;
-    }
+      .hero-section .container {
+        position: relative;
+        z-index: 1;
+      }
 
-    .hero-section p {
-      font-size: 1.2rem;
-      margin-bottom: 30px;
-      font-weight: 300;
-      opacity: 0.95;
-    }
-
-    .btn-custom-primary {
-      background-color: var(--white);
-      color: var(--primary-color);
-      border: none;
-      padding: 14px 35px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      border-radius: 50px;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
-
-    .btn-custom-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-      background-color: var(--light-bg);
-      color: var(--primary-color);
-    }
-
-    .stats-section {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 40px;
-      margin-top: 50px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    }
-
-    .stat-item {
-      text-align: center;
-      padding: 20px;
-    }
-
-    .stat-item i {
-      font-size: 3rem;
-      color: var(--primary-color);
-      margin-bottom: 15px;
-    }
-
-    .stat-item h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--dark-text);
-      margin: 0;
-    }
-
-    .features-section {
-      padding: 80px 0;
-      background-color: var(--light-bg);
-    }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 60px;
-    }
-
-    .section-title h2 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--dark-text);
-      margin-bottom: 15px;
-    }
-
-    .section-title p {
-      font-size: 1.1rem;
-      color: var(--secondary-color);
-      font-weight: 400;
-    }
-
-    .feature-card {
-      background: var(--white);
-      border-radius: 15px;
-      padding: 40px 30px;
-      margin-bottom: 30px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-      transition: all 0.3s ease;
-      height: 100%;
-      border: 2px solid transparent;
-    }
-
-    .feature-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 8px 30px rgba(212, 101, 76, 0.15);
-      border-color: var(--accent-color);
-    }
-
-    .feature-card i {
-      font-size: 3rem;
-      color: var(--primary-color);
-      margin-bottom: 25px;
-      display: block;
-    }
-
-    .feature-card h3 {
-      color: var(--dark-text);
-      font-size: 1.4rem;
-      font-weight: 600;
-      margin-bottom: 15px;
-    }
-
-    .feature-card p {
-      color: var(--secondary-color);
-      font-size: 1rem;
-      line-height: 1.7;
-      margin: 0;
-    }
-
-    .dropdown-menu {
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.12);
-      border: 1px solid rgba(0,0,0,0.05);
-      padding: 10px;
-    }
-
-    .dropdown-item {
-      padding: 10px 20px;
-      border-radius: 8px;
-      transition: all 0.2s ease;
-      font-weight: 500;
-    }
-
-    .dropdown-item:hover {
-      background-color: var(--light-bg);
-      color: var(--primary-color);
-    }
-
-    .dropdown-item i {
-      margin-right: 10px;
-      width: 20px;
-    }
-
-    .dropdown-divider {
-      margin: 8px 0;
-      opacity: 0.5;
-    }
-
-    .dropdown-item-text {
-      padding: 10px 20px;
-    }
-
-    .text-danger {
-      color: #C64C38 !important;
-    }
-
-    footer {
-      background: var(--dark-text);
-      color: var(--white);
-      padding: 30px 0;
-      text-align: center;
-      margin-top: 80px;
-    }
-
-    footer p {
-      margin: 0;
-      opacity: 0.8;
-    }
-
-    @media (max-width: 768px) {
       .hero-section h1 {
-        font-size: 2rem;
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        line-height: 1.2;
       }
 
       .hero-section p {
-        font-size: 1rem;
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        font-weight: 300;
+        opacity: 0.95;
+      }
+
+      .btn-custom-primary {
+        background-color: var(--white);
+        color: var(--primary-color);
+        border: none;
+        padding: 14px 35px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-custom-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        background-color: var(--light-bg);
+        color: var(--primary-color);
+      }
+
+      .stats-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        margin-top: 50px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
       }
 
       .stat-item {
-        margin-bottom: 20px;
+        text-align: center;
+        padding: 20px;
       }
-    }
-  </style>
-</head>
-<body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-    <div class="container">
-      <a class="navbar-brand" href="/">
-        <i class="bi bi-heart-fill"></i> Ella Rises INTEX
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto align-items-center">
-          <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
-          </li>
+      .stat-item i {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+      }
 
-          <% if (user) { %>
-            <!-- Logged in user menu -->
+      .stat-item h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--dark-text);
+        margin: 0;
+      }
+
+      .features-section {
+        padding: 80px 0;
+        background-color: var(--light-bg);
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-text);
+        margin-bottom: 15px;
+      }
+
+      .section-title p {
+        font-size: 1.1rem;
+        color: var(--secondary-color);
+        font-weight: 400;
+      }
+
+      .feature-card {
+        background: var(--white);
+        border-radius: 15px;
+        padding: 40px 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        height: 100%;
+        border: 2px solid transparent;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 30px rgba(212, 101, 76, 0.15);
+        border-color: var(--accent-color);
+      }
+
+      .feature-card i {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 25px;
+        display: block;
+      }
+
+      .feature-card h3 {
+        color: var(--dark-text);
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+
+      .feature-card p {
+        color: var(--secondary-color);
+        font-size: 1rem;
+        line-height: 1.7;
+        margin: 0;
+      }
+
+      .dropdown-menu {
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.12);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 10px;
+      }
+
+      .dropdown-item {
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+      }
+
+      .dropdown-item:hover {
+        background-color: var(--light-bg);
+        color: var(--primary-color);
+      }
+
+      .dropdown-item i {
+        margin-right: 10px;
+        width: 20px;
+      }
+
+      .dropdown-divider {
+        margin: 8px 0;
+        opacity: 0.5;
+      }
+
+      .dropdown-item-text {
+        padding: 10px 20px;
+      }
+
+      .text-danger {
+        color: #c64c38 !important;
+      }
+
+      footer {
+        background: var(--dark-text);
+        color: var(--white);
+        padding: 30px 0;
+        text-align: center;
+        margin-top: 80px;
+      }
+
+      footer p {
+        margin: 0;
+        opacity: 0.8;
+      }
+
+      @media (max-width: 768px) {
+        .hero-section h1 {
+          font-size: 2rem;
+        }
+
+        .hero-section p {
+          font-size: 1rem;
+        }
+
+        .stat-item {
+          margin-bottom: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <img src="/Ella_Rises_Logo.avif" alt="Ella Rises Logo" />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-center">
             <li class="nav-item">
-              <a class="nav-link" href="/dashboard">
-                <i class="bi bi-speedometer2"></i>Dashboard
-              </a>
+              <a class="nav-link" href="/">Home</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/participants">
-                <i class="bi bi-people"></i>Participants
-              </a>
-            </li>
+
             <li class="nav-item">
               <a class="nav-link" href="/events">
                 <i class="bi bi-calendar-event"></i>Events
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/donations">
-                <i class="bi bi-currency-dollar"></i>Donations
+              <a class="nav-link" href="/support">
+                <i class="bi bi-heart-fill"></i>Support Us
               </a>
             </li>
 
-            <% if (user.role === 'A') { %>
-              <!-- Admin dropdown -->
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="bi bi-gear-fill"></i>Admin
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
-                  <li><a class="dropdown-item" href="/users">
+            <!-- Logged in user menu -->
+            <% if (user) { if (user.role === 'A') { %>
+            <!-- Admin dropdown -->
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="adminDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="bi bi-gear-fill"></i>Admin
+              </a>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="adminDropdown"
+              >
+                <li>
+                  <a class="dropdown-item" href="/users">
                     <i class="bi bi-person-fill-gear"></i>Manage Users
-                  </a></li>
-                  <li><a class="dropdown-item" href="/users/new">
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/users/new">
                     <i class="bi bi-person-plus-fill"></i>Add User
-                  </a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="/surveys">
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="/dashboard">
+                    <i class="bi bi-speedometer2"></i>Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/participants">
+                    <i class="bi bi-people"></i>Participants
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/surveys">
                     <i class="bi bi-clipboard-check"></i>Surveys
-                  </a></li>
-                  <li><a class="dropdown-item" href="/milestones">
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/milestones">
                     <i class="bi bi-flag-fill"></i>Milestones
-                  </a></li>
-                </ul>
-              </li>
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="/donations">
+                    <i class="bi bi-currency-dollar"></i>Donations
+                  </a>
+                </li>
+              </ul>
+            </li>
             <% } %>
 
             <!-- User profile dropdown -->
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="userDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
                 <i class="bi bi-person-circle"></i><%= user.username %>
               </a>
-              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><span class="dropdown-item-text">
-                  <strong><%= user.username %></strong><br>
-                  <small class="text-muted"><%= user.role === 'A' ? 'Administrator' : 'User' %></small>
-                </span></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-danger" href="/auth/logout">
-                  <i class="bi bi-box-arrow-right"></i>Logout
-                </a></li>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="userDropdown"
+              >
+                <li>
+                  <span class="dropdown-item-text">
+                    <strong><%= user.username %></strong><br />
+                    <small class="text-muted"
+                      ><%= user.role === 'A' ? 'Administrator' : 'User'
+                      %></small
+                    >
+                  </span>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item text-danger" href="/auth/logout">
+                    <i class="bi bi-box-arrow-right"></i>Logout
+                  </a>
+                </li>
               </ul>
             </li>
-          <% } else { %>
+            <% } else { %>
             <!-- Not logged in -->
             <li class="nav-item">
               <a class="nav-link" href="/auth/login">
@@ -359,33 +424,36 @@
                 <i class="bi bi-person-plus-fill"></i>Sign Up
               </a>
             </li>
-          <% } %>
-        </ul>
+            <% } %>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
-  <!-- Hero Section -->
-  <div class="hero-section">
-    <div class="container">
-      <div class="row align-items-center">
-        <div class="col-lg-12 text-center">
-          <% if (user) { %>
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-12 text-center">
+            <% if (user) { %>
             <h1>Welcome Back, <%= user.username %>!</h1>
             <p>Empowering change, one step at a time</p>
             <a href="/dashboard" class="btn btn-custom-primary">
               <i class="bi bi-speedometer2"></i> Go to Dashboard
             </a>
-          <% } else { %>
+            <% } else { %>
             <h1>Welcome to Ella Rises INTEX</h1>
-            <p>Supporting participants on their journey to independence and growth</p>
+            <p>
+              Supporting participants on their journey to independence and
+              growth
+            </p>
             <a href="/auth/login" class="btn btn-custom-primary">
               <i class="bi bi-box-arrow-in-right"></i> Get Started
             </a>
-          <% } %>
+            <% } %>
 
-          <!-- Stats Section -->
-          <% if (user) { %>
+            <!-- Stats Section -->
+            <% if (user) { %>
             <div class="stats-section">
               <div class="row">
                 <div class="col-md-3 col-6 stat-item">
@@ -406,78 +474,99 @@
                 </div>
               </div>
             </div>
-          <% } %>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Features Section -->
-  <div class="features-section">
-    <div class="container">
-      <div class="section-title">
-        <h2>Our Impact Areas</h2>
-        <p>Comprehensive support for sustainable growth and development</p>
-      </div>
-
-      <div class="row">
-        <div class="col-lg-4 col-md-6">
-          <div class="feature-card">
-            <i class="bi bi-people-fill"></i>
-            <h3>Participant Management</h3>
-            <p>Track progress, engagement, and growth throughout each participant's journey with comprehensive support tools.</p>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-          <div class="feature-card">
-            <i class="bi bi-calendar-event"></i>
-            <h3>Event Coordination</h3>
-            <p>Plan and manage workshops, training sessions, and community events that foster connection and learning.</p>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-          <div class="feature-card">
-            <i class="bi bi-graph-up-arrow"></i>
-            <h3>Progress Tracking</h3>
-            <p>Monitor achievements and milestones to measure impact and celebrate success at every stage.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="row mt-4">
-        <div class="col-lg-4 col-md-6">
-          <div class="feature-card">
-            <i class="bi bi-clipboard-check"></i>
-            <h3>Surveys & Assessments</h3>
-            <p>Gather meaningful feedback and insights to continuously improve program effectiveness and participant satisfaction.</p>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-          <div class="feature-card">
-            <i class="bi bi-currency-dollar"></i>
-            <h3>Donation Management</h3>
-            <p>Track contributions and manage resources to ensure sustainable program funding and transparency.</p>
-          </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-          <div class="feature-card">
-            <i class="bi bi-shield-check"></i>
-            <h3>Secure & Confidential</h3>
-            <p>Protecting participant privacy and data security with industry-standard encryption and best practices.</p>
+            <% } %>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <p>&copy; <%= new Date().getFullYear() %> Ella Rises INTEX. Empowering communities through support and opportunity.</p>
+    <!-- Features Section -->
+    <div class="features-section">
+      <div class="container">
+        <div class="section-title">
+          <h2>Our Impact Areas</h2>
+          <p>Comprehensive support for sustainable growth and development</p>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card">
+              <i class="bi bi-people-fill"></i>
+              <h3>Participant Management</h3>
+              <p>
+                Track progress, engagement, and growth throughout each
+                participant's journey with comprehensive support tools.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card">
+              <i class="bi bi-calendar-event"></i>
+              <h3>Event Coordination</h3>
+              <p>
+                Plan and manage workshops, training sessions, and community
+                events that foster connection and learning.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card">
+              <i class="bi bi-graph-up-arrow"></i>
+              <h3>Progress Tracking</h3>
+              <p>
+                Monitor achievements and milestones to measure impact and
+                celebrate success at every stage.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card">
+              <i class="bi bi-clipboard-check"></i>
+              <h3>Surveys & Assessments</h3>
+              <p>
+                Gather meaningful feedback and insights to continuously improve
+                program effectiveness and participant satisfaction.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card">
+              <i class="bi bi-currency-dollar"></i>
+              <h3>Donation Management</h3>
+              <p>
+                Track contributions and manage resources to ensure sustainable
+                program funding and transparency.
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-6">
+            <div class="feature-card">
+              <i class="bi bi-shield-check"></i>
+              <h3>Secure & Confidential</h3>
+              <p>
+                Protecting participant privacy and data security with
+                industry-standard encryption and best practices.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/teapot.js"></script>
-</body>
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <p>
+          &copy; <%= new Date().getFullYear() %> Ella Rises INTEX. Empowering
+          communities through support and opportunity.
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/teapot.js"></script>
+  </body>
 </html>

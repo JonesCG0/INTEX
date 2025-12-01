@@ -57,9 +57,9 @@ async function uploadToS3(file) {
 
 // ---------- EXPRESS SETUP ----------
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "..", "views"));
 
-app.use(express.static(path.join(__dirname, "images")));
+app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
@@ -73,7 +73,7 @@ app.use(
 // ---------- AUTH MIDDLEWARE ----------
 function requireAuth(req, res, next) {
   if (!req.session.user) {
-    return res.redirect("/login");
+    return res.redirect("/auth/login");
   }
   next();
 }
@@ -85,11 +85,14 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+const eventsRouter = require("../routes/events");
+app.use("/events", eventsRouter);
+
 // ---------- ROUTES ----------
 
 // Home
 app.get("/", (req, res) => {
-  res.render("index", { user: req.session.user || null });
+  res.render("landing", { user: req.session.user || null });
 });
 
 // Login form
@@ -98,7 +101,7 @@ app.get("/auth/login", (req, res) => {
 });
 
 // Login submit
-app.post("/login", async (req, res) => {
+app.post("/auth/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
@@ -108,7 +111,7 @@ app.post("/login", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.render("login", { error: "Invalid username or password" });
+      return res.render("auth/login", { error: "Invalid username or password" });
     }
 
     const user = result.rows[0];
@@ -128,9 +131,9 @@ app.post("/login", async (req, res) => {
 });
 
 // Logout
-app.get("/logout", (req, res) => {
+app.get("/auth/logout", (req, res) => {
   req.session.destroy(() => {
-    res.redirect("/login");
+    res.redirect("/auth/login");
   });
 });
 
@@ -289,6 +292,13 @@ app.get("/video", (req, res) => {
   res.render("video", {
     user: req.session.user || null,
     youtubeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", // change to your link
+  });
+});
+
+// Support Us page - accessible to anyone
+app.get("/support", (req, res) => {
+  res.render("support", {
+    user: req.session.user || null,
   });
 });
 
