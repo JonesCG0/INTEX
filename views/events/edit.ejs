@@ -18,18 +18,56 @@
 
     <form action="/events/<%= event.eventid %>/edit" method="POST">
       <div class="form-group">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" value="<%= event.title %>" required>
+        <label for="title">Title (eventname)</label>
+        <input type="text" id="title" name="title" value="<%= event.title || '' %>" required>
       </div>
 
       <div class="form-group">
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" value="<%= event.date %>" required>
+        <label for="eventtype">Type</label>
+        <input type="text" id="eventtype" name="eventtype" value="<%= event.eventtype || '' %>">
       </div>
 
-      <!-- Add more event fields as needed -->
+      <div class="form-group">
+        <label for="eventdescription">Description</label>
+        <textarea id="eventdescription" name="eventdescription"><%= event.eventdescription || '' %></textarea>
+      </div>
 
-      <button type="submit" class="btn">Update Event</button>
+      <div class="form-group">
+        <label for="date">Start Date/Time</label>
+        <input type="text" id="date" name="date" value="<%= event.date || '' %>">
+      </div>
+
+      <div class="form-group">
+        <label for="eventdatetimeend">End Date/Time</label>
+        <input type="text" id="eventdatetimeend" name="eventdatetimeend" value="<%= event.eventdatetimeend || '' %>">
+      </div>
+
+      <div class="form-group">
+        <label for="eventlocation">Location</label>
+        <input type="text" id="eventlocation" name="eventlocation" value="<%= event.eventlocation || '' %>">
+      </div>
+
+      <div class="form-group">
+        <label for="eventcapacity">Capacity</label>
+        <input type="text" id="eventcapacity" name="eventcapacity" value="<%= event.eventcapacity || '' %>">
+      </div>
+
+      <div class="form-group">
+        <label for="eventregistrationdeadline">Registration Deadline</label>
+        <input type="text" id="eventregistrationdeadline" name="eventregistrationdeadline" value="<%= event.eventregistrationdeadline || '' %>">
+      </div>
+
+      <div class="form-group">
+        <label for="eventrecurrencepattern">Recurrence Pattern</label>
+        <input type="text" id="eventrecurrencepattern" name="eventrecurrencepattern" value="<%= event.eventrecurrencepattern || '' %>">
+      </div>
+
+      <div class="form-group">
+        <label for="eventdefaultcapacity">Default Capacity</label>
+        <input type="text" id="eventdefaultcapacity" name="eventdefaultcapacity" value="<%= event.eventdefaultcapacity || '' %>">
+      </div>
+
+      <button type="submit" class="btn">Save Changes</button>
       <a href="/events/<%= event.eventid %>" class="btn btn-secondary">Cancel</a>
     </form>
   </div>

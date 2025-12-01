@@ -14,9 +14,16 @@
 
     <div class="details">
       <p><strong>ID:</strong> <%= event.eventid %></p>
-      <p><strong>Title:</strong> <%= event.title || 'N/A' %></p>
-      <p><strong>Date:</strong> <%= event.date || 'N/A' %></p>
-      <!-- Add more event fields as needed -->
+      <p><strong>Title:</strong> <%= event.title || '—' %></p>
+      <p><strong>Type:</strong> <%= event.eventtype || '—' %></p>
+      <p><strong>Start:</strong> <%= event.date || '—' %></p>
+      <p><strong>End:</strong> <%= event.eventdatetimeend || '—' %></p>
+      <p><strong>Location:</strong> <%= event.eventlocation || '—' %></p>
+      <p><strong>Capacity:</strong> <%= event.eventcapacity || '—' %></p>
+      <p><strong>Registration Deadline:</strong> <%= event.eventregistrationdeadline || '—' %></p>
+      <p><strong>Recurrence Pattern:</strong> <%= event.eventrecurrencepattern || '—' %></p>
+      <p><strong>Default Capacity:</strong> <%= event.eventdefaultcapacity || '—' %></p>
+      <p><strong>Description:</strong> <%= event.eventdescription || '—' %></p>
     </div>
 
     <a href="/events/<%= event.eventid %>/edit" class="btn">Edit</a>

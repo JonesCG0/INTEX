@@ -18,16 +18,54 @@
 
     <form action="/events/new" method="POST">
       <div class="form-group">
-        <label for="title">Title:</label>
+        <label for="title">Title (eventname)</label>
         <input type="text" id="title" name="title" required>
       </div>
 
       <div class="form-group">
-        <label for="date">Date:</label>
-        <input type="date" id="date" name="date" required>
+        <label for="eventtype">Type</label>
+        <input type="text" id="eventtype" name="eventtype">
       </div>
 
-      <!-- Add more event fields as needed -->
+      <div class="form-group">
+        <label for="eventdescription">Description</label>
+        <textarea id="eventdescription" name="eventdescription"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="date">Start Date/Time (eventdatetimestart)</label>
+        <input type="text" id="date" name="date" placeholder="YYYY-MM-DD HH:MM or text" required>
+      </div>
+
+      <div class="form-group">
+        <label for="eventdatetimeend">End Date/Time</label>
+        <input type="text" id="eventdatetimeend" name="eventdatetimeend" placeholder="YYYY-MM-DD HH:MM or text">
+      </div>
+
+      <div class="form-group">
+        <label for="eventlocation">Location</label>
+        <input type="text" id="eventlocation" name="eventlocation">
+      </div>
+
+      <div class="form-group">
+        <label for="eventcapacity">Capacity</label>
+        <input type="text" id="eventcapacity" name="eventcapacity">
+      </div>
+
+      <div class="form-group">
+        <label for="eventregistrationdeadline">Registration Deadline</label>
+        <input type="text" id="eventregistrationdeadline" name="eventregistrationdeadline" placeholder="YYYY-MM-DD or text">
+      </div>
+
+      <div class="form-group">
+        <label for="eventrecurrencepattern">Recurrence Pattern</label>
+        <input type="text" id="eventrecurrencepattern" name="eventrecurrencepattern">
+      </div>
+
+      <div class="form-group">
+        <label for="eventdefaultcapacity">Default Capacity</label>
+        <input type="text" id="eventdefaultcapacity" name="eventdefaultcapacity">
+      </div>
 
       <button type="submit" class="btn">Create Event</button>
       <a href="/events" class="btn btn-secondary">Cancel</a>
