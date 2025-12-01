@@ -93,8 +93,8 @@ app.get("/", (req, res) => {
 });
 
 // Login form
-app.get("/login", (req, res) => {
-  res.render("login", { error: null });
+app.get("/auth/login", (req, res) => {
+  res.render("auth/login", { error: null });
 });
 
 // Login submit
