@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../db");
 const { upload, uploadToS3 } = require("../s3");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
+const { sanitizeText } = require("../utils/validators");
 
 // List users (any logged-in user can see)
 router.get("/", requireAdmin, async (req, res) => {
@@ -34,7 +35,10 @@ router.post(
   async (req, res) => {
     const { username, password, role } = req.body;
 
-    if (!username || !password) {
+    const cleanUsername = sanitizeText(username);
+    const cleanPassword = typeof password === "string" ? password.trim() : "";
+
+    if (!cleanUsername || !cleanPassword) {
       return res.render("users/addUser", {
         error: "Username and password are required",
         user: req.session.user,
@@ -51,8 +55,8 @@ router.post(
       }
 
       await db("users").insert({
-        username,
-        password,
+        username: cleanUsername,
+        password: cleanPassword,
         photo: photoUrl,
         userrole: safeRole,
       });
@@ -101,7 +105,10 @@ router.post(
     const { username, password, existingPhoto, role } = req.body;
     const userid = req.params.userid;
 
-    if (!username) {
+    const cleanUsername = sanitizeText(username);
+    const cleanPassword = typeof password === "string" ? password.trim() : "";
+
+    if (!cleanUsername) {
       return res.render("users/editUser", {
         userRecord: { userid, username, photo: existingPhoto, role },
         error: "Username is required",
@@ -119,13 +126,13 @@ router.post(
       }
 
       const updateData = {
-        username,
+        username: cleanUsername,
         photo: photoUrl,
         userrole: safeRole,
       };
 
-      if (password) {
-        updateData.password = password;
+      if (cleanPassword) {
+        updateData.password = cleanPassword;
       }
 
       await db("users").where({ userid }).update(updateData);

@@ -2,6 +2,12 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 const { requireAuth } = require("../middleware/auth");
+const {
+  hasText,
+  sanitizeISODate,
+  sanitizeDecimal,
+  sanitizeInt,
+} = require("../utils/validators");
 
 // List all donations
 router.get("/", requireAuth, async (req, res) => {
@@ -24,8 +30,62 @@ router.get("/new", requireAuth, (req, res) => {
 
 // Create donation
 router.post("/new", requireAuth, async (req, res) => {
-  // Add your create logic here
-  res.redirect("/donations");
+  const { donationdate, donationamount, participantid } = req.body;
+
+  const errors = [];
+  const cleanAmount = sanitizeDecimal(donationamount, { min: 0.01 });
+  const cleanParticipantId = sanitizeInt(participantid, { min: 1 });
+  let cleanDate = null;
+
+  if (hasText(donationdate)) {
+    cleanDate = sanitizeISODate(donationdate);
+    if (!cleanDate) {
+      errors.push("Donation date must be a valid YYYY-MM-DD value");
+    }
+  }
+  if (!cleanAmount) {
+    errors.push("Donation amount must be at least $0.01");
+  }
+  if (!cleanParticipantId) {
+    errors.push("Participant ID must be a positive whole number");
+  }
+
+  if (errors.length) {
+    return res
+      .status(400)
+      .render("donations/new", { error: errors[0], user: req.session.user });
+  }
+
+  try {
+    const participantExists = await db("participants")
+      .select("participantid")
+      .where({ participantid: cleanParticipantId })
+      .first();
+
+    if (!participantExists) {
+      return res.status(400).render("donations/new", {
+        error: "Participant not found",
+        user: req.session.user,
+      });
+    }
+
+    const donationPayload = {
+      participantid: cleanParticipantId,
+      donationamount: cleanAmount,
+    };
+
+    if (cleanDate) {
+      donationPayload.donationdate = cleanDate;
+    }
+
+    await db("donations").insert(donationPayload);
+    res.redirect("/donations");
+  } catch (err) {
+    console.error("Create donation error:", err);
+    res
+      .status(500)
+      .render("donations/new", { error: "Server error", user: req.session.user });
+  }
 });
 
 module.exports = router;
