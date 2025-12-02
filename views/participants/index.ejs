@@ -9,11 +9,13 @@
 
 <div class="container">
   <div class="card">
-    <div class="mb-3">
-      <a href="/participants/new" class="btn btn-success">
-        <i class="bi bi-person-plus-fill"></i> Add New Participant
-      </a>
-    </div>
+    <% if (user && user.role === 'A') { %>
+      <div class="mb-3">
+        <a href="/participants/new" class="btn btn-success">
+          <i class="bi bi-person-plus-fill"></i> Add New Participant
+        </a>
+      </div>
+    <% } %>
 
     <div class="table-responsive">
       <table class="table">
@@ -28,7 +30,9 @@
             <th>ZIP</th>
             <th>School/Employer</th>
             <th>Field of Interest</th>
-            <th>Actions</th>
+            <% if (user && user.role === 'A') { %>
+              <th>Actions</th>
+            <% } %>
           </tr>
         </thead>
         <tbody>
@@ -47,14 +51,16 @@
               <td><%= p.participantzip || '—' %></td>
               <td><%= p.participantschooloremployer || '—' %></td>
               <td><%= p.participantfieldofinterest || '—' %></td>
-              <td>
-                <a href="/participants/<%= p.participantid %>" class="btn btn-sm btn-info me-1">
-                  <i class="bi bi-eye-fill"></i> View
-                </a>
-                <a href="/participants/<%= p.participantid %>/edit" class="btn btn-sm btn-primary">
-                  <i class="bi bi-pencil-fill"></i> Edit
-                </a>
-              </td>
+              <% if (user && user.role === 'A') { %>
+                <td>
+                  <a href="/participants/<%= p.participantid %>" class="btn btn-sm btn-info me-1">
+                    <i class="bi bi-eye-fill"></i> View
+                  </a>
+                  <a href="/participants/<%= p.participantid %>/edit" class="btn btn-sm btn-primary">
+                    <i class="bi bi-pencil-fill"></i> Edit
+                  </a>
+                </td>
+              <% } %>
             </tr>
           <% }) %>
         </tbody>

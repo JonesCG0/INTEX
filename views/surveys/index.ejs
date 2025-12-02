@@ -9,11 +9,13 @@
 
 <div class="container">
   <div class="card">
-    <div class="mb-3">
-      <a href="/surveys/new" class="btn btn-success">
-        <i class="bi bi-plus-circle-fill"></i> Add New Survey
-      </a>
-    </div>
+    <% if (user && user.role === 'A') { %>
+      <div class="mb-3">
+        <a href="/surveys/new" class="btn btn-success">
+          <i class="bi bi-plus-circle-fill"></i> Add New Survey
+        </a>
+      </div>
+    <% } %>
 
     <div class="table-responsive">
       <table class="table">
@@ -27,7 +29,9 @@
             <th>Overall</th>
             <th>Submission Date</th>
             <th>Registration ID</th>
-            <th>Actions</th>
+            <% if (user && user.role === 'A') { %>
+              <th>Actions</th>
+            <% } %>
           </tr>
         </thead>
         <tbody>
@@ -51,11 +55,13 @@
               </td>
               <td><%= s.surveysubmissiondate || '—' %></td>
               <td><%= s.registrationid || '—' %></td>
-              <td>
-                <a href="/surveys/<%= s.surveyid %>" class="btn btn-sm btn-info">
-                  <i class="bi bi-eye-fill"></i> View
-                </a>
-              </td>
+              <% if (user && user.role === 'A') { %>
+                <td>
+                  <a href="/surveys/<%= s.surveyid %>" class="btn btn-sm btn-info">
+                    <i class="bi bi-eye-fill"></i> View
+                  </a>
+                </td>
+              <% } %>
             </tr>
           <% }) %>
         </tbody>

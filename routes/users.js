@@ -1,47 +1,47 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const db = require('../db');
-const { upload, uploadToS3 } = require('../s3');
-const { requireAuth, requireAdmin } = require('../middleware/auth');
+const db = require("../db");
+const { upload, uploadToS3 } = require("../s3");
+const { requireAuth, requireAdmin } = require("../middleware/auth");
 
 // List users (any logged-in user can see)
-router.get('/', requireAuth, async (req, res) => {
+router.get("/", requireAdmin, async (req, res) => {
   try {
-    const users = await db('users')
-      .select('userid', 'username', 'photo', 'role')
-      .orderBy('userid');
+    const users = await db("users")
+      .select("userid", "username", "photo", "role")
+      .orderBy("userid");
 
-    res.render('users/displayUsers', {
+    res.render("users/displayUsers", {
       users,
-      user: req.session.user
+      user: req.session.user,
     });
   } catch (err) {
-    console.error('Fetch users error:', err);
-    res.status(500).send('Server error');
+    console.error("Fetch users error:", err);
+    res.status(500).send("Server error");
   }
 });
 
 // Add user form - admin only
-router.get('/new', requireAdmin, (req, res) => {
-  res.render('users/addUser', { error: null, user: req.session.user });
+router.get("/new", requireAdmin, (req, res) => {
+  res.render("users/addUser", { error: null, user: req.session.user });
 });
 
 // Add user submit - admin only, with photo upload
 router.post(
-  '/new',
+  "/new",
   requireAdmin,
-  upload.single('photoFile'),
+  upload.single("photoFile"),
   async (req, res) => {
     const { username, password, role } = req.body;
 
     if (!username || !password) {
-      return res.render('users/addUser', {
-        error: 'Username and password are required',
-        user: req.session.user
+      return res.render("users/addUser", {
+        error: "Username and password are required",
+        user: req.session.user,
       });
     }
 
-    const safeRole = role === 'A' ? 'A' : 'U';
+    const safeRole = role === "A" ? "A" : "U";
 
     try {
       let photoUrl = null;
@@ -50,66 +50,66 @@ router.post(
         photoUrl = await uploadToS3(req.file);
       }
 
-      await db('users').insert({
+      await db("users").insert({
         username,
         password,
         photo: photoUrl,
-        role: safeRole
+        role: safeRole,
       });
 
-      res.redirect('/users');
+      res.redirect("/users");
     } catch (err) {
-      console.error('Add user error:', err);
-      let message = 'Server error';
-      if (err.code === '23505') {
-        message = 'Username already exists';
+      console.error("Add user error:", err);
+      let message = "Server error";
+      if (err.code === "23505") {
+        message = "Username already exists";
       }
-      res.render('users/addUser', { error: message, user: req.session.user });
+      res.render("users/addUser", { error: message, user: req.session.user });
     }
   }
 );
 
 // Edit user form - admin only
-router.get('/:userid/edit', requireAdmin, async (req, res) => {
+router.get("/:userid/edit", requireAdmin, async (req, res) => {
   try {
-    const userRecord = await db('users')
-      .select('userid', 'username', 'password', 'photo', 'role')
+    const userRecord = await db("users")
+      .select("userid", "username", "password", "photo", "role")
       .where({ userid: req.params.userid })
       .first();
 
     if (!userRecord) {
-      return res.status(404).send('User not found');
+      return res.status(404).send("User not found");
     }
 
-    res.render('users/editUser', {
+    res.render("users/editUser", {
       userRecord,
       error: null,
-      user: req.session.user
+      user: req.session.user,
     });
   } catch (err) {
-    console.error('Get user error:', err);
-    res.status(500).send('Server error');
+    console.error("Get user error:", err);
+    res.status(500).send("Server error");
   }
 });
 
 // Edit user submit - admin only, optional new photo upload
 router.post(
-  '/:userid/edit',
+  "/:userid/edit",
   requireAdmin,
-  upload.single('photoFile'),
+  upload.single("photoFile"),
   async (req, res) => {
     const { username, password, existingPhoto, role } = req.body;
     const userid = req.params.userid;
 
     if (!username) {
-      return res.render('users/editUser', {
+      return res.render("users/editUser", {
         userRecord: { userid, username, photo: existingPhoto, role },
-        error: 'Username is required',
-        user: req.session.user
+        error: "Username is required",
+        user: req.session.user,
       });
     }
 
-    const safeRole = role === 'A' ? 'A' : 'U';
+    const safeRole = role === "A" ? "A" : "U";
 
     try {
       let photoUrl = existingPhoto || null;
@@ -121,37 +121,33 @@ router.post(
       const updateData = {
         username,
         photo: photoUrl,
-        role: safeRole
+        role: safeRole,
       };
 
       if (password) {
         updateData.password = password;
       }
 
-      await db('users')
-        .where({ userid })
-        .update(updateData);
+      await db("users").where({ userid }).update(updateData);
 
-      res.redirect('/users');
+      res.redirect("/users");
     } catch (err) {
-      console.error('Update user error:', err);
-      res.status(500).send('Server error');
+      console.error("Update user error:", err);
+      res.status(500).send("Server error");
     }
   }
 );
 
 // Delete user - admin only
-router.post('/:userid/delete', requireAdmin, async (req, res) => {
+router.post("/:userid/delete", requireAdmin, async (req, res) => {
   const userid = req.params.userid;
 
   try {
-    await db('users')
-      .where({ userid })
-      .del();
-    res.redirect('/users');
+    await db("users").where({ userid }).del();
+    res.redirect("/users");
   } catch (err) {
-    console.error('Delete user error:', err);
-    res.status(500).send('Server error');
+    console.error("Delete user error:", err);
+    res.status(500).send("Server error");
   }
 });
 

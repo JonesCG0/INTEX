@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
-const { requireAdmin } = require("../middleware/auth");
+const { requireAuth, requireAdmin } = require("../middleware/auth");
 
 // ---------------------------------------------------------------------------
 // List all events
 // ---------------------------------------------------------------------------
-router.get("/", async (req, res) => {
+router.get("/", requireAuth, async (req, res) => {
   try {
-    const events = await db('eventoccurrences')
-      .select('*')
-      .orderBy('eventoccurrenceid');
+    const events = await db("eventoccurrences")
+      .select("*")
+      .orderBy("eventoccurrenceid");
     res.render("events/index", {
       events,
       user: req.session.user || null,
@@ -48,29 +48,29 @@ router.post("/new", requireAdmin, async (req, res) => {
   try {
     const eventId = await db.transaction(async (trx) => {
       // 1) Create an event template (minimal fields)
-      const [template] = await trx('eventtemplates')
+      const [template] = await trx("eventtemplates")
         .insert({
           eventname: title,
           eventtype: null,
           eventdescription: null,
           eventrecurrencepattern: null,
-          eventdefaultcapacity: null
+          eventdefaultcapacity: null,
         })
-        .returning('eventtemplateid');
+        .returning("eventtemplateid");
 
       const templateId = template.eventtemplateid;
 
       // 2) Create the event occurrence
-      const [occurrence] = await trx('eventoccurrences')
+      const [occurrence] = await trx("eventoccurrences")
         .insert({
           eventdatetimestart: date,
           eventdatetimeend: null,
           eventlocation: null,
           eventcapacity: null,
           eventregistrationdeadline: null,
-          eventtemplateid: templateId
+          eventtemplateid: templateId,
         })
-        .returning('eventoccurrenceid');
+        .returning("eventoccurrenceid");
 
       return occurrence.eventoccurrenceid;
     });
@@ -91,8 +91,8 @@ router.post("/new", requireAdmin, async (req, res) => {
 // ---------------------------------------------------------------------------
 router.get("/:id", requireAdmin, async (req, res) => {
   try {
-    const event = await db('events')
-      .select('*')
+    const event = await db("events")
+      .select("*")
       .where({ eventid: req.params.id })
       .first();
 
@@ -115,23 +115,23 @@ router.get("/:id", requireAdmin, async (req, res) => {
 // ---------------------------------------------------------------------------
 router.get("/:id/edit", requireAdmin, async (req, res) => {
   try {
-    const event = await db('eventoccurrences as eo')
-      .join('eventtemplates as et', 'eo.eventtemplateid', 'et.eventtemplateid')
+    const event = await db("eventoccurrences as eo")
+      .join("eventtemplates as et", "eo.eventtemplateid", "et.eventtemplateid")
       .select(
-        'eo.eventoccurrenceid as eventid',
-        'et.eventname as title',
-        'eo.eventdatetimestart as date',
-        'eo.eventdatetimeend',
-        'eo.eventlocation',
-        'eo.eventcapacity',
-        'eo.eventregistrationdeadline',
-        'et.eventtemplateid',
-        'et.eventtype',
-        'et.eventdescription',
-        'et.eventrecurrencepattern',
-        'et.eventdefaultcapacity'
+        "eo.eventoccurrenceid as eventid",
+        "et.eventname as title",
+        "eo.eventdatetimestart as date",
+        "eo.eventdatetimeend",
+        "eo.eventlocation",
+        "eo.eventcapacity",
+        "eo.eventregistrationdeadline",
+        "et.eventtemplateid",
+        "et.eventtype",
+        "et.eventdescription",
+        "et.eventrecurrencepattern",
+        "et.eventdefaultcapacity"
       )
-      .where('eo.eventoccurrenceid', req.params.id)
+      .where("eo.eventoccurrenceid", req.params.id)
       .first();
 
     if (!event) {
@@ -160,23 +160,27 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
   try {
     if (!title || !date) {
       // Re-fetch event and re-render with error
-      const existing = await db('eventoccurrences as eo')
-        .join('eventtemplates as et', 'eo.eventtemplateid', 'et.eventtemplateid')
-        .select(
-          'eo.eventoccurrenceid as eventid',
-          'et.eventname as title',
-          'eo.eventdatetimestart as date',
-          'eo.eventdatetimeend',
-          'eo.eventlocation',
-          'eo.eventcapacity',
-          'eo.eventregistrationdeadline',
-          'et.eventtemplateid',
-          'et.eventtype',
-          'et.eventdescription',
-          'et.eventrecurrencepattern',
-          'et.eventdefaultcapacity'
+      const existing = await db("eventoccurrences as eo")
+        .join(
+          "eventtemplates as et",
+          "eo.eventtemplateid",
+          "et.eventtemplateid"
         )
-        .where('eo.eventoccurrenceid', eventId)
+        .select(
+          "eo.eventoccurrenceid as eventid",
+          "et.eventname as title",
+          "eo.eventdatetimestart as date",
+          "eo.eventdatetimeend",
+          "eo.eventlocation",
+          "eo.eventcapacity",
+          "eo.eventregistrationdeadline",
+          "et.eventtemplateid",
+          "et.eventtype",
+          "et.eventdescription",
+          "et.eventrecurrencepattern",
+          "et.eventdefaultcapacity"
+        )
+        .where("eo.eventoccurrenceid", eventId)
         .first();
 
       if (!existing) {
@@ -192,8 +196,8 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
 
     await db.transaction(async (trx) => {
       // Get template id for this occurrence
-      const occurrence = await trx('eventoccurrences')
-        .select('eventtemplateid')
+      const occurrence = await trx("eventoccurrences")
+        .select("eventtemplateid")
         .where({ eventoccurrenceid: eventId })
         .first();
 
@@ -204,12 +208,12 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
       const templateId = occurrence.eventtemplateid;
 
       // 1) Update template name
-      await trx('eventtemplates')
+      await trx("eventtemplates")
         .where({ eventtemplateid: templateId })
         .update({ eventname: title });
 
       // 2) Update occurrence date
-      await trx('eventoccurrences')
+      await trx("eventoccurrences")
         .where({ eventoccurrenceid: eventId })
         .update({ eventdatetimestart: date });
     });

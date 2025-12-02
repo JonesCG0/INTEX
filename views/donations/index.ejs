@@ -9,11 +9,13 @@
 
 <div class="container">
   <div class="card">
-    <div class="mb-3">
-      <a href="/donations/new" class="btn btn-success">
-        <i class="bi bi-plus-circle-fill"></i> Add New Donation
-      </a>
-    </div>
+    <% if (user && user.role === 'A') { %>
+      <div class="mb-3">
+        <a href="/donations/new" class="btn btn-success">
+          <i class="bi bi-plus-circle-fill"></i> Add New Donation
+        </a>
+      </div>
+    <% } %>
 
     <div class="table-responsive">
       <table class="table">
@@ -23,7 +25,9 @@
             <th>Date</th>
             <th>Amount</th>
             <th>Participant ID</th>
-            <th>Actions</th>
+            <% if (user && user.role === 'A') { %>
+              <th>Actions</th>
+            <% } %>
           </tr>
         </thead>
         <tbody>
@@ -33,14 +37,16 @@
               <td><%= d.donationdate || '—' %></td>
               <td><strong>$<%= d.donationamount || '0.00' %></strong></td>
               <td><%= d.participantid || '—' %></td>
-              <td>
-                <form action="/donations/<%= d.donationid %>/delete" method="POST" style="display:inline;">
-                  <button type="submit" class="btn btn-sm btn-danger"
-                          onclick="return confirm('Delete this donation? This cannot be undone.');">
-                    <i class="bi bi-trash-fill"></i> Delete
-                  </button>
-                </form>
-              </td>
+              <% if (user && user.role === 'A') { %>
+                <td>
+                  <form action="/donations/<%= d.donationid %>/delete" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Delete this donation? This cannot be undone.');">
+                      <i class="bi bi-trash-fill"></i> Delete
+                    </button>
+                  </form>
+                </td>
+              <% } %>
             </tr>
           <% }) %>
         </tbody>

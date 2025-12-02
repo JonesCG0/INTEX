@@ -4,11 +4,9 @@ const db = require("../db");
 const { requireAuth } = require("../middleware/auth");
 
 // List all donations
-router.get("/", async (req, res) => {
+router.get("/", requireAuth, async (req, res) => {
   try {
-    const donations = await db('donations')
-      .select('*')
-      .orderBy('donationid');
+    const donations = await db("donations").select("*").orderBy("donationid");
     res.render("donations/index", {
       donations,
       user: req.session.user,

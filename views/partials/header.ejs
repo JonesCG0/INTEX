@@ -323,11 +323,6 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link" href="/events">
-                <i class="bi bi-calendar-event"></i>Events
-              </a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link" href="/support">
                 <i class="bi bi-heart-fill"></i>Support Us
               </a>
@@ -335,23 +330,28 @@
 
             <% if (typeof user !== 'undefined' && user) { %>
             <!-- Logged in user menu -->
-            <% if (user.role === 'A') { %>
-            <!-- Admin dropdown -->
             <li class="nav-item dropdown">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
-                id="adminDropdown"
+                id="toolDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <i class="bi bi-gear-fill"></i>Admin
+                <i class="bi bi-gear-fill"></i>Tools
               </a>
               <ul
                 class="dropdown-menu dropdown-menu-end"
-                aria-labelledby="adminDropdown"
+                aria-labelledby="toolDropdown"
               >
+                <% if (user.role === 'A') { %>
+                <!-- Admin dropdown -->
+                <li>
+                  <a class="dropdown-item" href="/dashboard">
+                    <i class="bi bi-speedometer2"></i>Dashboard
+                  </a>
+                </li>
                 <li>
                   <a class="dropdown-item" href="/users">
                     <i class="bi bi-person-fill-gear"></i>Manage Users
@@ -363,11 +363,13 @@
                   </a>
                 </li>
                 <li><hr class="dropdown-divider" /></li>
-                <li>
-                  <a class="dropdown-item" href="/dashboard">
-                    <i class="bi bi-speedometer2"></i>Dashboard
+                <% } %>
+                <li class="nav-item">
+                  <a class="nav-link" href="/events">
+                    <i class="bi bi-calendar-event"></i>Events
                   </a>
                 </li>
+
                 <li>
                   <a class="dropdown-item" href="/participants">
                     <i class="bi bi-people"></i>Participants
@@ -390,7 +392,6 @@
                 </li>
               </ul>
             </li>
-            <% } %>
 
             <!-- User profile dropdown -->
             <li class="nav-item dropdown">
