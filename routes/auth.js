@@ -2,6 +2,14 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
+// Treat legacy participant records like regular users.
+function normalizeRole(role) {
+  if (typeof role !== 'string') {
+    return 'U';
+  }
+  return role.toLowerCase() === 'participant' ? 'U' : role;
+}
+
 // Login form
 router.get('/login', (req, res) => {
   res.render('auth/login', { error: null });
@@ -24,7 +32,7 @@ router.post('/login', async (req, res) => {
     req.session.user = {
       userid: user.userid,
       username: user.username,
-      role: user.role,
+      role: normalizeRole(user.role),
       photo: user.photo
     };
 
@@ -69,7 +77,7 @@ router.post('/signup', async (req, res) => {
     req.session.user = {
       userid: newUser.userid,
       username: newUser.username,
-      role: newUser.role,
+      role: normalizeRole(newUser.role),
       photo: null
     };
 
