@@ -123,7 +123,9 @@ app.post("/auth/login", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.render("auth/login", { error: "Invalid username or password" });
+      return res.render("auth/login", {
+        error: "Invalid username or password",
+      });
     }
 
     const user = result.rows[0];
@@ -316,12 +318,26 @@ app.get("/support", (req, res) => {
 
 // Handle volunteer application submission
 app.post("/volunteers/create", async (req, res) => {
-  const { firstName, lastName, email, phone, interests, availability, experience } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    interests,
+    availability,
+    experience,
+  } = req.body;
 
   try {
     // TODO: Add logic to save volunteer application to database
     // For now, just log it and redirect back to support page with a success message
-    console.log("Volunteer application received:", { firstName, lastName, email, phone, interests });
+    console.log("Volunteer application received:", {
+      firstName,
+      lastName,
+      email,
+      phone,
+      interests,
+    });
 
     // Redirect back to support page (you can add a success query param later)
     res.redirect("/support#volunteer-form");
@@ -329,11 +345,4 @@ app.post("/volunteers/create", async (req, res) => {
     console.error("Volunteer application error:", err);
     res.status(500).send("Server error");
   }
-});
-
-// ---------- START SERVER ----------
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Server running http://localhost:${PORT}`);
 });
