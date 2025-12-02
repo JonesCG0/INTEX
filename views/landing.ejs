@@ -81,6 +81,13 @@
     margin-bottom: 15px;
   }
 
+  .stat-item h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #d4654c;
+    margin: 10px 0;
+  }
+
   .stat-item h3 {
     font-size: 1.1rem;
     font-weight: 600;
@@ -114,12 +121,13 @@
   .feature-card {
     background: #ffffff;
     border-radius: 15px;
-    padding: 40px 30px;
+    padding: 0;
     margin-bottom: 30px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
     height: 100%;
     border: 2px solid transparent;
+    overflow: hidden;
   }
 
   .feature-card:hover {
@@ -128,10 +136,10 @@
     border-color: #e8a87c;
   }
 
-  .feature-card i {
-    font-size: 3rem;
-    color: #d4654c;
-    margin-bottom: 25px;
+  .feature-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
     display: block;
   }
 
@@ -139,14 +147,9 @@
     color: #2c2c2c;
     font-size: 1.4rem;
     font-weight: 600;
-    margin-bottom: 15px;
-  }
-
-  .feature-card p {
-    color: #8b6f47;
-    font-size: 1rem;
-    line-height: 1.7;
     margin: 0;
+    padding: 20px;
+    text-align: center;
   }
 
   @media (max-width: 768px) {
@@ -191,18 +194,22 @@ Inviting young women to pursue higher education and embrace their heritage by pr
             <div class="row">
               <div class="col-md-3 col-6 stat-item">
                 <i class="bi bi-people-fill"></i>
+                <h2><%= stats.participants %></h2>
                 <h3>Participants</h3>
               </div>
               <div class="col-md-3 col-6 stat-item">
                 <i class="bi bi-calendar-event"></i>
+                <h2><%= stats.events %></h2>
                 <h3>Events</h3>
               </div>
               <div class="col-md-3 col-6 stat-item">
                 <i class="bi bi-flag-fill"></i>
+                <h2><%= stats.milestones %></h2>
                 <h3>Milestones</h3>
               </div>
               <div class="col-md-3 col-6 stat-item">
                 <i class="bi bi-currency-dollar"></i>
+                <h2>$<%= Number(stats.donations).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) %></h2>
                 <h3>Donations</h3>
               </div>
             </div>
@@ -217,54 +224,32 @@ Inviting young women to pursue higher education and embrace their heritage by pr
 <div class="features-section">
   <div class="container">
     <div class="section-title">
-      <h2>Our Impact Areas</h2>
-      <p>Comprehensive support for sustainable growth and development</p>
+      <h2>Programs</h2>
     </div>
 
     <div class="row">
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-3 col-md-6">
         <div class="feature-card">
-          <i class="bi bi-people-fill"></i>
-          <h3>Participant Management</h3>
-          <p>Track progress, engagement, and growth throughout each participant's journey with comprehensive support tools.</p>
+          <img src="/Ballet_Folkorico.png" alt="Ballet Folklorico">
+          <h3>Ballet Folklorico</h3>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-3 col-md-6">
         <div class="feature-card">
-          <i class="bi bi-calendar-event"></i>
-          <h3>Event Coordination</h3>
-          <p>Plan and manage workshops, training sessions, and community events that foster connection and learning.</p>
+          <img src="/Mariachi.png" alt="Mariachi">
+          <h3>Mariachi</h3>
         </div>
       </div>
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-3 col-md-6">
         <div class="feature-card">
-          <i class="bi bi-graph-up-arrow"></i>
-          <h3>Progress Tracking</h3>
-          <p>Monitor achievements and milestones to measure impact and celebrate success at every stage.</p>
+          <img src="/STEAM.png" alt="STEAM">
+          <h3>STEAM</h3>
         </div>
       </div>
-    </div>
-
-    <div class="row mt-4">
-      <div class="col-lg-4 col-md-6">
+      <div class="col-lg-3 col-md-6">
         <div class="feature-card">
-          <i class="bi bi-clipboard-check"></i>
-          <h3>Surveys & Assessments</h3>
-          <p>Gather meaningful feedback and insights to continuously improve program effectiveness and participant satisfaction.</p>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="feature-card">
-          <i class="bi bi-currency-dollar"></i>
-          <h3>Donation Management</h3>
-          <p>Track contributions and manage resources to ensure sustainable program funding and transparency.</p>
-        </div>
-      </div>
-      <div class="col-lg-4 col-md-6">
-        <div class="feature-card">
-          <i class="bi bi-shield-check"></i>
-          <h3>Secure & Confidential</h3>
-          <p>Protecting participant privacy and data security with industry-standard encryption and best practices.</p>
+          <img src="/Summer_Summit.png" alt="Summer Summit">
+          <h3>Summer Summit</h3>
         </div>
       </div>
     </div>

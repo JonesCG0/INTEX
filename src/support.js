@@ -93,8 +93,38 @@ app.use("/surveys", surveysRouter);
 // ---------- ROUTES ----------
 
 // Home
-app.get("/", (req, res) => {
-  res.render("landing", { user: req.session.user || null });
+app.get("/", async (req, res) => {
+  try {
+    // Fetch counts from database
+    const [participantCount] = await db("participants").count("* as count");
+    const [eventCount] = await db("eventoccurrences").count("* as count");
+    const [milestoneCount] = await db("milestones").count("* as count");
+    const donationSum = await db("donationTotals")
+      .select(db.raw("SUM(CAST(totalDonationCalculated AS DECIMAL)) as total"))
+      .first();
+
+    res.render("landing", {
+      user: req.session.user || null,
+      stats: {
+        participants: participantCount.count,
+        events: eventCount.count,
+        milestones: milestoneCount.count,
+        donations: donationSum.total || 0,
+      },
+    });
+  } catch (err) {
+    console.error("Landing page error:", err);
+    // Render with default values if there's an error
+    res.render("landing", {
+      user: req.session.user || null,
+      stats: {
+        participants: 0,
+        events: 0,
+        milestones: 0,
+        donations: 0,
+      },
+    });
+  }
 });
 
 // Login form
