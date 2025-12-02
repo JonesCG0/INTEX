@@ -2,12 +2,19 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-// Treat legacy participant records like regular users.
+// Normalize legacy role labels from the database to the single-letter roles used by the app.
 function normalizeRole(role) {
   if (typeof role !== 'string') {
     return 'U';
   }
-  return role.toLowerCase() === 'participant' ? 'U' : role;
+  const trimmed = role.trim().toLowerCase();
+  if (trimmed === 'participant' || trimmed === 'u') {
+    return 'U';
+  }
+  if (trimmed === 'admin' || trimmed === 'a') {
+    return 'A';
+  }
+  return role;
 }
 
 // Login form
@@ -21,7 +28,7 @@ router.post('/login', async (req, res) => {
 
   try {
     const user = await db('users')
-      .select('userid', 'username', 'password', 'photo', 'role')
+      .select('userid', 'username', 'password', 'photo', 'userrole as role')
       .where({ username, password })
       .first();
 
@@ -70,8 +77,8 @@ router.post('/signup', async (req, res) => {
 
     // Insert new user with role 'U' (regular user)
     const [newUser] = await db('users')
-      .insert({ username, password, role: 'U' })
-      .returning(['userid', 'username', 'role']);
+      .insert({ username, password, userrole: 'U' })
+      .returning(['userid', 'username', 'userrole as role']);
 
     // Log them in automatically
     req.session.user = {

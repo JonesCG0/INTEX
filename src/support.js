@@ -138,7 +138,7 @@ app.post("/auth/login", async (req, res) => {
 
   try {
     const user = await db('users')
-      .select('userid', 'username', 'password', 'photo', 'role')
+      .select('userid', 'username', 'password', 'photo', 'userrole as role')
       .where({ username, password })
       .first();
 
@@ -173,7 +173,7 @@ app.get("/auth/logout", (req, res) => {
 app.get("/users", requireAuth, async (req, res) => {
   try {
     const users = await db('users')
-      .select('userid', 'username', 'photo', 'role')
+      .select('userid', 'username', 'photo', 'userrole as role')
       .orderBy('userid');
 
     res.render("users/displayUsers", {
@@ -224,7 +224,7 @@ app.post(
         username,
         password,
         photo: photoUrl,
-        role: safeRole
+        userrole: safeRole
       });
 
       res.redirect("/users");
@@ -243,7 +243,7 @@ app.post(
 app.get("/users/:userid/edit", requireAdmin, async (req, res) => {
   try {
     const userRecord = await db('users')
-      .select('userid', 'username', 'password', 'photo', 'role')
+      .select('userid', 'username', 'password', 'photo', 'userrole as role')
       .where({ userid: req.params.userid })
       .first();
 
@@ -291,7 +291,7 @@ app.post(
       const updateData = {
         username,
         photo: photoUrl,
-        role: safeRole
+        userrole: safeRole
       };
 
       if (password) {
