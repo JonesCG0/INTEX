@@ -1,0 +1,89 @@
+<%- include('../partials/header', { title: 'My Profile', user: user }) %>
+
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-person-circle"></i> My Profile</h1>
+    <p>View your account information</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="text-center mb-4">
+          <% if (userRecord.photo) { %>
+          <img
+            src="<%= userRecord.photo %>"
+            alt="Profile photo"
+            style="
+              width: 150px;
+              height: 150px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 5px solid var(--accent-color);
+              box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            "
+          />
+          <% } else { %>
+          <div
+            style="
+              width: 150px;
+              height: 150px;
+              border-radius: 50%;
+              background-color: var(--pink-bg);
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              border: 5px solid var(--accent-color);
+            "
+          >
+            <i
+              class="bi bi-person-fill"
+              style="font-size: 80px; color: var(--accent-color)"
+            ></i>
+          </div>
+          <% } %>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <strong>Username:</strong>
+          </div>
+          <div class="col-md-8"><%= userRecord.username %></div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <strong>User ID:</strong>
+          </div>
+          <div class="col-md-8"><%= userRecord.userid %></div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-4">
+            <strong>Role:</strong>
+          </div>
+          <div class="col-md-8">
+            <span
+              class="badge bg-<%= userRecord.userrole === 'admin' ? 'danger' : 'info' %>"
+            >
+              <%= userRecord.userrole === 'admin' ? 'Administrator' : 'User' %>
+            </span>
+          </div>
+        </div>
+
+        <div class="d-grid gap-2 d-md-flex">
+          <a href="/profile/edit" class="btn btn-primary">
+            <i class="bi bi-pencil-fill"></i> Edit Profile
+          </a>
+          <a href="/" class="btn btn-secondary">
+            <i class="bi bi-house-fill"></i> Back to Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer-scripts') %>
