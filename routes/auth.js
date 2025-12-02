@@ -10,19 +10,17 @@ const {
   sanitizeISODate
 } = require('../utils/validators');
 
-// Normalize legacy role labels from the database to the single-letter roles used by the app.
-function normalizeRole(role) {
+function ensureValidRole(role) {
   if (typeof role !== 'string') {
-    return 'U';
+    return null;
   }
-  const trimmed = role.trim().toLowerCase();
-  if (trimmed === 'participant' || trimmed === 'u') {
-    return 'U';
+
+  const normalized = role.trim().toLowerCase();
+  if (normalized === 'admin' || normalized === 'participant') {
+    return normalized;
   }
-  if (trimmed === 'admin' || trimmed === 'a') {
-    return 'A';
-  }
-  return role;
+
+  return null;
 }
 
 // Login form
@@ -44,10 +42,16 @@ router.post('/login', async (req, res) => {
       return res.render('auth/login', { error: 'Invalid username or password' });
     }
 
+    const validRole = ensureValidRole(user.role);
+    if (!validRole) {
+      console.warn('User has unsupported role value', { userid: user.userid, role: user.role });
+      return res.render('auth/login', { error: 'Invalid username or password' });
+    }
+
     req.session.user = {
       userid: user.userid,
       username: user.username,
-      role: normalizeRole(user.role),
+      role: validRole,
       photo: user.photo
     };
 
@@ -147,7 +151,7 @@ router.post('/signup', async (req, res) => {
     const newUserPayload = {
       username: cleanUsername,
       password: cleanPassword,
-      userrole: 'U',
+      userrole: 'participant',
       userfirstname: cleanFirstName,
       userlastname: cleanLastName,
       userdob: cleanDOB,
@@ -168,7 +172,7 @@ router.post('/signup', async (req, res) => {
     req.session.user = {
       userid: newUser.userid,
       username: newUser.username,
-      role: normalizeRole(newUser.role),
+      role: 'participant',
       photo: newUser.photo || null
     };
 

@@ -9,7 +9,7 @@
 
 <div class="container">
   <div class="card">
-    <% if (user && user.role === 'A') { %>
+    <% if (user && user.role === 'admin') { %>
     <div class="mb-3">
       <a href="/events/new" class="btn btn-success">
         <i class="bi bi-plus-circle-fill"></i> Add New Event
@@ -81,7 +81,7 @@
                 <% } %>
               </a>
             </th>
-            <% if (user && user.role === 'A') { %>
+            <% if (user && user.role === 'admin') { %>
             <th>Actions</th>
             <% } %>
           </tr>
@@ -107,7 +107,7 @@
               year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit',
               minute: '2-digit' }) %> <% } else { %> — <% } %>
             </td>
-            <% if (user && user.role === 'A') { %>
+            <% if (user && user.role === 'admin') { %>
             <td>
               <a
                 href="/events/<%= event.eventoccurrenceid %>"

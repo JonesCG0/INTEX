@@ -9,7 +9,7 @@
 
 <div class="container">
   <div class="card">
-    <% if (user && user.role === 'A') { %>
+    <% if (user && user.role === 'admin') { %>
     <div class="mb-3">
       <a href="/participants/new" class="btn btn-success">
         <i class="bi bi-person-plus-fill"></i> Add New Participant
@@ -101,7 +101,7 @@
                 <% } %>
               </a>
             </th>
-            <% if (user && user.role === 'A') { %>
+            <% if (user && user.role === 'admin') { %>
             <th>Actions</th>
             <% } %>
           </tr>
@@ -136,7 +136,7 @@
             <td><%= p.participantzip || '—' %></td>
             <td><%= p.participantschooloremployer || '—' %></td>
             <td><%= p.participantfieldofinterest || '—' %></td>
-            <% if (user && user.role === 'A') { %>
+            <% if (user && user.role === 'admin') { %>
             <td>
               <a
                 href="/participants/<%= p.participantid %>"

@@ -173,7 +173,7 @@
       <div class="col-lg-12 text-center">
         <% if (user) { %>
           <h1>Welcome Back, <%= user.username %>!</h1>
-          <% if (user.role === 'A') { %>
+          <% if (user.role === 'admin') { %>
           <a href="/dashboard" class="btn btn-custom-primary">
             <i class="bi bi-speedometer2"></i> Go to Dashboard
           </a>

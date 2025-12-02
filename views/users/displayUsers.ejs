@@ -9,7 +9,7 @@
 
 <div class="container">
   <div class="card">
-    <% if (user.role === 'A') { %>
+    <% if (user.role === 'admin') { %>
       <div class="mb-3">
         <a href="/users/new" class="btn btn-success">
           <i class="bi bi-person-plus-fill"></i> Add User
@@ -25,7 +25,7 @@
             <th>Username</th>
             <th>Role</th>
             <th>Photo</th>
-            <% if (user.role === 'A') { %>
+            <% if (user.role === 'admin') { %>
               <th>Actions</th>
             <% } %>
           </tr>
@@ -36,10 +36,10 @@
               <td><%= u.userid %></td>
               <td><strong><%= u.username %></strong></td>
               <td>
-                <% if (u.role === 'A') { %>
+                <% if (u.role === 'admin') { %>
                   <span class="badge bg-danger">Admin</span>
                 <% } else { %>
-                  <span class="badge bg-secondary">User</span>
+                  <span class="badge bg-secondary">Participant</span>
                 <% } %>
               </td>
               <td>
@@ -50,7 +50,7 @@
                   <span class="text-muted"><i class="bi bi-person-circle" style="font-size:40px;"></i></span>
                 <% } %>
               </td>
-              <% if (user.role === 'A') { %>
+              <% if (user.role === 'admin') { %>
                 <td>
                   <a href="/users/<%= u.userid %>/edit" class="btn btn-sm btn-primary me-1">
                     <i class="bi bi-pencil-fill"></i> Edit

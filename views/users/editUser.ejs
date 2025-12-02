@@ -46,8 +46,8 @@
           <div class="mb-3">
             <label class="form-label">Role</label>
             <select name="role" class="form-select">
-              <option value="U" <%= userRecord.role === 'U' ? 'selected' : '' %>>User</option>
-              <option value="A" <%= userRecord.role === 'A' ? 'selected' : '' %>>Administrator</option>
+              <option value="participant" <%= userRecord.role === 'participant' ? 'selected' : '' %>>Participant</option>
+              <option value="admin" <%= userRecord.role === 'admin' ? 'selected' : '' %>>Administrator</option>
             </select>
           </div>
 

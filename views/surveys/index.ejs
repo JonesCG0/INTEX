@@ -9,7 +9,7 @@
 
 <div class="container">
   <div class="card">
-    <% if (user && user.role === 'A') { %>
+    <% if (user && user.role === 'admin') { %>
     <div class="mb-3">
       <a href="/surveys/new" class="btn btn-success">
         <i class="bi bi-plus-circle-fill"></i> Add New Survey
@@ -91,7 +91,7 @@
                 <% } %>
               </a>
             </th>
-            <% if (user && user.role === 'A') { %>
+            <% if (user && user.role === 'admin') { %>
             <th>Actions</th>
             <% } %>
           </tr>
@@ -136,7 +136,7 @@
               <% } %>
             </td>
             <td><%= s.registrationid || '—' %></td>
-            <% if (user && user.role === 'A') { %>
+            <% if (user && user.role === 'admin') { %>
             <td>
               <a href="/surveys/<%= s.surveyid %>" class="btn btn-sm btn-info">
                 <i class="bi bi-eye-fill"></i> View

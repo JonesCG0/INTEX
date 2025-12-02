@@ -339,7 +339,7 @@
                 class="dropdown-menu dropdown-menu-end"
                 aria-labelledby="toolDropdown"
               >
-                <% if (user.role === 'A') { %>
+                <% if (user.role === 'admin') { %>
                 <!-- Admin dropdown -->
                 <li>
                   <a class="dropdown-item" href="/dashboard">
@@ -407,7 +407,7 @@
                   <span class="dropdown-item-text">
                     <strong><%= user.username %></strong><br />
                     <small class="text-muted"
-                      ><%= user.role === 'A' ? 'Administrator' : 'User'
+                      ><%= user.role === 'admin' ? 'Administrator' : 'Participant'
                       %></small
                     >
                   </span>

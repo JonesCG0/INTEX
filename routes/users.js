@@ -5,6 +5,15 @@ const { upload, uploadToS3 } = require("../s3");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 const { sanitizeText } = require("../utils/validators");
 
+function parseRole(rawRole) {
+  if (typeof rawRole !== "string") {
+    return "participant";
+  }
+
+  const normalized = rawRole.trim().toLowerCase();
+  return normalized === "admin" ? "admin" : "participant";
+}
+
 // List users (any logged-in user can see)
 router.get("/", requireAdmin, async (req, res) => {
   try {
@@ -45,7 +54,7 @@ router.post(
       });
     }
 
-    const safeRole = role === "A" ? "A" : "U";
+    const safeRole = parseRole(role);
 
     try {
       let photoUrl = null;
@@ -116,7 +125,7 @@ router.post(
       });
     }
 
-    const safeRole = role === "A" ? "A" : "U";
+    const safeRole = parseRole(role);
 
     try {
       let photoUrl = existingPhoto || null;

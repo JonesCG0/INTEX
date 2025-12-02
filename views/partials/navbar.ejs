@@ -81,7 +81,7 @@
 
         <% if (typeof user !== 'undefined' && user) { %>
         <!-- Logged in user menu -->
-        <% if (user.role === 'A') { %>
+        <% if (user.role === 'admin') { %>
         <!-- Admin dropdown -->
         <li class="nav-item dropdown">
           <a
@@ -169,7 +169,7 @@
               <span class="dropdown-item-text">
                 <strong><%= user.username %></strong><br />
                 <small class="text-muted"
-                  ><%= user.role === 'A' ? 'Administrator' : 'User' %></small
+                  ><%= user.role === 'admin' ? 'Administrator' : 'Participant' %></small
                 >
               </span>
             </li>

@@ -9,6 +9,23 @@ const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 
 const app = express();
 
+function ensureValidRole(role) {
+  if (typeof role !== "string") {
+    return null;
+  }
+
+  const normalized = role.trim().toLowerCase();
+  if (normalized === "admin" || normalized === "participant") {
+    return normalized;
+  }
+
+  return null;
+}
+
+function roleOrParticipant(role) {
+  return ensureValidRole(role) || "participant";
+}
+
 // ---------- S3 + UPLOAD SETUP ----------
 const S3_BUCKET = process.env.S3_BUCKET;
 const AWS_REGION = process.env.AWS_REGION || "us-east-2";
@@ -69,7 +86,7 @@ function requireAuth(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  if (!req.session.user || req.session.user.role !== "A") {
+  if (!req.session.user || req.session.user.role !== "admin") {
     return res.status(403).send("Forbidden: Admins only");
   }
   next();
@@ -148,10 +165,21 @@ app.post("/auth/login", async (req, res) => {
       });
     }
 
+    const validRole = ensureValidRole(user.role);
+    if (!validRole) {
+      console.warn("User has unsupported role value", {
+        userid: user.userid,
+        role: user.role,
+      });
+      return res.render("auth/login", {
+        error: "Invalid username or password",
+      });
+    }
+
     req.session.user = {
       userid: user.userid,
       username: user.username,
-      role: user.role,
+      role: validRole,
       photo: user.photo,
     };
 
@@ -211,7 +239,7 @@ app.post(
       });
     }
 
-    const safeRole = role === "A" ? "A" : "U";
+    const safeRole = roleOrParticipant(role);
 
     try {
       let photoUrl = null;
@@ -279,7 +307,7 @@ app.post(
       });
     }
 
-    const safeRole = role === "A" ? "A" : "U";
+    const safeRole = roleOrParticipant(role);
 
     try {
       let photoUrl = existingPhoto || null;

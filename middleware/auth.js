@@ -6,7 +6,7 @@ function requireAuth(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  if (!req.session.user || req.session.user.role !== 'A') {
+  if (!req.session.user || req.session.user.role !== 'admin') {
     return res.status(403).send('Forbidden: Admins only');
   }
   next();
