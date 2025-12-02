@@ -5,7 +5,7 @@ const path = require('path');
 
 const app = express();
 
-// ---------- EXPRESS SETUP ----------
+// ---------- EXPRESS SETUP HI----------
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
