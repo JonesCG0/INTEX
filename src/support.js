@@ -3,21 +3,11 @@ require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const path = require("path");
-const { Pool } = require("pg");
+const db = require("../db");
 const multer = require("multer");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 
 const app = express();
-
-// ---------- DATABASE ----------
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  ssl: process.env.DB_SSL === "true" ? { rejectUnauthorized: false } : false,
-});
 
 // ---------- S3 + UPLOAD SETUP ----------
 const S3_BUCKET = process.env.S3_BUCKET;
@@ -117,18 +107,16 @@ app.post("/auth/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const result = await pool.query(
-      "SELECT userid, username, password, photo, role FROM users WHERE username = $1 AND password = $2",
-      [username, password]
-    );
+    const user = await db('users')
+      .select('userid', 'username', 'password', 'photo', 'role')
+      .where({ username, password })
+      .first();
 
-    if (result.rows.length === 0) {
+    if (!user) {
       return res.render("auth/login", {
         error: "Invalid username or password",
       });
     }
-
-    const user = result.rows[0];
 
     req.session.user = {
       userid: user.userid,
@@ -154,12 +142,12 @@ app.get("/auth/logout", (req, res) => {
 // List users (any logged-in user can see)
 app.get("/users", requireAuth, async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT userid, username, photo, role FROM users ORDER BY userid"
-    );
+    const users = await db('users')
+      .select('userid', 'username', 'photo', 'role')
+      .orderBy('userid');
 
     res.render("users/displayUsers", {
-      users: result.rows,
+      users,
       user: req.session.user,
     });
   } catch (err) {
@@ -202,10 +190,12 @@ app.post(
         photoUrl = await uploadToS3(req.file);
       }
 
-      await pool.query(
-        "INSERT INTO users (username, password, photo, role) VALUES ($1, $2, $3, $4)",
-        [username, password, photoUrl, safeRole]
-      );
+      await db('users').insert({
+        username,
+        password,
+        photo: photoUrl,
+        role: safeRole
+      });
 
       res.redirect("/users");
     } catch (err) {
@@ -222,17 +212,17 @@ app.post(
 // Edit user form - admin only
 app.get("/users/:userid/edit", requireAdmin, async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT userid, username, password, photo, role FROM users WHERE userid = $1",
-      [req.params.userid]
-    );
+    const userRecord = await db('users')
+      .select('userid', 'username', 'password', 'photo', 'role')
+      .where({ userid: req.params.userid })
+      .first();
 
-    if (result.rows.length === 0) {
+    if (!userRecord) {
       return res.status(404).send("User not found");
     }
 
     res.render("editUser", {
-      userRecord: result.rows[0],
+      userRecord,
       error: null,
       user: req.session.user,
     });
@@ -268,17 +258,19 @@ app.post(
         photoUrl = await uploadToS3(req.file);
       }
 
+      const updateData = {
+        username,
+        photo: photoUrl,
+        role: safeRole
+      };
+
       if (password) {
-        await pool.query(
-          "UPDATE users SET username = $1, password = $2, photo = $3, role = $4 WHERE userid = $5",
-          [username, password, photoUrl, safeRole, userid]
-        );
-      } else {
-        await pool.query(
-          "UPDATE users SET username = $1, photo = $2, role = $3 WHERE userid = $4",
-          [username, photoUrl, safeRole, userid]
-        );
+        updateData.password = password;
       }
+
+      await db('users')
+        .where({ userid })
+        .update(updateData);
 
       res.redirect("/users");
     } catch (err) {
@@ -293,7 +285,9 @@ app.post("/users/:userid/delete", requireAdmin, async (req, res) => {
   const userid = req.params.userid;
 
   try {
-    await pool.query("DELETE FROM users WHERE userid = $1", [userid]);
+    await db('users')
+      .where({ userid })
+      .del();
     res.redirect("/users");
   } catch (err) {
     console.error("Delete user error:", err);
@@ -314,35 +308,4 @@ app.get("/support", (req, res) => {
   res.render("support", {
     user: req.session.user || null,
   });
-});
-
-// Handle volunteer application submission
-app.post("/volunteers/create", async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    phone,
-    interests,
-    availability,
-    experience,
-  } = req.body;
-
-  try {
-    // TODO: Add logic to save volunteer application to database
-    // For now, just log it and redirect back to support page with a success message
-    console.log("Volunteer application received:", {
-      firstName,
-      lastName,
-      email,
-      phone,
-      interests,
-    });
-
-    // Redirect back to support page (you can add a success query param later)
-    res.redirect("/support#volunteer-form");
-  } catch (err) {
-    console.error("Volunteer application error:", err);
-    res.status(500).send("Server error");
-  }
 });

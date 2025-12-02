@@ -1,37 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../db");
+const db = require("../db");
 const { requireAdmin } = require("../middleware/auth");
-
-// Helper: common SELECT used by list/show/edit
-const EVENT_SELECT = `
-  SELECT
-    eo.eventoccurrenceid AS eventid,
-    et.eventname AS title,
-    eo.eventdatetimestart AS date,
-    eo.eventdatetimeend,
-    eo.eventlocation,
-    eo.eventcapacity,
-    eo.eventregistrationdeadline,
-    et.eventtemplateid,
-    et.eventtype,
-    et.eventdescription,
-    et.eventrecurrencepattern,
-    et.eventdefaultcapacity
-  FROM eventoccurrences eo
-  JOIN eventtemplates et ON eo.eventtemplateid = et.eventtemplateid
-`;
 
 // ---------------------------------------------------------------------------
 // List all events
 // ---------------------------------------------------------------------------
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT * FROM eventoccurrences ORDER BY eventoccurrenceid"
-    );
+    const events = await db('eventoccurrences')
+      .select('*')
+      .orderBy('eventoccurrenceid');
     res.render("events/index", {
-      events: result.rows,
+      events,
       user: req.session.user || null,
     });
   } catch (err) {
@@ -64,56 +45,44 @@ router.post("/new", requireAdmin, async (req, res) => {
     });
   }
 
-  const client = await pool.connect();
-
   try {
-    await client.query("BEGIN");
+    const eventId = await db.transaction(async (trx) => {
+      // 1) Create an event template (minimal fields)
+      const [template] = await trx('eventtemplates')
+        .insert({
+          eventname: title,
+          eventtype: null,
+          eventdescription: null,
+          eventrecurrencepattern: null,
+          eventdefaultcapacity: null
+        })
+        .returning('eventtemplateid');
 
-    // 1) Create an event template (minimal fields)
-    const templateResult = await client.query(
-      `
-        INSERT INTO eventtemplates (eventname, eventtype, eventdescription, eventrecurrencepattern, eventdefaultcapacity)
-        VALUES ($1, NULL, NULL, NULL, NULL)
-        RETURNING eventtemplateid
-      `,
-      [title]
-    );
+      const templateId = template.eventtemplateid;
 
-    const templateId = templateResult.rows[0].eventtemplateid;
+      // 2) Create the event occurrence
+      const [occurrence] = await trx('eventoccurrences')
+        .insert({
+          eventdatetimestart: date,
+          eventdatetimeend: null,
+          eventlocation: null,
+          eventcapacity: null,
+          eventregistrationdeadline: null,
+          eventtemplateid: templateId
+        })
+        .returning('eventoccurrenceid');
 
-    // 2) Create the event occurrence
-    // We store the submitted date directly into eventdatetimestart (text column)
-    const occurrenceResult = await client.query(
-      `
-        INSERT INTO eventoccurrences (
-          eventdatetimestart,
-          eventdatetimeend,
-          eventlocation,
-          eventcapacity,
-          eventregistrationdeadline,
-          eventtemplateid
-        )
-        VALUES ($1, NULL, NULL, NULL, NULL, $2)
-        RETURNING eventoccurrenceid
-      `,
-      [date, templateId]
-    );
-
-    const eventId = occurrenceResult.rows[0].eventoccurrenceid;
-
-    await client.query("COMMIT");
+      return occurrence.eventoccurrenceid;
+    });
 
     // Redirect to the show page for the new event
     res.redirect(`/events/${eventId}`);
   } catch (err) {
-    await client.query("ROLLBACK");
     console.error("Create event error:", err);
     res.status(500).render("events/new", {
       error: "There was a problem creating the event.",
       user: req.session.user,
     });
-  } finally {
-    client.release();
   }
 });
 
@@ -122,16 +91,17 @@ router.post("/new", requireAdmin, async (req, res) => {
 // ---------------------------------------------------------------------------
 router.get("/:id", requireAdmin, async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM events WHERE eventid = $1", [
-      req.params.id,
-    ]);
+    const event = await db('events')
+      .select('*')
+      .where({ eventid: req.params.id })
+      .first();
 
-    if (result.rows.length === 0) {
+    if (!event) {
       return res.status(404).send("Event not found");
     }
 
     res.render("events/show", {
-      event: result.rows[0],
+      event,
       user: req.session.user,
     });
   } catch (err) {
@@ -145,17 +115,31 @@ router.get("/:id", requireAdmin, async (req, res) => {
 // ---------------------------------------------------------------------------
 router.get("/:id/edit", requireAdmin, async (req, res) => {
   try {
-    const result = await pool.query(
-      EVENT_SELECT + " WHERE eo.eventoccurrenceid = $1",
-      [req.params.id]
-    );
+    const event = await db('eventoccurrences as eo')
+      .join('eventtemplates as et', 'eo.eventtemplateid', 'et.eventtemplateid')
+      .select(
+        'eo.eventoccurrenceid as eventid',
+        'et.eventname as title',
+        'eo.eventdatetimestart as date',
+        'eo.eventdatetimeend',
+        'eo.eventlocation',
+        'eo.eventcapacity',
+        'eo.eventregistrationdeadline',
+        'et.eventtemplateid',
+        'et.eventtype',
+        'et.eventdescription',
+        'et.eventrecurrencepattern',
+        'et.eventdefaultcapacity'
+      )
+      .where('eo.eventoccurrenceid', req.params.id)
+      .first();
 
-    if (result.rows.length === 0) {
+    if (!event) {
       return res.status(404).send("Event not found");
     }
 
     res.render("events/edit", {
-      event: result.rows[0],
+      event,
       error: null,
       user: req.session.user,
     });
@@ -173,76 +157,67 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
   const { title, date } = req.body;
   const eventId = req.params.id;
 
-  const client = await pool.connect();
-
   try {
     if (!title || !date) {
       // Re-fetch event and re-render with error
-      const existing = await pool.query(
-        EVENT_SELECT + " WHERE eo.eventoccurrenceid = $1",
-        [eventId]
-      );
+      const existing = await db('eventoccurrences as eo')
+        .join('eventtemplates as et', 'eo.eventtemplateid', 'et.eventtemplateid')
+        .select(
+          'eo.eventoccurrenceid as eventid',
+          'et.eventname as title',
+          'eo.eventdatetimestart as date',
+          'eo.eventdatetimeend',
+          'eo.eventlocation',
+          'eo.eventcapacity',
+          'eo.eventregistrationdeadline',
+          'et.eventtemplateid',
+          'et.eventtype',
+          'et.eventdescription',
+          'et.eventrecurrencepattern',
+          'et.eventdefaultcapacity'
+        )
+        .where('eo.eventoccurrenceid', eventId)
+        .first();
 
-      if (existing.rows.length === 0) {
-        client.release();
+      if (!existing) {
         return res.status(404).send("Event not found");
       }
 
       return res.status(400).render("events/edit", {
-        event: existing.rows[0],
+        event: existing,
         error: "Title and date are required.",
         user: req.session.user,
       });
     }
 
-    await client.query("BEGIN");
+    await db.transaction(async (trx) => {
+      // Get template id for this occurrence
+      const occurrence = await trx('eventoccurrences')
+        .select('eventtemplateid')
+        .where({ eventoccurrenceid: eventId })
+        .first();
 
-    // Get template id for this occurrence
-    const templateIdResult = await client.query(
-      `
-        SELECT eventtemplateid
-        FROM eventoccurrences
-        WHERE eventoccurrenceid = $1
-      `,
-      [eventId]
-    );
+      if (!occurrence) {
+        throw new Error("Event not found");
+      }
 
-    if (templateIdResult.rows.length === 0) {
-      await client.query("ROLLBACK");
-      return res.status(404).send("Event not found");
-    }
+      const templateId = occurrence.eventtemplateid;
 
-    const templateId = templateIdResult.rows[0].eventtemplateid;
+      // 1) Update template name
+      await trx('eventtemplates')
+        .where({ eventtemplateid: templateId })
+        .update({ eventname: title });
 
-    // 1) Update template name
-    await client.query(
-      `
-        UPDATE eventtemplates
-        SET eventname = $1
-        WHERE eventtemplateid = $2
-      `,
-      [title, templateId]
-    );
-
-    // 2) Update occurrence date
-    await client.query(
-      `
-        UPDATE eventoccurrences
-        SET eventdatetimestart = $1
-        WHERE eventoccurrenceid = $2
-      `,
-      [date, eventId]
-    );
-
-    await client.query("COMMIT");
+      // 2) Update occurrence date
+      await trx('eventoccurrences')
+        .where({ eventoccurrenceid: eventId })
+        .update({ eventdatetimestart: date });
+    });
 
     res.redirect(`/events/${eventId}`);
   } catch (err) {
-    await client.query("ROLLBACK");
     console.error("Update event error:", err);
     res.status(500).send("Server error");
-  } finally {
-    client.release();
   }
 });
 

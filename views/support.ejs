@@ -4,13 +4,14 @@
 
 <style>
   .hero-section {
-    background: linear-gradient(135deg, #d4654c 0%, #8b6f47 100%);
+    background: linear-gradient(135deg, #F9AFB1 0%, #F4B092 100%);
     padding: 80px 0;
-    color: #ffffff;
+    color: #3A3F3B;
     text-align: center;
   }
 
   .hero-section h1 {
+    font-family: 'DM Serif Display', serif;
     font-size: 3rem;
     font-weight: 700;
     margin-bottom: 20px;
@@ -32,15 +33,16 @@
   }
 
   .section-title h2 {
+    font-family: 'DM Serif Display', serif;
     font-size: 2.5rem;
     font-weight: 700;
-    color: #2c2c2c;
+    color: #3A3F3B;
     margin-bottom: 15px;
   }
 
   .section-title p {
     font-size: 1.1rem;
-    color: #8b6f47;
+    color: #9AB89D;
   }
 
   .support-card {
@@ -56,26 +58,27 @@
 
   .support-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 8px 30px rgba(212, 101, 76, 0.15);
-    border-color: #e8a87c;
+    box-shadow: 0 8px 30px rgba(249, 175, 177, 0.25);
+    border-color: #F9AFB1;
   }
 
   .support-card i {
     font-size: 4rem;
-    color: #d4654c;
+    color: #CE325B;
     margin-bottom: 25px;
     display: block;
   }
 
   .support-card h3 {
-    color: #2c2c2c;
+    font-family: 'DM Serif Display', serif;
+    color: #3A3F3B;
     font-size: 1.8rem;
     font-weight: 600;
     margin-bottom: 20px;
   }
 
   .support-card p {
-    color: #8b6f47;
+    color: #3A3F3B;
     font-size: 1.1rem;
     line-height: 1.8;
     margin-bottom: 30px;
@@ -88,36 +91,36 @@
   }
 
   .support-card ul li {
-    color: #2c2c2c;
+    color: #3A3F3B;
     margin-bottom: 10px;
     font-size: 1rem;
   }
 
   .btn-custom-primary {
-    background-color: #d4654c;
-    color: #ffffff;
+    background-color: #F9AFB1;
+    color: #3A3F3B;
     border: none;
     padding: 14px 35px;
     font-size: 1.1rem;
     font-weight: 600;
     border-radius: 50px;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(212, 101, 76, 0.3);
+    box-shadow: 0 4px 15px rgba(249, 175, 177, 0.3);
     text-decoration: none;
     display: inline-block;
   }
 
   .btn-custom-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(212, 101, 76, 0.4);
-    background-color: #8b6f47;
+    box-shadow: 0 6px 20px rgba(206, 50, 91, 0.4);
+    background-color: #CE325B;
     color: #ffffff;
   }
 
   .btn-custom-secondary {
     background-color: #ffffff;
-    color: #d4654c;
-    border: 2px solid #d4654c;
+    color: #CE325B;
+    border: 2px solid #CE325B;
     padding: 14px 35px;
     font-size: 1.1rem;
     font-weight: 600;
@@ -128,7 +131,7 @@
   }
 
   .btn-custom-secondary:hover {
-    background-color: #d4654c;
+    background-color: #CE325B;
     color: #ffffff;
     transform: translateY(-2px);
   }
@@ -153,15 +156,13 @@
 
 <!-- Support Options Section -->
 <div class="support-section">
-  <div class="container">
     <div class="section-title">
       <h2>How You Can Help</h2>
-      <p>Choose a way to make a difference in someone's life today</p>
     </div>
 
-    <div class="row">
+    <div class="row justify-content-center">
       <!-- Donate Card -->
-      <div class="col-lg-6">
+      <div class="col-lg-6 col-md-8">
         <div class="support-card text-center">
           <i class="bi bi-currency-dollar"></i>
           <h3>Make a Donation</h3>
@@ -176,31 +177,6 @@
             <li>Enable new program development</li>
             <li>100% tax-deductible</li>
           </ul>
-          <a href="#donate-form" class="btn btn-custom-primary">
-            <i class="bi bi-heart-fill"></i> Donate Now
-          </a>
-        </div>
-      </div>
-
-      <!-- Volunteer Card -->
-      <div class="col-lg-6">
-        <div class="support-card text-center">
-          <i class="bi bi-people-fill"></i>
-          <h3>Volunteer Your Time</h3>
-          <p>
-            Share your skills, experience, and passion by volunteering with
-            Ella Rises. Help us create lasting impact through mentorship and
-            support.
-          </p>
-          <ul>
-            <li>Mentor program participants</li>
-            <li>Lead workshops and training sessions</li>
-            <li>Support administrative operations</li>
-            <li>Help with community events</li>
-          </ul>
-          <a href="#volunteer-form" class="btn btn-custom-secondary">
-            <i class="bi bi-hand-thumbs-up-fill"></i> Get Involved
-          </a>
         </div>
       </div>
     </div>
@@ -238,61 +214,6 @@
             <div class="text-center">
               <button type="submit" class="btn btn-custom-primary">
                 <i class="bi bi-heart-fill"></i> Submit Donation
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Volunteer Form Section -->
-    <div class="row mt-5" id="volunteer-form">
-      <div class="col-lg-8 mx-auto">
-        <div class="support-card">
-          <h3 class="text-center mb-4">
-            <i class="bi bi-people-fill"></i> Volunteer Application
-          </h3>
-          <form action="/volunteers/create" method="POST">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="volFirstName" class="form-label">First Name *</label>
-                <input type="text" class="form-control" id="volFirstName" name="firstName" required />
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="volLastName" class="form-label">Last Name *</label>
-                <input type="text" class="form-control" id="volLastName" name="lastName" required />
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="volEmail" class="form-label">Email *</label>
-              <input type="email" class="form-control" id="volEmail" name="email" required />
-            </div>
-            <div class="mb-3">
-              <label for="phone" class="form-label">Phone Number *</label>
-              <input type="tel" class="form-control" id="phone" name="phone" required />
-            </div>
-            <div class="mb-3">
-              <label for="interests" class="form-label">Areas of Interest *</label>
-              <select class="form-control" id="interests" name="interests" required>
-                <option value="">Select an area...</option>
-                <option value="mentorship">Mentorship</option>
-                <option value="workshops">Lead Workshops</option>
-                <option value="admin">Administrative Support</option>
-                <option value="events">Event Planning</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="availability" class="form-label">Availability</label>
-              <textarea class="form-control" id="availability" name="availability" rows="2" placeholder="e.g., Weekends, Tuesday evenings, etc."></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="experience" class="form-label">Relevant Experience</label>
-              <textarea class="form-control" id="experience" name="experience" rows="3" placeholder="Tell us about your background and skills..."></textarea>
-            </div>
-            <div class="text-center">
-              <button type="submit" class="btn btn-custom-secondary">
-                <i class="bi bi-send-fill"></i> Submit Application
               </button>
             </div>
           </form>

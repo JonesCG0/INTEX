@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db');
+const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 
 // List all participants
 router.get('/', requireAuth, async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM participants ORDER BY participantid');
+    const participants = await db('participants')
+      .select('*')
+      .orderBy('participantid');
     res.render('participants/index', {
-      participants: result.rows,
+      participants,
       user: req.session.user
     });
   } catch (err) {
@@ -31,17 +33,17 @@ router.post('/new', requireAuth, async (req, res) => {
 // Show single participant
 router.get('/:id', requireAuth, async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT * FROM participants WHERE participantid = $1',
-      [req.params.id]
-    );
+    const participant = await db('participants')
+      .select('*')
+      .where({ participantid: req.params.id })
+      .first();
 
-    if (result.rows.length === 0) {
+    if (!participant) {
       return res.status(404).send('Participant not found');
     }
 
     res.render('participants/show', {
-      participant: result.rows[0],
+      participant,
       user: req.session.user
     });
   } catch (err) {
@@ -53,17 +55,17 @@ router.get('/:id', requireAuth, async (req, res) => {
 // Edit participant form
 router.get('/:id/edit', requireAuth, async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT * FROM participants WHERE participantid = $1',
-      [req.params.id]
-    );
+    const participant = await db('participants')
+      .select('*')
+      .where({ participantid: req.params.id })
+      .first();
 
-    if (result.rows.length === 0) {
+    if (!participant) {
       return res.status(404).send('Participant not found');
     }
 
     res.render('participants/edit', {
-      participant: result.rows[0],
+      participant,
       error: null,
       user: req.session.user
     });

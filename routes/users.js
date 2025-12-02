@@ -1,18 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db');
+const db = require('../db');
 const { upload, uploadToS3 } = require('../s3');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
 
 // List users (any logged-in user can see)
 router.get('/', requireAuth, async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT userid, username, photo, role FROM users ORDER BY userid'
-    );
+    const users = await db('users')
+      .select('userid', 'username', 'photo', 'role')
+      .orderBy('userid');
 
     res.render('users/displayUsers', {
-      users: result.rows,
+      users,
       user: req.session.user
     });
   } catch (err) {
@@ -50,10 +50,12 @@ router.post(
         photoUrl = await uploadToS3(req.file);
       }
 
-      await pool.query(
-        'INSERT INTO users (username, password, photo, role) VALUES ($1, $2, $3, $4)',
-        [username, password, photoUrl, safeRole]
-      );
+      await db('users').insert({
+        username,
+        password,
+        photo: photoUrl,
+        role: safeRole
+      });
 
       res.redirect('/users');
     } catch (err) {
@@ -70,17 +72,17 @@ router.post(
 // Edit user form - admin only
 router.get('/:userid/edit', requireAdmin, async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT userid, username, password, photo, role FROM users WHERE userid = $1',
-      [req.params.userid]
-    );
+    const userRecord = await db('users')
+      .select('userid', 'username', 'password', 'photo', 'role')
+      .where({ userid: req.params.userid })
+      .first();
 
-    if (result.rows.length === 0) {
+    if (!userRecord) {
       return res.status(404).send('User not found');
     }
 
     res.render('users/editUser', {
-      userRecord: result.rows[0],
+      userRecord,
       error: null,
       user: req.session.user
     });
@@ -116,17 +118,19 @@ router.post(
         photoUrl = await uploadToS3(req.file);
       }
 
+      const updateData = {
+        username,
+        photo: photoUrl,
+        role: safeRole
+      };
+
       if (password) {
-        await pool.query(
-          'UPDATE users SET username = $1, password = $2, photo = $3, role = $4 WHERE userid = $5',
-          [username, password, photoUrl, safeRole, userid]
-        );
-      } else {
-        await pool.query(
-          'UPDATE users SET username = $1, photo = $2, role = $3 WHERE userid = $4',
-          [username, photoUrl, safeRole, userid]
-        );
+        updateData.password = password;
       }
+
+      await db('users')
+        .where({ userid })
+        .update(updateData);
 
       res.redirect('/users');
     } catch (err) {
@@ -141,7 +145,9 @@ router.post('/:userid/delete', requireAdmin, async (req, res) => {
   const userid = req.params.userid;
 
   try {
-    await pool.query('DELETE FROM users WHERE userid = $1', [userid]);
+    await db('users')
+      .where({ userid })
+      .del();
     res.redirect('/users');
   } catch (err) {
     console.error('Delete user error:', err);

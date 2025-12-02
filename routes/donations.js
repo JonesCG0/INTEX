@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const pool = require("../db");
+const db = require("../db");
 const { requireAuth } = require("../middleware/auth");
 
 // List all donations
 router.get("/", async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT * FROM donations ORDER BY donationid"
-    );
+    const donations = await db('donations')
+      .select('*')
+      .orderBy('donationid');
     res.render("donations/index", {
-      donations: result.rows,
+      donations,
       user: req.session.user,
     });
   } catch (err) {

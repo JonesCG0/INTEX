@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db');
+const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 
 // List all milestones
 router.get('/', requireAuth, async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM milestones ORDER BY milestoneid');
+    const milestones = await db('milestones')
+      .select('*')
+      .orderBy('milestoneid');
     res.render('milestones/index', {
-      milestones: result.rows,
+      milestones,
       user: req.session.user
     });
   } catch (err) {

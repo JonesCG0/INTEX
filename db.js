@@ -1,13 +1,7 @@
 require('dotenv').config();
-const { Pool } = require('pg');
+const knex = require('knex');
+const knexConfig = require('./knexfile');
 
-const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
-});
+const db = knex(knexConfig);
 
-module.exports = pool;
+module.exports = db;

@@ -8,40 +8,11 @@
 </div>
 
 <div class="container">
-  <div class="row">
-    <div class="col-md-4 mb-4">
-      <div class="stat-card">
-        <i class="bi bi-people-fill"></i>
-        <h3>Participants</h3>
-        <p class="stat-number"><%= participantCount %></p>
-        <a href="/participants" class="btn btn-primary btn-sm">View All</a>
-      </div>
-    </div>
-
-    <div class="col-md-4 mb-4">
-      <div class="stat-card">
-        <i class="bi bi-calendar-event"></i>
-        <h3>Events</h3>
-        <p class="stat-number"><%= eventCount %></p>
-        <a href="/events" class="btn btn-primary btn-sm">View All</a>
-      </div>
-    </div>
-
-    <div class="col-md-4 mb-4">
-      <div class="stat-card">
-        <i class="bi bi-currency-dollar"></i>
-        <h3>Total Donations</h3>
-        <p class="stat-number">$<%= donationTotal || '0.00' %></p>
-        <a href="/donations" class="btn btn-primary btn-sm">View All</a>
-      </div>
-    </div>
-  </div>
-
   <div class="row mt-4">
     <div class="col-md-6 mb-4">
       <div class="card">
         <h3><i class="bi bi-bar-chart-fill"></i> Quick Actions</h3>
-        <hr>
+        <hr />
         <div class="d-grid gap-2">
           <a href="/participants/new" class="btn btn-primary">
             <i class="bi bi-person-plus"></i> Add Participant
@@ -59,7 +30,7 @@
     <div class="col-md-6 mb-4">
       <div class="card">
         <h3><i class="bi bi-info-circle-fill"></i> Recent Activity</h3>
-        <hr>
+        <hr />
         <p class="text-muted">No recent activity to display.</p>
       </div>
     </div>

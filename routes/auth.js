@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db');
+const db = require('../db');
 
 // Login form
 router.get('/login', (req, res) => {
@@ -12,16 +12,14 @@ router.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const result = await pool.query(
-      'SELECT userid, username, password, photo, role FROM users WHERE username = $1 AND password = $2',
-      [username, password]
-    );
+    const user = await db('users')
+      .select('userid', 'username', 'password', 'photo', 'role')
+      .where({ username, password })
+      .first();
 
-    if (result.rows.length === 0) {
+    if (!user) {
       return res.render('auth/login', { error: 'Invalid username or password' });
     }
-
-    const user = result.rows[0];
 
     req.session.user = {
       userid: user.userid,
@@ -53,22 +51,19 @@ router.post('/signup', async (req, res) => {
 
   try {
     // Check if username already exists
-    const existingUser = await pool.query(
-      'SELECT userid FROM users WHERE username = $1',
-      [username]
-    );
+    const existingUser = await db('users')
+      .select('userid')
+      .where({ username })
+      .first();
 
-    if (existingUser.rows.length > 0) {
+    if (existingUser) {
       return res.render('auth/signup', { error: 'Username already taken' });
     }
 
     // Insert new user with role 'U' (regular user)
-    const result = await pool.query(
-      'INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING userid, username, role',
-      [username, password, 'U']
-    );
-
-    const newUser = result.rows[0];
+    const [newUser] = await db('users')
+      .insert({ username, password, role: 'U' })
+      .returning(['userid', 'username', 'role']);
 
     // Log them in automatically
     req.session.user = {

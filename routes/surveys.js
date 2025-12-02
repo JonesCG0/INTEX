@@ -1,14 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db');
+const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 
 // List all surveys
 router.get('/', requireAuth, async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM surveys ORDER BY surveyid');
+    const surveys = await db('surveys')
+      .select('*')
+      .orderBy('surveyid');
     res.render('surveys/index', {
-      surveys: result.rows,
+      surveys,
       user: req.session.user
     });
   } catch (err) {
@@ -31,17 +33,17 @@ router.post('/new', requireAuth, async (req, res) => {
 // Show single survey
 router.get('/:id', requireAuth, async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT * FROM surveys WHERE surveyid = $1',
-      [req.params.id]
-    );
+    const survey = await db('surveys')
+      .select('*')
+      .where({ surveyid: req.params.id })
+      .first();
 
-    if (result.rows.length === 0) {
+    if (!survey) {
       return res.status(404).send('Survey not found');
     }
 
     res.render('surveys/show', {
-      survey: result.rows[0],
+      survey,
       user: req.session.user
     });
   } catch (err) {
