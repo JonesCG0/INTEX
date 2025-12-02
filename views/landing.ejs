@@ -170,9 +170,11 @@
         <% if (user) { %>
           <h1>Welcome Back, <%= user.username %>!</h1>
           <p>Empowering change, one step at a time</p>
+          <% if (user.role === 'A') { %>
           <a href="/dashboard" class="btn btn-custom-primary">
             <i class="bi bi-speedometer2"></i> Go to Dashboard
           </a>
+          <% }%>
         <% } else { %>
           <h1>Welcome to</h1>
           <img src="/Ella_Rises_Logo.avif" alt="Ella Rises Logo" />
