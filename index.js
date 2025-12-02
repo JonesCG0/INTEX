@@ -50,6 +50,10 @@ app.use("/milestones", requireAuth, milestonesRoutes);
 app.use("/donations", requireAuth, donationsRoutes);
 app.use("/dashboard", requireAuth, dashboardRoutes);
 
+// Profile routes
+const profileRoutes = require("./routes/profile");
+app.use("/profile", requireAuth, profileRoutes);
+
 // ---------- START SERVER ----------
 const PORT = process.env.PORT || 3000;
 

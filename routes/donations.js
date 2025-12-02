@@ -12,10 +12,18 @@ const {
 // List all donations
 router.get("/", requireAuth, async (req, res) => {
   try {
-    const donations = await db("donations").select("*").orderBy("donationid");
+    const sortBy = req.query.sortBy || "donationid";
+    const sortOrder = req.query.sortOrder || "asc";
+
+    const donations = await db("donations")
+      .select("*")
+      .join("users", "donations.userid", "users.userid")
+      .orderBy(sortBy, sortOrder);
     res.render("donations/index", {
       donations,
       user: req.session.user,
+      sortBy,
+      sortOrder,
     });
   } catch (err) {
     console.error("Fetch donations error:", err);

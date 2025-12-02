@@ -10,59 +10,140 @@
 <div class="container">
   <div class="card">
     <% if (user && user.role === 'A') { %>
-      <div class="mb-3">
-        <a href="/surveys/new" class="btn btn-success">
-          <i class="bi bi-plus-circle-fill"></i> Add New Survey
-        </a>
-      </div>
+    <div class="mb-3">
+      <a href="/surveys/new" class="btn btn-success">
+        <i class="bi bi-plus-circle-fill"></i> Add New Survey
+      </a>
+    </div>
     <% } %>
 
     <div class="table-responsive">
       <table class="table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Satisfaction</th>
-            <th>Usefulness</th>
-            <th>Instructor</th>
-            <th>Recommendation</th>
-            <th>Overall</th>
-            <th>Submission Date</th>
-            <th>Registration ID</th>
+            <th>
+              <a href="?sortBy=surveysatisfactionscore&sortOrder=<%= sortBy === 'surveysatisfactionscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
+                Satisfaction
+                <% if (sortBy === 'surveysatisfactionscore') { %>
+                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+                <% } else { %>
+                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <% } %>
+              </a>
+            </th>
+            <th>
+              <a href="?sortBy=surveyusefulnessscore&sortOrder=<%= sortBy === 'surveyusefulnessscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
+                Usefulness
+                <% if (sortBy === 'surveyusefulnessscore') { %>
+                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+                <% } else { %>
+                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <% } %>
+              </a>
+            </th>
+            <th>
+              <a href="?sortBy=surveyinstructorscore&sortOrder=<%= sortBy === 'surveyinstructorscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
+                Instructor
+                <% if (sortBy === 'surveyinstructorscore') { %>
+                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+                <% } else { %>
+                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <% } %>
+              </a>
+            </th>
+            <th>
+              <a href="?sortBy=surveyrecommendationscore&sortOrder=<%= sortBy === 'surveyrecommendationscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
+                Recommendation
+                <% if (sortBy === 'surveyrecommendationscore') { %>
+                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+                <% } else { %>
+                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <% } %>
+              </a>
+            </th>
+            <th>
+              <a href="?sortBy=surveyoverallscore&sortOrder=<%= sortBy === 'surveyoverallscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
+                Overall
+                <% if (sortBy === 'surveyoverallscore') { %>
+                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+                <% } else { %>
+                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <% } %>
+              </a>
+            </th>
+            <th>
+              <a href="?sortBy=surveysubmissiondate&sortOrder=<%= sortBy === 'surveysubmissiondate' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
+                Submission Date
+                <% if (sortBy === 'surveysubmissiondate') { %>
+                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+                <% } else { %>
+                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <% } %>
+              </a>
+            </th>
+            <th>
+              <a href="?sortBy=registrationid&sortOrder=<%= sortBy === 'registrationid' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
+                Registration ID
+                <% if (sortBy === 'registrationid') { %>
+                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+                <% } else { %>
+                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <% } %>
+              </a>
+            </th>
             <% if (user && user.role === 'A') { %>
-              <th>Actions</th>
+            <th>Actions</th>
             <% } %>
           </tr>
         </thead>
         <tbody>
           <% surveys.forEach(s => { %>
-            <tr>
-              <td><%= s.surveyid %></td>
-              <td>
-                <span class="badge bg-success"><%= s.surveysatisfactionscore || '—' %></span>
-              </td>
-              <td>
-                <span class="badge bg-success"><%= s.surveyusefulnessscore || '—' %></span>
-              </td>
-              <td>
-                <span class="badge bg-success"><%= s.surveyinstructorscore || '—' %></span>
-              </td>
-              <td>
-                <span class="badge bg-success"><%= s.surveyrecommendationscore || '—' %></span>
-              </td>
-              <td>
-                <strong><%= s.surveyoverallscore || '—' %></strong>
-              </td>
-              <td><%= s.surveysubmissiondate || '—' %></td>
-              <td><%= s.registrationid || '—' %></td>
-              <% if (user && user.role === 'A') { %>
-                <td>
-                  <a href="/surveys/<%= s.surveyid %>" class="btn btn-sm btn-info">
-                    <i class="bi bi-eye-fill"></i> View
-                  </a>
-                </td>
+          <tr>
+            <td>
+              <span class="badge bg-success"
+                ><%= s.surveysatisfactionscore || '—' %></span
+              >
+            </td>
+            <td>
+              <span class="badge bg-success"
+                ><%= s.surveyusefulnessscore || '—' %></span
+              >
+            </td>
+            <td>
+              <span class="badge bg-success"
+                ><%= s.surveyinstructorscore || '—' %></span
+              >
+            </td>
+            <td>
+              <span class="badge bg-success"
+                ><%= s.surveyrecommendationscore || '—' %></span
+              >
+            </td>
+            <td>
+              <strong><%= s.surveyoverallscore || '—' %></strong>
+            </td>
+            <td>
+              <% if (s.surveysubmissiondate) { %>
+                <%= new Date(s.surveysubmissiondate).toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                }) %>
+              <% } else { %>
+                —
               <% } %>
-            </tr>
+            </td>
+            <td><%= s.registrationid || '—' %></td>
+            <% if (user && user.role === 'A') { %>
+            <td>
+              <a href="/surveys/<%= s.surveyid %>" class="btn btn-sm btn-info">
+                <i class="bi bi-eye-fill"></i> View
+              </a>
+            </td>
+            <% } %>
+          </tr>
           <% }) %>
         </tbody>
       </table>

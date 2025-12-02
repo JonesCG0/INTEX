@@ -10,34 +10,71 @@
 <div class="container">
   <div class="card">
     <% if (user && user.role === 'A') { %>
-      <div class="mb-3">
-        <a href="/milestones/new" class="btn btn-success me-2">
-          <i class="bi bi-plus-circle-fill"></i> Add New Milestone
-        </a>
-        <a href="/milestones/assign" class="btn btn-primary">
-          <i class="bi bi-link-45deg"></i> Assign Milestone
-        </a>
-      </div>
+    <div class="mb-3">
+      <a href="/milestones/new" class="btn btn-success me-2">
+        <i class="bi bi-plus-circle-fill"></i> Add New Milestone
+      </a>
+      <a href="/milestones/assign" class="btn btn-primary">
+        <i class="bi bi-link-45deg"></i> Assign Milestone
+      </a>
+    </div>
     <% } %>
 
     <div class="table-responsive">
       <table class="table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Date</th>
-            <th>Participant ID</th>
+            <th>
+              <a href="?sortBy=milestonetitle&sortOrder=<%= sortBy === 'milestonetitle' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
+                Title
+                <% if (sortBy === 'milestonetitle') { %>
+                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+                <% } else { %>
+                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <% } %>
+              </a>
+            </th>
+            <th>
+              <a href="?sortBy=milestonedate&sortOrder=<%= sortBy === 'milestonedate' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
+                Date
+                <% if (sortBy === 'milestonedate') { %>
+                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+                <% } else { %>
+                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <% } %>
+              </a>
+            </th>
+            <th>
+              <a href="?sortBy=userfirstname&sortOrder=<%= sortBy === 'userfirstname' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
+                Participant Name
+                <% if (sortBy === 'userfirstname') { %>
+                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+                <% } else { %>
+                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <% } %>
+              </a>
+            </th>
           </tr>
         </thead>
         <tbody>
           <% milestones.forEach(m => { %>
-            <tr>
-              <td><%= m.milestoneid %></td>
-              <td><strong><%= m.milestonetitle || '—' %></strong></td>
-              <td><%= m.milestonedate || '—' %></td>
-              <td><%= m.participantid || '—' %></td>
-            </tr>
+          <tr>
+            <td><strong><%= m.milestonetitle || '—' %></strong></td>
+            <td>
+              <% if (m.milestonedate) { %>
+                <%= new Date(m.milestonedate).toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                }) %>
+              <% } else { %>
+                —
+              <% } %>
+            </td>
+            <td><%= m.userfirstname || '—' %> <%= m.userlastname || '—' %></td>
+          </tr>
           <% }) %>
         </tbody>
       </table>

@@ -1,0 +1,111 @@
+const express = require("express");
+const router = express.Router();
+const db = require("../db");
+const { upload, uploadToS3 } = require("../s3");
+
+// View profile (any logged-in user can view their own profile)
+router.get("/", async (req, res) => {
+  try {
+    const userRecord = await db("users")
+      .select()
+      .where({ userid: req.session.user.userid })
+      .first();
+
+    if (!userRecord) {
+      return res.status(404).send("Profile not found");
+    }
+
+    res.render("profile/view", {
+      userRecord,
+      user: req.session.user,
+    });
+  } catch (err) {
+    console.error("Get profile error:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+// Edit profile form (users can edit their own profile)
+router.get("/edit", async (req, res) => {
+  try {
+    const userRecord = await db("users")
+      .select("userid", "username", "password", "photo", "userrole as role")
+      .where({ userid: req.session.user.userid })
+      .first();
+
+    if (!userRecord) {
+      return res.status(404).send("Profile not found");
+    }
+
+    res.render("profile/edit", {
+      userRecord,
+      error: null,
+      user: req.session.user,
+    });
+  } catch (err) {
+    console.error("Get profile for edit error:", err);
+    res.status(500).send("Server error");
+  }
+});
+
+// Edit profile submit (users can update their own profile)
+router.post("/edit", upload.single("photoFile"), async (req, res) => {
+  const { username, password, existingPhoto } = req.body;
+  const userid = req.session.user.userid;
+
+  if (!username) {
+    const userRecord = await db("users")
+      .select("userid", "username", "password", "photo", "userrole as role")
+      .where({ userid })
+      .first();
+
+    return res.render("profile/edit", {
+      userRecord,
+      error: "Username is required",
+      user: req.session.user,
+    });
+  }
+
+  try {
+    let photoUrl = existingPhoto || null;
+
+    if (req.file) {
+      photoUrl = await uploadToS3(req.file);
+    }
+
+    const updateData = {
+      username,
+      photo: photoUrl,
+    };
+
+    if (password) {
+      updateData.password = password;
+    }
+
+    await db("users").where({ userid }).update(updateData);
+
+    // Update session with new username
+    req.session.user.username = username;
+
+    res.redirect("/profile");
+  } catch (err) {
+    console.error("Update profile error:", err);
+    const userRecord = await db("users")
+      .select("userid", "username", "password", "photo", "userrole as role")
+      .where({ userid })
+      .first();
+
+    let message = "Server error";
+    if (err.code === "23505") {
+      message = "Username already exists";
+    }
+
+    res.render("profile/edit", {
+      userRecord,
+      error: message,
+      user: req.session.user,
+    });
+  }
+});
+
+module.exports = router;

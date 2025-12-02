@@ -59,7 +59,19 @@
 
         <div class="row mb-3">
           <div class="col-md-6">
-            <p><strong><i class="bi bi-calendar-check"></i> Submission Date:</strong> <%= survey.surveysubmissiondate || '—' %></p>
+            <p><strong><i class="bi bi-calendar-check"></i> Submission Date:</strong>
+              <% if (survey.surveysubmissiondate) { %>
+                <%= new Date(survey.surveysubmissiondate).toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                }) %>
+              <% } else { %>
+                —
+              <% } %>
+            </p>
           </div>
           <div class="col-md-6">
             <p><strong><i class="bi bi-ticket-detailed"></i> Registration ID:</strong> <%= survey.registrationid || '—' %></p>

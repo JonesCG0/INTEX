@@ -24,7 +24,17 @@
             <p><strong><i class="bi bi-telephone-fill"></i> Phone:</strong> <%= participant.participantphone || '—' %></p>
           </div>
           <div class="col-md-6">
-            <p><strong><i class="bi bi-calendar3"></i> Date of Birth:</strong> <%= participant.participantdob || '—' %></p>
+            <p><strong><i class="bi bi-calendar3"></i> Date of Birth:</strong>
+              <% if (participant.participantdob) { %>
+                <%= new Date(participant.participantdob).toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                }) %>
+              <% } else { %>
+                —
+              <% } %>
+            </p>
             <p><strong><i class="bi bi-person-badge"></i> Role:</strong>
               <span class="badge bg-primary"><%= participant.participantrole || '—' %></span>
             </p>

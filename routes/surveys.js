@@ -22,10 +22,15 @@ function parseScore(value, label, errors) {
 // List all surveys
 router.get("/", requireAuth, async (req, res) => {
   try {
-    const surveys = await db("surveys").select("*").orderBy("surveyid");
+    const sortBy = req.query.sortBy || "surveyid";
+    const sortOrder = req.query.sortOrder || "asc";
+
+    const surveys = await db("surveys").select("*").orderBy(sortBy, sortOrder);
     res.render("surveys/index", {
       surveys,
       user: req.session.user,
+      sortBy,
+      sortOrder,
     });
   } catch (err) {
     console.error("Fetch surveys error:", err);
