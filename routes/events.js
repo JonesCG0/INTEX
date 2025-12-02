@@ -8,6 +8,9 @@ const { requireAuth, requireAdmin } = require("../middleware/auth");
 // ---------------------------------------------------------------------------
 router.get("/", requireAuth, async (req, res) => {
   try {
+    const sortBy = req.query.sortBy || "eventoccurrenceid";
+    const sortOrder = req.query.sortOrder || "asc";
+
     const events = await db
       .select("*")
       .from("eventoccurrences")
@@ -16,10 +19,12 @@ router.get("/", requireAuth, async (req, res) => {
         "eventoccurrences.eventtemplateid",
         "eventtemplates.eventtemplateid"
       )
-      .orderBy("eventoccurrenceid");
+      .orderBy(sortBy, sortOrder);
     res.render("events/index", {
       events,
       user: req.session.user || null,
+      sortBy,
+      sortOrder,
     });
   } catch (err) {
     console.error("Fetch events error:", err);
@@ -95,11 +100,16 @@ router.post("/new", requireAdmin, async (req, res) => {
 // ---------------------------------------------------------------------------
 // Show single event (ADMIN)
 // ---------------------------------------------------------------------------
-router.get("/:id", requireAdmin, async (req, res) => {
+router.get("/:id", requireAuth, async (req, res) => {
   try {
-    const event = await db("events")
+    const event = await db("eventoccurrences")
+      .join(
+        "eventtemplates",
+        "eventoccurrences.eventtemplateid",
+        "eventtemplates.eventtemplateid"
+      )
       .select("*")
-      .where({ eventid: req.params.id })
+      .where({ eventoccurrenceid: req.params.id })
       .first();
 
     if (!event) {

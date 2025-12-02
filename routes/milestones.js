@@ -6,12 +6,18 @@ const { requireAuth, requireAdmin } = require("../middleware/auth");
 // List all milestones
 router.get("/", requireAuth, async (req, res) => {
   try {
+    const sortBy = req.query.sortBy || "milestoneid";
+    const sortOrder = req.query.sortOrder || "asc";
+
     const milestones = await db("milestones")
       .select("*")
-      .orderBy("milestoneid");
+      .join("users", "milestones.userid", "users.userid")
+      .orderBy(sortBy, sortOrder);
     res.render("milestones/index", {
       milestones,
       user: req.session.user,
+      sortBy,
+      sortOrder,
     });
   } catch (err) {
     console.error("Fetch milestones error:", err);
