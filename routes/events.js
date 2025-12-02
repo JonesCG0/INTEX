@@ -8,8 +8,14 @@ const { requireAuth, requireAdmin } = require("../middleware/auth");
 // ---------------------------------------------------------------------------
 router.get("/", requireAuth, async (req, res) => {
   try {
-    const events = await db("eventoccurrences")
+    const events = await db
       .select("*")
+      .from("eventoccurrences")
+      .join(
+        "eventtemplates",
+        "eventoccurrences.eventtemplateid",
+        "eventtemplates.eventtemplateid"
+      )
       .orderBy("eventoccurrenceid");
     res.render("events/index", {
       events,

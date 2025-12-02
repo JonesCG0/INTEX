@@ -10,11 +10,11 @@
 <div class="container">
   <div class="card">
     <% if (user && user.role === 'A') { %>
-      <div class="mb-3">
-        <a href="/events/new" class="btn btn-success">
-          <i class="bi bi-plus-circle-fill"></i> Add New Event
-        </a>
-      </div>
+    <div class="mb-3">
+      <a href="/events/new" class="btn btn-success">
+        <i class="bi bi-plus-circle-fill"></i> Add New Event
+      </a>
+    </div>
     <% } %>
 
     <div class="table-responsive">
@@ -29,33 +29,39 @@
             <th>Capacity</th>
             <th>Reg Deadline</th>
             <% if (user && user.role === 'A') { %>
-              <th>Actions</th>
+            <th>Actions</th>
             <% } %>
           </tr>
         </thead>
         <tbody>
           <% events.forEach(event => { %>
-            <tr>
-              <td><%= event.eventid %></td>
-              <td><strong><%= event.title || '—' %></strong></td>
-              <td>
-                <span class="badge bg-info"><%= event.eventtype || '—' %></span>
-              </td>
-              <td><%= event.date || '—' %></td>
-              <td><%= event.eventlocation || '—' %></td>
-              <td><%= event.eventcapacity || '—' %></td>
-              <td><%= event.eventregistrationdeadline || '—' %></td>
-              <% if (user && user.role === 'A') { %>
-                <td>
-                  <a href="/events/<%= event.eventid %>" class="btn btn-sm btn-info me-1">
-                    <i class="bi bi-eye-fill"></i> View
-                  </a>
-                  <a href="/events/<%= event.eventid %>/edit" class="btn btn-sm btn-primary">
-                    <i class="bi bi-pencil-fill"></i> Edit
-                  </a>
-                </td>
-              <% } %>
-            </tr>
+          <tr>
+            <td><%= event.eventoccurrenceid %></td>
+            <td><strong><%= event.eventname || '—' %></strong></td>
+            <td>
+              <span class="badge bg-info"><%= event.eventtype || '—' %></span>
+            </td>
+            <td><%= event.eventdatetimestart || '—' %></td>
+            <td><%= event.eventlocation || '—' %></td>
+            <td><%= event.eventcapacity || '—' %></td>
+            <td><%= event.eventregistrationdeadline || '—' %></td>
+            <% if (user && user.role === 'A') { %>
+            <td>
+              <a
+                href="/events/<%= event.eventid %>"
+                class="btn btn-sm btn-info me-1"
+              >
+                <i class="bi bi-eye-fill"></i> View
+              </a>
+              <a
+                href="/events/<%= event.eventid %>/edit"
+                class="btn btn-sm btn-primary"
+              >
+                <i class="bi bi-pencil-fill"></i> Edit
+              </a>
+            </td>
+            <% } %>
+          </tr>
           <% }) %>
         </tbody>
       </table>
