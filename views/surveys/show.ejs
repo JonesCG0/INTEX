@@ -1,31 +1,81 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Survey Details</title>
-  <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
-  <%- include('../partials/navbar') %>
+<%- include('../partials/header', { title: 'Survey Details', user: user }) %>
 
+<div class="page-header">
   <div class="container">
-    <h1>Survey Details</h1>
-
-    <div class="details">
-      <p><strong>ID:</strong> <%= survey.surveyid %></p>
-      <p><strong>Satisfaction Score:</strong> <%= survey.surveysatisfactionscore || '—' %></p>
-      <p><strong>Usefulness Score:</strong> <%= survey.surveyusefulnessscore || '—' %></p>
-      <p><strong>Instructor Score:</strong> <%= survey.surveyinstructorscore || '—' %></p>
-      <p><strong>Recommendation Score:</strong> <%= survey.surveyrecommendationscore || '—' %></p>
-      <p><strong>Overall Score:</strong> <%= survey.surveyoverallscore || '—' %></p>
-      <p><strong>Submission Date:</strong> <%= survey.surveysubmissiondate || '—' %></p>
-      <p><strong>Registration ID:</strong> <%= survey.registrationid || '—' %></p>
-    </div>
-
-    <a href="/surveys" class="btn btn-secondary">Back to List</a>
+    <h1><i class="bi bi-clipboard-data-fill"></i> Survey Details</h1>
+    <p>View participant feedback and satisfaction scores</p>
   </div>
+</div>
 
-  <%- include('../partials/footer') %>
-</body>
-</html>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <h3 class="mb-4">Survey #<%= survey.surveyid %></h3>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3">
+            <div class="stat-card">
+              <i class="bi bi-emoji-smile"></i>
+              <h3>Satisfaction</h3>
+              <p class="stat-number"><%= survey.surveysatisfactionscore || '—' %></p>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="stat-card">
+              <i class="bi bi-lightbulb"></i>
+              <h3>Usefulness</h3>
+              <p class="stat-number"><%= survey.surveyusefulnessscore || '—' %></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6 mb-3">
+            <div class="stat-card">
+              <i class="bi bi-person-check"></i>
+              <h3>Instructor</h3>
+              <p class="stat-number"><%= survey.surveyinstructorscore || '—' %></p>
+            </div>
+          </div>
+          <div class="col-md-6 mb-3">
+            <div class="stat-card">
+              <i class="bi bi-hand-thumbs-up"></i>
+              <h3>Recommendation</h3>
+              <p class="stat-number"><%= survey.surveyrecommendationscore || '—' %></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <div class="stat-card">
+              <i class="bi bi-star-fill"></i>
+              <h3>Overall Score</h3>
+              <p class="stat-number" style="font-size: 3rem;"><%= survey.surveyoverallscore || '—' %></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <p><strong><i class="bi bi-calendar-check"></i> Submission Date:</strong> <%= survey.surveysubmissiondate || '—' %></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong><i class="bi bi-ticket-detailed"></i> Registration ID:</strong> <%= survey.registrationid || '—' %></p>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="d-grid gap-2 d-md-flex">
+          <a href="/surveys" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Surveys
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer-scripts') %>

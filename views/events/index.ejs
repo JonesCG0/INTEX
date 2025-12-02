@@ -1,55 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Events</title>
-  <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
-  <%- include('../partials/navbar') %>
+<%- include('../partials/header', { title: 'Events', user: user }) %>
 
+<div class="page-header">
   <div class="container">
-    <h1>Events</h1>
+    <h1><i class="bi bi-calendar-event-fill"></i> Events</h1>
+    <p>Manage workshops, webinars, and community events</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card">
     <% if (user && user.role === 'A') { %>
-      <a href="/events/new" class="btn">Add New Event</a>
+      <div class="mb-3">
+        <a href="/events/new" class="btn btn-success">
+          <i class="bi bi-plus-circle-fill"></i> Add New Event
+        </a>
+      </div>
     <% } %>
 
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Title</th>
-          <th>Type</th>
-          <th>Start</th>
-          <th>Location</th>
-          <th>Capacity</th>
-          <th>Reg Deadline</th>
-          <% if (user && user.role === 'A') { %><th>Actions</th><% } %>
-        </tr>
-      </thead>
-      <tbody>
-        <% events.forEach(event => { %>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
           <tr>
-            <td><%= event.eventid %></td>
-            <td><%= event.title || '—' %></td>
-            <td><%= event.eventtype || '—' %></td>
-            <td><%= event.date || '—' %></td>
-            <td><%= event.eventlocation || '—' %></td>
-            <td><%= event.eventcapacity || '—' %></td>
-            <td><%= event.eventregistrationdeadline || '—' %></td>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Capacity</th>
+            <th>Reg Deadline</th>
             <% if (user && user.role === 'A') { %>
-              <td>
-                <a href="/events/<%= event.eventid %>">View</a>
-                <a href="/events/<%= event.eventid %>/edit">Edit</a>
-              </td>
+              <th>Actions</th>
             <% } %>
           </tr>
-        <% }) %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% events.forEach(event => { %>
+            <tr>
+              <td><%= event.eventid %></td>
+              <td><strong><%= event.title || '—' %></strong></td>
+              <td>
+                <span class="badge bg-info"><%= event.eventtype || '—' %></span>
+              </td>
+              <td><%= event.date || '—' %></td>
+              <td><%= event.eventlocation || '—' %></td>
+              <td><%= event.eventcapacity || '—' %></td>
+              <td><%= event.eventregistrationdeadline || '—' %></td>
+              <% if (user && user.role === 'A') { %>
+                <td>
+                  <a href="/events/<%= event.eventid %>" class="btn btn-sm btn-info me-1">
+                    <i class="bi bi-eye-fill"></i> View
+                  </a>
+                  <a href="/events/<%= event.eventid %>/edit" class="btn btn-sm btn-primary">
+                    <i class="bi bi-pencil-fill"></i> Edit
+                  </a>
+                </td>
+              <% } %>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
   </div>
+</div>
 
-  <%- include('../partials/footer') %>
-</body>
-</html>
+<%- include('../partials/footer-scripts') %>

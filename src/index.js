@@ -156,7 +156,7 @@ app.get("/users", requireAuth, async (req, res) => {
       "SELECT userid, username, photo, role FROM users ORDER BY userid"
     );
 
-    res.render("displayUsers", {
+    res.render("users/displayUsers", {
       users: result.rows,
       user: req.session.user,
     });

@@ -1,34 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Participant Details</title>
-  <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
-  <%- include('../partials/navbar') %>
+<%- include('../partials/header', { title: 'Participant Details', user: user }) %>
 
+<div class="page-header">
   <div class="container">
-    <h1>Participant Details</h1>
-
-    <div class="details">
-      <p><strong>ID:</strong> <%= participant.participantid %></p>
-      <p><strong>Email:</strong> <%= participant.participantemail || '—' %></p>
-      <p><strong>First Name:</strong> <%= participant.participantfirstname || '—' %></p>
-      <p><strong>Last Name:</strong> <%= participant.participantlastname || '—' %></p>
-      <p><strong>Date of Birth:</strong> <%= participant.participantdob || '—' %></p>
-      <p><strong>Role:</strong> <%= participant.participantrole || '—' %></p>
-      <p><strong>Phone:</strong> <%= participant.participantphone || '—' %></p>
-      <p><strong>ZIP:</strong> <%= participant.participantzip || '—' %></p>
-      <p><strong>School/Employer:</strong> <%= participant.participantschooloremployer || '—' %></p>
-      <p><strong>Field of Interest:</strong> <%= participant.participantfieldofinterest || '—' %></p>
-    </div>
-
-    <a href="/participants/<%= participant.participantid %>/edit" class="btn">Edit</a>
-    <a href="/participants" class="btn btn-secondary">Back to List</a>
+    <h1><i class="bi bi-person-circle"></i> Participant Details</h1>
+    <p>View participant information and profile</p>
   </div>
+</div>
 
-  <%- include('../partials/footer') %>
-</body>
-</html>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <h3 class="mb-4">
+          <%= participant.participantfirstname || '' %> <%= participant.participantlastname || '' %>
+        </h3>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <p><strong><i class="bi bi-hash"></i> ID:</strong> <%= participant.participantid %></p>
+            <p><strong><i class="bi bi-envelope-fill"></i> Email:</strong>
+              <a href="mailto:<%= participant.participantemail %>"><%= participant.participantemail || '—' %></a>
+            </p>
+            <p><strong><i class="bi bi-telephone-fill"></i> Phone:</strong> <%= participant.participantphone || '—' %></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong><i class="bi bi-calendar3"></i> Date of Birth:</strong> <%= participant.participantdob || '—' %></p>
+            <p><strong><i class="bi bi-person-badge"></i> Role:</strong>
+              <span class="badge bg-primary"><%= participant.participantrole || '—' %></span>
+            </p>
+            <p><strong><i class="bi bi-mailbox"></i> ZIP Code:</strong> <%= participant.participantzip || '—' %></p>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <p><strong><i class="bi bi-building"></i> School/Employer:</strong> <%= participant.participantschooloremployer || '—' %></p>
+          </div>
+          <div class="col-md-6">
+            <p><strong><i class="bi bi-star-fill"></i> Field of Interest:</strong> <%= participant.participantfieldofinterest || '—' %></p>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class="d-grid gap-2 d-md-flex">
+          <a href="/participants/<%= participant.participantid %>/edit" class="btn btn-primary">
+            <i class="bi bi-pencil-fill"></i> Edit Participant
+          </a>
+          <a href="/participants" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Participants
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer-scripts') %>

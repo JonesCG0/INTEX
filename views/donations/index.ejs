@@ -1,47 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Donations</title>
-  <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
-  <%- include('../partials/navbar') %>
+<%- include('../partials/header', { title: 'Donations', user: user }) %>
 
+<div class="page-header">
   <div class="container">
-    <h1>Donations</h1>
-    <a href="/donations/new" class="btn">Add New Donation</a>
-
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Date</th>
-          <th>Amount</th>
-          <th>Participant ID</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% donations.forEach(d => { %>
-          <tr>
-            <td><%= d.donationid %></td>
-            <td><%= d.donationdate || '—' %></td>
-            <td><%= d.donationamount || '—' %></td>
-            <td><%= d.participantid || '—' %></td>
-            <td>
-              <!-- if you add show/edit routes later, link them here -->
-              <form action="/donations/<%= d.donationid %>/delete" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-danger">Delete</button>
-              </form>
-            </td>
-          </tr>
-        <% }) %>
-      </tbody>
-    </table>
+    <h1><i class="bi bi-cash-coin"></i> Donations</h1>
+    <p>Track and manage participant donations</p>
   </div>
+</div>
 
-  <%- include('../partials/footer') %>
-</body>
-</html>
+<div class="container">
+  <div class="card">
+    <div class="mb-3">
+      <a href="/donations/new" class="btn btn-success">
+        <i class="bi bi-plus-circle-fill"></i> Add New Donation
+      </a>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Participant ID</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% donations.forEach(d => { %>
+            <tr>
+              <td><%= d.donationid %></td>
+              <td><%= d.donationdate || '—' %></td>
+              <td><strong>$<%= d.donationamount || '0.00' %></strong></td>
+              <td><%= d.participantid || '—' %></td>
+              <td>
+                <form action="/donations/<%= d.donationid %>/delete" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-sm btn-danger"
+                          onclick="return confirm('Delete this donation? This cannot be undone.');">
+                    <i class="bi bi-trash-fill"></i> Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer-scripts') %>
