@@ -8,6 +8,7 @@ const {
   sanitizeDecimal,
   sanitizeInt,
 } = require("../utils/validators");
+const { findUserById, recordDonation } = require("../utils/donationService");
 
 // List all donations
 router.get("/", requireAuth, async (req, res) => {
@@ -38,11 +39,11 @@ router.get("/new", requireAuth, (req, res) => {
 
 // Create donation
 router.post("/new", requireAuth, async (req, res) => {
-  const { donationdate, donationamount, participantid } = req.body;
+  const { donationdate, donationamount, userid } = req.body;
 
   const errors = [];
   const cleanAmount = sanitizeDecimal(donationamount, { min: 0.01 });
-  const cleanParticipantId = sanitizeInt(participantid, { min: 1 });
+  const cleanUserId = sanitizeInt(userid, { min: 1 });
   let cleanDate = null;
 
   if (hasText(donationdate)) {
@@ -54,8 +55,8 @@ router.post("/new", requireAuth, async (req, res) => {
   if (!cleanAmount) {
     errors.push("Donation amount must be at least $0.01");
   }
-  if (!cleanParticipantId) {
-    errors.push("Participant ID must be a positive whole number");
+  if (!cleanUserId) {
+    errors.push("User ID must be a positive whole number");
   }
 
   if (errors.length) {
@@ -65,30 +66,31 @@ router.post("/new", requireAuth, async (req, res) => {
   }
 
   try {
-    const participantExists = await db("participants")
-      .select("participantid")
-      .where({ participantid: cleanParticipantId })
-      .first();
+    await db.transaction(async (trx) => {
+      const userRecord = await findUserById(cleanUserId, trx);
 
-    if (!participantExists) {
+      if (!userRecord) {
+        throw new Error("USER_NOT_FOUND");
+      }
+
+      await recordDonation(
+        {
+          userid: cleanUserId,
+          amount: cleanAmount,
+          donationDate: cleanDate || new Date().toISOString().slice(0, 10),
+        },
+        trx
+      );
+    });
+
+    res.redirect("/donations");
+  } catch (err) {
+    if (err.message === "USER_NOT_FOUND") {
       return res.status(400).render("donations/new", {
-        error: "Participant not found",
+        error: "User not found. Please verify the ID from the Users list.",
         user: req.session.user,
       });
     }
-
-    const donationPayload = {
-      participantid: cleanParticipantId,
-      donationamount: cleanAmount,
-    };
-
-    if (cleanDate) {
-      donationPayload.donationdate = cleanDate;
-    }
-
-    await db("donations").insert(donationPayload);
-    res.redirect("/donations");
-  } catch (err) {
     console.error("Create donation error:", err);
     res
       .status(500)
