@@ -1,0 +1,76 @@
+<%- include('../partials/header', { title: 'Add Survey', user: user }) %>
+
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-clipboard-data-fill"></i> Add New Survey</h1>
+    <p>Record participant feedback and satisfaction scores</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <% if (error) { %>
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+          </div>
+        <% } %>
+
+        <form action="/surveys/new" method="POST">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="surveysatisfactionscore" class="form-label">Satisfaction Score</label>
+              <input type="number" id="surveysatisfactionscore" name="surveysatisfactionscore" class="form-control" placeholder="1-10" min="1" max="10">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="surveyusefulnessscore" class="form-label">Usefulness Score</label>
+              <input type="number" id="surveyusefulnessscore" name="surveyusefulnessscore" class="form-control" placeholder="1-10" min="1" max="10">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="surveyinstructorscore" class="form-label">Instructor Score</label>
+              <input type="number" id="surveyinstructorscore" name="surveyinstructorscore" class="form-control" placeholder="1-10" min="1" max="10">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="surveyrecommendationscore" class="form-label">Recommendation Score</label>
+              <input type="number" id="surveyrecommendationscore" name="surveyrecommendationscore" class="form-control" placeholder="1-10" min="1" max="10">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="surveyoverallscore" class="form-label">Overall Score</label>
+            <input type="number" id="surveyoverallscore" name="surveyoverallscore" class="form-control" placeholder="1-10" min="1" max="10">
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="surveysubmissiondate" class="form-label">Submission Date</label>
+              <input type="text" id="surveysubmissiondate" name="surveysubmissiondate" class="form-control" placeholder="YYYY-MM-DD">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="registrationid" class="form-label">Registration ID</label>
+              <input type="number" id="registrationid" name="registrationid" class="form-control" placeholder="Enter registration ID">
+            </div>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex">
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-check-circle-fill"></i> Create Survey
+            </button>
+            <a href="/surveys" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer-scripts') %>

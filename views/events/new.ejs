@@ -1,0 +1,91 @@
+<%- include('../partials/header', { title: 'Add Event', user: user }) %>
+
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-calendar-plus-fill"></i> Add New Event</h1>
+    <p>Create a new workshop, webinar, or community event</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <% if (error) { %>
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+          </div>
+        <% } %>
+
+        <form action="/events/new" method="POST">
+          <div class="mb-3">
+            <label for="title" class="form-label">Event Title</label>
+            <input type="text" id="title" name="title" class="form-control" placeholder="Enter event title" required>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="eventtype" class="form-label">Event Type</label>
+              <input type="text" id="eventtype" name="eventtype" class="form-control" placeholder="Workshop, Webinar, etc.">
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="eventlocation" class="form-label">Location</label>
+              <input type="text" id="eventlocation" name="eventlocation" class="form-control" placeholder="Event location">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="eventdescription" class="form-label">Description</label>
+            <textarea id="eventdescription" name="eventdescription" class="form-control" rows="4" placeholder="Describe the event"></textarea>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="date" class="form-label">Start Date/Time</label>
+              <input type="text" id="date" name="date" class="form-control" placeholder="YYYY-MM-DD HH:MM" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="eventdatetimeend" class="form-label">End Date/Time</label>
+              <input type="text" id="eventdatetimeend" name="eventdatetimeend" class="form-control" placeholder="YYYY-MM-DD HH:MM">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <label for="eventcapacity" class="form-label">Capacity</label>
+              <input type="text" id="eventcapacity" name="eventcapacity" class="form-control" placeholder="Max attendees">
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="eventdefaultcapacity" class="form-label">Default Capacity</label>
+              <input type="text" id="eventdefaultcapacity" name="eventdefaultcapacity" class="form-control" placeholder="Default">
+            </div>
+
+            <div class="col-md-4 mb-3">
+              <label for="eventregistrationdeadline" class="form-label">Registration Deadline</label>
+              <input type="text" id="eventregistrationdeadline" name="eventregistrationdeadline" class="form-control" placeholder="YYYY-MM-DD">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="eventrecurrencepattern" class="form-label">Recurrence Pattern (optional)</label>
+            <input type="text" id="eventrecurrencepattern" name="eventrecurrencepattern" class="form-control" placeholder="Weekly, Monthly, etc.">
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex">
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-check-circle-fill"></i> Create Event
+            </button>
+            <a href="/events" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer-scripts') %>

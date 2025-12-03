@@ -1,0 +1,230 @@
+const express = require("express");
+const router = express.Router();
+const db = require("../db");
+const {
+  hasText,
+  sanitizeText,
+  sanitizeEmail,
+  sanitizeDecimal,
+} = require("../utils/validators");
+const {
+  findOrCreateSupportUser,
+  findUserById,
+  getAnonymousDonorUser,
+  recordDonation,
+} = require("../utils/donationService");
+
+const SUPPORT_METADATA_TABLE = "support_donations";
+let metadataTableReady = false;
+
+async function ensureSupportDonationMetadataTable() {
+  if (metadataTableReady) {
+    return true;
+  }
+  try {
+    const exists = await db.schema.hasTable(SUPPORT_METADATA_TABLE);
+    if (!exists) {
+      await db.schema.createTable(SUPPORT_METADATA_TABLE, (table) => {
+        table.increments("id").primary();
+        table
+          .integer("donationid")
+          .references("donations.donationid")
+          .onDelete("CASCADE");
+        table.string("firstname", 120).notNullable();
+        table.string("lastname", 120).notNullable();
+        table.string("email", 255).nullable();
+        table.decimal("donationamount", 12, 2).notNullable();
+        table.text("message");
+        table.timestamp("createdat").defaultTo(db.fn.now());
+      });
+    } else {
+      await db.schema
+        .alterTable(SUPPORT_METADATA_TABLE, (table) => {
+          table.string("email", 255).nullable().alter();
+        })
+        .catch((err) => {
+          console.warn(
+            "Unable to alter support donation metadata email column (continuing):",
+            err
+          );
+        });
+    }
+    metadataTableReady = true;
+    return true;
+  } catch (err) {
+    console.error("Unable to ensure support donation metadata table:", err);
+    return false;
+  }
+}
+
+// Home / Landing page
+router.get("/", async (req, res) => {
+  try {
+    // Fetch counts from database
+    const [participantCount] = await db("participants").count("* as count");
+    const [eventCount] = await db("eventoccurrences").count("* as count");
+    const [milestoneCount] = await db("milestones").count("* as count");
+    const donationSum = await db("donationtotals")
+      .select(db.raw("SUM(CAST(totalDonationCalculated AS DECIMAL)) as total"))
+      .first();
+
+    res.render("landing", {
+      user: req.session.user || null,
+      stats: {
+        participants: participantCount.count,
+        events: eventCount.count,
+        milestones: milestoneCount.count,
+        donations: donationSum.total || 0,
+      },
+    });
+  } catch (err) {
+    console.error("Landing page error:", err);
+    // Render with default values if there's an error
+    res.render("landing", {
+      user: req.session.user || null,
+      stats: {
+        participants: 0,
+        events: 0,
+        milestones: 0,
+        donations: 0,
+      },
+    });
+  }
+});
+
+router.get("/support", (req, res) => {
+  res.render("support", {
+    user: req.session.user || null,
+    error: null,
+    success: null,
+    formValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      amount: "",
+      message: "",
+    },
+  });
+});
+
+router.post("/support/donate", async (req, res) => {
+  const { firstName, lastName, email, amount, message } = req.body;
+  const sessionUser = req.session.user || null;
+
+  const errors = [];
+  const cleanFirstName = sanitizeText(firstName);
+  const cleanLastName = sanitizeText(lastName);
+  let cleanEmail = null;
+  if (hasText(email)) {
+    cleanEmail = sanitizeEmail(email);
+    if (!cleanEmail) {
+      errors.push("Please enter a valid email address or leave it blank.");
+    }
+  }
+  const cleanAmount = sanitizeDecimal(amount, { min: 1 });
+  const cleanMessage = hasText(message) ? message.trim() : null;
+
+  if (!cleanFirstName) {
+    errors.push("First name is required");
+  }
+  if (!cleanLastName) {
+    errors.push("Last name is required");
+  }
+  if (!cleanAmount) {
+    errors.push("Please enter a donation amount of at least $1.00");
+  }
+
+  const renderSupport = (status = {}, overrideValues = null) =>
+    res.status(status.code || (errors.length ? 400 : 200)).render("support", {
+      user: req.session.user || null,
+      error: status.error || errors[0] || null,
+      success: status.success || null,
+      formValues: overrideValues || {
+        firstName: cleanFirstName || firstName || "",
+        lastName: cleanLastName || lastName || "",
+        email: cleanEmail || email || "",
+        amount: cleanAmount || amount || "",
+        message: cleanMessage || message || "",
+      },
+    });
+
+  if (errors.length) {
+    return renderSupport();
+  }
+
+  const metadataReady = await ensureSupportDonationMetadataTable();
+
+  try {
+    let donationRecord = null;
+
+    await db.transaction(async (trx) => {
+      let donorUser;
+
+      if (sessionUser && sessionUser.userid) {
+        donorUser = await findUserById(sessionUser.userid, trx);
+        if (!donorUser) {
+          throw new Error(`Authenticated user ${sessionUser.userid} not found`);
+        }
+      } else if (cleanEmail) {
+        donorUser = await findOrCreateSupportUser(
+          { firstName: cleanFirstName, lastName: cleanLastName, email: cleanEmail },
+          trx
+        );
+      } else {
+        donorUser = await getAnonymousDonorUser(trx);
+      }
+
+      donationRecord = await recordDonation(
+        {
+          userid: donorUser.userid,
+          amount: cleanAmount,
+          donationDate: new Date().toISOString().slice(0, 10),
+        },
+        trx
+      );
+
+      if (metadataReady) {
+        await trx(SUPPORT_METADATA_TABLE)
+          .insert({
+            donationid: donationRecord.donationid,
+            firstname: cleanFirstName,
+            lastname: cleanLastName,
+            email: cleanEmail,
+            donationamount: cleanAmount,
+            message: cleanMessage,
+          })
+          .catch((metaErr) => {
+            console.error("Unable to save support donation metadata:", metaErr);
+          });
+      }
+    });
+
+    return renderSupport(
+      {
+        success: "Thank you! Your donation has been recorded.",
+        code: 200,
+        error: null,
+      },
+      {
+        firstName: "",
+        lastName: "",
+        email: "",
+        amount: "",
+        message: "",
+      }
+    );
+  } catch (err) {
+    console.error("Support donation error:", err);
+    return renderSupport({
+      error: "We could not process your donation. Please try again.",
+      code: 500,
+    });
+  }
+});
+
+// Easter egg: 418 I'm a teapot
+router.get("/teapot", (req, res) => {
+  res.status(418).render("teapot");
+});
+
+module.exports = router;

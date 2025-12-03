@@ -1,0 +1,275 @@
+<%- include('partials/header', { title: 'Support Us - Ella Rises', user: user }) %>
+
+</div> <!-- Close main-content opened by header -->
+
+<style>
+  .hero-section {
+    background: linear-gradient(135deg, #FFd8d1, #f9afb1);
+    padding: 30px 0 80px 0;
+    color: #3A3F3B;
+    text-align: center;
+    margin-top: 0;
+  }
+
+  .hero-section h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .hero-section p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    opacity: 0.95;
+  }
+
+  .support-section {
+    padding: 80px 0;
+  }
+
+  .section-title {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .section-title h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #3A3F3B;
+    margin-bottom: 15px;
+  }
+
+  .section-title p {
+    font-size: 1.1rem;
+    color: #9AB89D;
+  }
+
+  .support-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 50px 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    height: 100%;
+    border: 2px solid transparent;
+  }
+
+  .support-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 30px rgba(249, 175, 177, 0.25);
+    border-color: #F9AFB1;
+  }
+
+  .support-card i {
+    font-size: 4rem;
+    color: #CE325B;
+    margin-bottom: 25px;
+    display: block;
+  }
+
+  .support-card h3 {
+    font-family: 'DM Serif Display', serif;
+    color: #3A3F3B;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .support-card p {
+    color: #3A3F3B;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 30px;
+  }
+
+  .support-card ul {
+    text-align: left;
+    margin-bottom: 30px;
+    padding-left: 20px;
+  }
+
+  .support-card ul li {
+    color: #3A3F3B;
+    margin-bottom: 10px;
+    font-size: 1rem;
+  }
+
+  .btn-custom-primary {
+    background-color: #F9AFB1;
+    color: #3A3F3B;
+    border: none;
+    padding: 14px 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(249, 175, 177, 0.3);
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-custom-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(206, 50, 91, 0.4);
+    background-color: #CE325B;
+    color: #ffffff;
+  }
+
+  .btn-custom-secondary {
+    background-color: #ffffff;
+    color: #CE325B;
+    border: 2px solid #CE325B;
+    padding: 14px 35px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .btn-custom-secondary:hover {
+    background-color: #CE325B;
+    color: #ffffff;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .hero-section h1 {
+      font-size: 2rem;
+    }
+    .hero-section p {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section">
+  <div class="container">
+    <h1><i class="bi bi-heart-fill"></i> Support Ella Rises</h1>
+    <p>Your support helps empower individuals on their journey to independence</p>
+  </div>
+</div>
+
+<!-- Support Options Section -->
+<div class="support-section">
+    <div class="section-title">
+      <h2>How You Can Help</h2>
+    </div>
+
+    <div class="row justify-content-center">
+      <!-- Donate Card -->
+      <div class="col-lg-6 col-md-8">
+        <div class="support-card text-center">
+          <i class="bi bi-currency-dollar"></i>
+          <h3>Make a Donation</h3>
+          <p>
+            Your financial contribution directly supports our programs,
+            helping participants access resources, training, and opportunities
+            they need to succeed.
+          </p>
+          <ul>
+            <li>Support program operations and services</li>
+            <li>Fund participant resources and materials</li>
+            <li>Enable new program development</li>
+            <li>100% tax-deductible</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Donation Form Section -->
+    <div class="row mt-5" id="donate-form">
+      <div class="col-lg-8 mx-auto">
+        <div class="support-card">
+          <h3 class="text-center mb-4">
+            <i class="bi bi-currency-dollar"></i> Donation Form
+          </h3>
+          <% if (error) { %>
+            <div class="alert alert-danger">
+              <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+            </div>
+          <% } %>
+          <% if (success) { %>
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle-fill"></i> <%= success %>
+            </div>
+          <% } %>
+
+          <form action="/support/donate" method="POST" novalidate>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName" class="form-label">First Name *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="firstName"
+                  name="firstName"
+                  value="<%= formValues.firstName %>"
+                  required
+                />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="lastName" class="form-label">Last Name *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastName"
+                  name="lastName"
+                  value="<%= formValues.lastName %>"
+                  required
+                />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email (optional)</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                value="<%= formValues.email %>"
+                placeholder="We'll use this for receipts"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="amount" class="form-label">Donation Amount ($) *</label>
+              <input
+                type="number"
+                class="form-control"
+                id="amount"
+                name="amount"
+                min="1"
+                step="0.01"
+                value="<%= formValues.amount %>"
+                required
+              />
+            </div>
+            <div class="mb-3">
+              <label for="message" class="form-label">Message (Optional)</label>
+              <textarea
+                class="form-control"
+                id="message"
+                name="message"
+                rows="3"
+                placeholder="Share why you're supporting Ella Rises..."
+              ><%= formValues.message %></textarea>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-custom-primary">
+                <i class="bi bi-heart-fill"></i> Submit Donation
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main-content" style="display:none;"></div> <!-- Reopen for footer-scripts to close -->
+<%- include('partials/footer-scripts') %>

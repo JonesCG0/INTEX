@@ -1,0 +1,109 @@
+<%- include('../partials/header', { title: 'Users', user: user }) %>
+
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-people-fill"></i> Users</h1>
+    <p>Manage system users and their roles</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="card">
+    <% if (user.role === 'admin') { %>
+      <div class="mb-3">
+        <a href="/users/new" class="btn btn-success">
+          <i class="bi bi-person-plus-fill"></i> Add User
+        </a>
+      </div>
+    <% } %>
+
+    <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 mb-3">
+      <div class="d-flex align-items-center gap-2 flex-grow-1 flex-lg-grow-0">
+        <input
+          type="search"
+          class="form-control w-auto"
+          style="min-width: 240px; max-width: 320px;"
+          placeholder="Search users"
+          aria-label="Search users"
+          data-search-for="users-table"
+        />
+        <nav aria-label="Users pagination (top)">
+          <ul class="pagination pagination-sm mb-0 pagination-soft" data-pagination-for="users-table"></ul>
+        </nav>
+      </div>
+      <div class="d-flex align-items-center gap-2 ms-lg-auto">
+        <label for="users-page-size" class="text-muted small mb-0">Rows/page</label>
+        <select
+          id="users-page-size"
+          class="form-select form-select-sm w-auto"
+          data-page-size-for="users-table"
+        >
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="30">30</option>
+          <option value="40">40</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table" data-table-id="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Photo</th>
+            <% if (user.role === 'admin') { %>
+              <th>Actions</th>
+            <% } %>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(u => { %>
+            <tr>
+              <td><%= u.userid %></td>
+              <td><strong><%= u.username %></strong></td>
+              <td>
+                <% if (u.role === 'admin') { %>
+                  <span class="badge bg-danger">Admin</span>
+                <% } else { %>
+                  <span class="badge bg-secondary">Participant</span>
+                <% } %>
+              </td>
+              <td>
+                <% if (u.photo) { %>
+                  <img src="<%= u.photo %>" alt="<%= u.username %>"
+                       style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--accent-color);">
+                <% } else { %>
+                  <span class="text-muted"><i class="bi bi-person-circle" style="font-size:40px;"></i></span>
+                <% } %>
+              </td>
+              <% if (user.role === 'admin') { %>
+                <td>
+                  <a href="/users/<%= u.userid %>/edit" class="btn btn-sm btn-primary me-1">
+                    <i class="bi bi-pencil-fill"></i> Edit
+                  </a>
+                  <form action="/users/<%= u.userid %>/delete" method="POST" style="display:inline;">
+                    <button class="btn btn-sm btn-danger"
+                            onclick="return confirm('Delete <%= u.username %>? This cannot be undone.');">
+                      <i class="bi bi-trash-fill"></i> Delete
+                    </button>
+                  </form>
+                </td>
+              <% } %>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+      <nav aria-label="Users pagination">
+        <ul class="pagination pagination-sm mb-0 pagination-soft" data-pagination-for="users-table"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer-scripts') %>

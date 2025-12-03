@@ -1,0 +1,32 @@
+<%- include('partials/header', { title: 'Dashboard', user: user }) %>
+
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-speedometer2"></i> Dashboard</h1>
+    <p>Welcome back, <%= user.username %>! Here's your overview.</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row mt-4">
+    <div class="col-md-6 mb-4">
+      <div class="card">
+        <h3><i class="bi bi-bar-chart-fill"></i> Quick Actions</h3>
+        <hr />
+        <div class="d-grid gap-2">
+          <a href="/participants/new" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i> Add Participant
+          </a>
+          <a href="/events/new" class="btn btn-primary">
+            <i class="bi bi-calendar-plus"></i> Create Event
+          </a>
+          <a href="/surveys" class="btn btn-primary">
+            <i class="bi bi-clipboard-check"></i> View Surveys
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer-scripts') %>

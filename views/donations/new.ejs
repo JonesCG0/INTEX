@@ -1,0 +1,54 @@
+<%- include('../partials/header', { title: 'Add Donation', user: user }) %>
+
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-cash-coin"></i> Add New Donation</h1>
+    <p>Record a new participant donation</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card">
+        <% if (error) { %>
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+          </div>
+        <% } %>
+
+        <form action="/donations/new" method="POST">
+          <div class="mb-3">
+            <label for="donationdate" class="form-label">Donation Date</label>
+            <input type="text" id="donationdate" name="donationdate" class="form-control" placeholder="YYYY-MM-DD">
+          </div>
+
+          <div class="mb-3">
+            <label for="donationamount" class="form-label">Donation Amount</label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" id="donationamount" name="donationamount" class="form-control" placeholder="0.00" step="0.01">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="userid" class="form-label">User ID</label>
+            <input type="number" id="userid" name="userid" class="form-control" placeholder="Enter a valid user ID">
+            <small class="text-muted">Use the numeric ID from the Users page when attributing a donation.</small>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex">
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-check-circle-fill"></i> Create Donation
+            </button>
+            <a href="/donations" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer-scripts') %>

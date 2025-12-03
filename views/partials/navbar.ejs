@@ -1,0 +1,218 @@
+<!-- Navbar -->
+<nav
+  class="navbar navbar-expand-lg navbar-light sticky-top"
+  style="
+    background: #ffffff !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: 1rem 0;
+  "
+>
+  <div class="container">
+    <a
+      class="navbar-brand"
+      href="/"
+      style="
+        font-family: 'DM Serif Display', serif;
+        font-weight: 700;
+        font-size: 1.6rem;
+        color: #ce325b !important;
+        letter-spacing: -0.5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      "
+    >
+      <img
+        src="/Ella_Rises_Logo.avif"
+        alt="Ella Rises Logo"
+        style="height: 60px; width: auto"
+      />
+      Ella Rises
+    </a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="/"
+            style="
+              font-weight: 500;
+              color: #3a3f3b !important;
+              padding: 0.5rem 1rem !important;
+            "
+            >Home</a
+          >
+        </li>
+
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="/events"
+            style="
+              font-weight: 500;
+              color: #3a3f3b !important;
+              padding: 0.5rem 1rem !important;
+            "
+          >
+            <i class="bi bi-calendar-event" style="margin-right: 5px"></i>Events
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="/support"
+            style="
+              font-weight: 500;
+              color: #3a3f3b !important;
+              padding: 0.5rem 1rem !important;
+            "
+          >
+            <i class="bi bi-heart-fill" style="margin-right: 5px"></i>Support Us
+          </a>
+        </li>
+
+        <% if (typeof user !== 'undefined' && user) { %>
+        <!-- Logged in user menu -->
+        <% if (user.role === 'admin') { %>
+        <!-- Admin dropdown -->
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="adminDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style="
+              font-weight: 500;
+              color: #3a3f3b !important;
+              padding: 0.5rem 1rem !important;
+            "
+          >
+            <i class="bi bi-gear-fill" style="margin-right: 5px"></i>Admin
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="adminDropdown"
+          >
+            <li>
+              <a class="dropdown-item" href="/users">
+                <i class="bi bi-person-fill-gear"></i>Manage Users
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/users/new">
+                <i class="bi bi-person-plus-fill"></i>Add User
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="/dashboard">
+                <i class="bi bi-speedometer2"></i>Dashboard
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/participants">
+                <i class="bi bi-people"></i>Participants
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/surveys">
+                <i class="bi bi-clipboard-check"></i>Surveys
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/milestones">
+                <i class="bi bi-flag-fill"></i>Milestones
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/donations">
+                <i class="bi bi-currency-dollar"></i>Donations
+              </a>
+            </li>
+          </ul>
+        </li>
+        <% } %>
+
+        <!-- User profile dropdown -->
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="userDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style="
+              font-weight: 500;
+              color: #3a3f3b !important;
+              padding: 0.5rem 1rem !important;
+            "
+          >
+            <i class="bi bi-person-circle" style="margin-right: 5px"></i><%=
+            user.username %>
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-end"
+            aria-labelledby="userDropdown"
+          >
+            <li>
+              <span class="dropdown-item-text">
+                <strong><%= user.username %></strong><br />
+                <small class="text-muted"
+                  ><%= user.role === 'admin' ? 'Administrator' : 'Participant' %></small
+                >
+              </span>
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item text-danger" href="/auth/logout">
+                <i class="bi bi-box-arrow-right"></i>Logout
+              </a>
+            </li>
+          </ul>
+        </li>
+        <% } else { %>
+        <!-- Not logged in -->
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="/auth/login"
+            style="
+              font-weight: 500;
+              color: #3a3f3b !important;
+              padding: 0.5rem 1rem !important;
+            "
+          >
+            <i class="bi bi-box-arrow-in-right" style="margin-right: 5px"></i
+            >Login
+          </a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            href="/auth/signup"
+            style="
+              font-weight: 500;
+              color: #3a3f3b !important;
+              padding: 0.5rem 1rem !important;
+            "
+          >
+            <i class="bi bi-person-plus-fill" style="margin-right: 5px"></i>Sign
+            Up
+          </a>
+        </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>

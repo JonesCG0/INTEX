@@ -1,0 +1,68 @@
+<%- include('../partials/header', { title: 'Edit User', user: user }) %>
+
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-pencil-square"></i> Edit User</h1>
+    <p>Update user information</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card">
+        <% if (error) { %>
+          <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+          </div>
+        <% } %>
+
+        <form action="/users/<%= userRecord.userid %>/edit" method="POST" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input name="username" class="form-control" value="<%= userRecord.username %>" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">New Password</label>
+            <input name="password" type="password" class="form-control" placeholder="Leave blank to keep current password">
+            <small class="text-muted">Only fill this if you want to change the password</small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Photo</label>
+            <% if (userRecord.photo) { %>
+              <div class="mb-2">
+                <img src="<%= userRecord.photo %>" alt="Current photo"
+                     style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--accent-color);">
+                <p class="text-muted mt-2"><small>Current photo</small></p>
+              </div>
+            <% } %>
+            <input name="photoFile" type="file" class="form-control" accept="image/*">
+            <small class="text-muted">Upload a new photo to replace the current one</small>
+            <input type="hidden" name="existingPhoto" value="<%= userRecord.photo || '' %>">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Role</label>
+            <select name="role" class="form-select">
+              <option value="participant" <%= userRecord.role === 'participant' ? 'selected' : '' %>>Participant</option>
+              <option value="admin" <%= userRecord.role === 'admin' ? 'selected' : '' %>>Administrator</option>
+            </select>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-circle-fill"></i> Save Changes
+            </button>
+            <a href="/users" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer-scripts') %>
