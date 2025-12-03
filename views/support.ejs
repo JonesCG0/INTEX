@@ -189,28 +189,75 @@
           <h3 class="text-center mb-4">
             <i class="bi bi-currency-dollar"></i> Donation Form
           </h3>
-          <form action="/donations/new" method="POST">
+          <% if (error) { %>
+            <div class="alert alert-danger">
+              <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+            </div>
+          <% } %>
+          <% if (success) { %>
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle-fill"></i> <%= success %>
+            </div>
+          <% } %>
+
+          <form action="/support/donate" method="POST" novalidate>
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="firstName" class="form-label">First Name *</label>
-                <input type="text" class="form-control" id="firstName" name="firstName" required />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="firstName"
+                  name="firstName"
+                  value="<%= formValues.firstName %>"
+                  required
+                />
               </div>
               <div class="col-md-6 mb-3">
                 <label for="lastName" class="form-label">Last Name *</label>
-                <input type="text" class="form-control" id="lastName" name="lastName" required />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastName"
+                  name="lastName"
+                  value="<%= formValues.lastName %>"
+                  required
+                />
               </div>
             </div>
             <div class="mb-3">
               <label for="email" class="form-label">Email *</label>
-              <input type="email" class="form-control" id="email" name="email" required />
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                value="<%= formValues.email %>"
+                required
+              />
             </div>
             <div class="mb-3">
               <label for="amount" class="form-label">Donation Amount ($) *</label>
-              <input type="number" class="form-control" id="amount" name="amount" min="1" step="0.01" required />
+              <input
+                type="number"
+                class="form-control"
+                id="amount"
+                name="amount"
+                min="1"
+                step="0.01"
+                value="<%= formValues.amount %>"
+                required
+              />
             </div>
             <div class="mb-3">
               <label for="message" class="form-label">Message (Optional)</label>
-              <textarea class="form-control" id="message" name="message" rows="3" placeholder="Share why you're supporting Ella Rises..."></textarea>
+              <textarea
+                class="form-control"
+                id="message"
+                name="message"
+                rows="3"
+                placeholder="Share why you're supporting Ella Rises..."
+              ><%= formValues.message %></textarea>
             </div>
             <div class="text-center">
               <button type="submit" class="btn btn-custom-primary">
