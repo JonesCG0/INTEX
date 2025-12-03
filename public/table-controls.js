@@ -1,6 +1,6 @@
 // Lightweight client-side search and pagination for data tables
 document.addEventListener("DOMContentLoaded", () => {
-  const PAGE_SIZE = 20;
+  const DEFAULT_PAGE_SIZE = 20;
 
   const tables = Array.from(document.querySelectorAll("table[data-table-id]"));
   if (!tables.length) return;
@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!tableId || !tbody || !headerCells.length) return;
 
     const searchInput = document.querySelector(`[data-search-for="${tableId}"]`);
+    const pageSizeSelect = document.querySelector(
+      `[data-page-size-for="${tableId}"]`
+    );
     const paginations = document.querySelectorAll(
       `[data-pagination-for="${tableId}"]`
     );
@@ -19,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const rows = Array.from(tbody.querySelectorAll("tr"));
     let filteredRows = rows.slice();
     let currentPage = 1;
+    let pageSize = parseInt(pageSizeSelect?.value, 10) || DEFAULT_PAGE_SIZE;
 
     // Empty-state row reused when no results match
     const emptyRow = document.createElement("tr");
@@ -34,11 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
       rows.forEach((row) => (row.style.display = "none"));
       emptyRow.style.display = "none";
 
-      const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
+      const totalPages = Math.max(1, Math.ceil(filteredRows.length / pageSize));
       if (currentPage > totalPages) currentPage = totalPages;
 
-      const start = (currentPage - 1) * PAGE_SIZE;
-      const visible = filteredRows.slice(start, start + PAGE_SIZE);
+      const start = (currentPage - 1) * pageSize;
+      const visible = filteredRows.slice(start, start + pageSize);
 
       if (!visible.length) {
         emptyRow.style.display = "";
@@ -137,6 +141,17 @@ document.addEventListener("DOMContentLoaded", () => {
           : rows.slice();
         currentPage = 1;
         updateVisibleRows();
+      });
+    }
+
+    if (pageSizeSelect) {
+      pageSizeSelect.addEventListener("change", () => {
+        const selected = parseInt(pageSizeSelect.value, 10);
+        if (!Number.isNaN(selected)) {
+          pageSize = selected;
+          currentPage = 1;
+          updateVisibleRows();
+        }
       });
     }
 

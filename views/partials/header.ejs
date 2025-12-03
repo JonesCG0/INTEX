@@ -287,10 +287,43 @@
         box-shadow: 0 0 0 0.2rem rgba(206, 50, 91, 0.15);
       }
 
+      select[data-page-size-for] {
+        padding-right: 2.5rem;
+        background-position: right 0.6rem center;
+      }
+
       .form-label {
         font-weight: 600;
         color: var(--dark-text);
         margin-bottom: 8px;
+      }
+
+      .pagination-soft .page-link {
+        color: var(--dark-text);
+        border: 1px solid #f2d7d9;
+        background: #ffffff;
+        border-radius: 6px;
+        padding: 6px 10px;
+        transition: all 0.2s ease;
+      }
+
+      .pagination-soft .page-link:hover {
+        background: var(--pink-bg);
+        color: var(--accent-color);
+        border-color: var(--peach-accent);
+      }
+
+      .pagination-soft .page-item.active .page-link {
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+        color: var(--dark-text);
+        box-shadow: 0 0 0 0.15rem rgba(249, 175, 177, 0.35);
+      }
+
+      .pagination-soft .page-item.disabled .page-link {
+        color: #b8b8b8;
+        background: #faf5f2;
+        border-color: #f2d7d9;
       }
     </style>
   </head>

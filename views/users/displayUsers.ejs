@@ -17,8 +17,38 @@
       </div>
     <% } %>
 
+    <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 mb-3">
+      <div class="d-flex align-items-center gap-2 flex-grow-1 flex-lg-grow-0">
+        <input
+          type="search"
+          class="form-control w-auto"
+          style="min-width: 240px; max-width: 320px;"
+          placeholder="Search users"
+          aria-label="Search users"
+          data-search-for="users-table"
+        />
+        <nav aria-label="Users pagination (top)">
+          <ul class="pagination pagination-sm mb-0 pagination-soft" data-pagination-for="users-table"></ul>
+        </nav>
+      </div>
+      <div class="d-flex align-items-center gap-2 ms-lg-auto">
+        <label for="users-page-size" class="text-muted small mb-0">Rows/page</label>
+        <select
+          id="users-page-size"
+          class="form-select form-select-sm w-auto"
+          data-page-size-for="users-table"
+        >
+          <option value="10">10</option>
+          <option value="20" selected>20</option>
+          <option value="30">30</option>
+          <option value="40">40</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+
     <div class="table-responsive">
-      <table class="table">
+      <table class="table" data-table-id="users-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -67,6 +97,11 @@
           <% }) %>
         </tbody>
       </table>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+      <nav aria-label="Users pagination">
+        <ul class="pagination pagination-sm mb-0 pagination-soft" data-pagination-for="users-table"></ul>
+      </nav>
     </div>
   </div>
 </div>
