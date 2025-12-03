@@ -9,6 +9,7 @@ const {
 } = require("../utils/validators");
 const {
   findOrCreateSupportUser,
+  findUserById,
   recordDonation,
 } = require("../utils/donationService");
 
@@ -96,6 +97,7 @@ router.get("/support", (req, res) => {
 
 router.post("/support/donate", async (req, res) => {
   const { firstName, lastName, email, amount, message } = req.body;
+  const sessionUser = req.session.user || null;
 
   const errors = [];
   const cleanFirstName = sanitizeText(firstName);
@@ -141,10 +143,19 @@ router.post("/support/donate", async (req, res) => {
     let donationRecord = null;
 
     await db.transaction(async (trx) => {
-      const donorUser = await findOrCreateSupportUser(
-        { firstName: cleanFirstName, lastName: cleanLastName, email: cleanEmail },
-        trx
-      );
+      let donorUser;
+
+      if (sessionUser && sessionUser.userid) {
+        donorUser = await findUserById(sessionUser.userid, trx);
+        if (!donorUser) {
+          throw new Error(`Authenticated user ${sessionUser.userid} not found`);
+        }
+      } else {
+        donorUser = await findOrCreateSupportUser(
+          { firstName: cleanFirstName, lastName: cleanLastName, email: cleanEmail },
+          trx
+        );
+      }
 
       donationRecord = await recordDonation(
         {
