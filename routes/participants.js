@@ -10,6 +10,7 @@ const {
   sanitizeZip,
   sanitizeISODate,
 } = require("../utils/validators");
+const { formatAsDateInput } = require("../utils/dateHelpers");
 
 function buildParticipantPayload(body) {
   const payload = {
@@ -137,8 +138,13 @@ router.get("/:id/edit", requireAdmin, async (req, res) => {
       return res.status(404).send("Participant not found");
     }
 
+    const participantForView = {
+      ...participant,
+      participantdobInputValue: formatAsDateInput(participant.participantdob),
+    };
+
     res.render("participants/edit", {
-      participant,
+      participant: participantForView,
       error: null,
       user: req.session.user,
     });
@@ -169,9 +175,24 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
 
   const { payload, errors } = buildParticipantPayload(req.body);
 
+  const buildParticipantViewModel = (source) => ({
+    ...source,
+    participantdobInputValue:
+      typeof source.participantdobInputValue !== "undefined"
+        ? source.participantdobInputValue
+        : formatAsDateInput(source.participantdob),
+  });
+
   if (errors.length) {
+    const participantView = buildParticipantViewModel({
+      ...existing,
+      ...req.body,
+      participantdobInputValue:
+        req.body.participantdob || formatAsDateInput(existing.participantdob),
+    });
+
     return res.status(400).render("participants/edit", {
-      participant: { ...existing, ...req.body },
+      participant: participantView,
       error: errors[0],
       user: req.session.user,
     });
@@ -182,8 +203,15 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
     res.redirect(`/participants/${participantId}`);
   } catch (err) {
     console.error("Update participant error:", err);
+    const participantView = buildParticipantViewModel({
+      ...existing,
+      ...req.body,
+      participantdobInputValue:
+        req.body.participantdob || formatAsDateInput(existing.participantdob),
+    });
+
     res.status(500).render("participants/edit", {
-      participant: { ...existing, ...req.body },
+      participant: participantView,
       error: "Unable to update participant",
       user: req.session.user,
     });

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
+const { formatAsDatetimeLocalInput } = require("../utils/dateHelpers");
 
 // ---------------------------------------------------------------------------
 // List all events
@@ -173,6 +174,14 @@ router.get("/:id/edit", requireAdmin, async (req, res) => {
     if (!event) {
       return res.status(404).send("Event not found");
     }
+
+    event.dateInputValue = formatAsDatetimeLocalInput(event.date);
+    event.eventdatetimeendInputValue = formatAsDatetimeLocalInput(
+      event.eventdatetimeend
+    );
+    event.eventregistrationdeadlineInputValue = formatAsDatetimeLocalInput(
+      event.eventregistrationdeadline
+    );
 
     res.render("events/edit", {
       event,

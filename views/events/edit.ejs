@@ -43,12 +43,12 @@
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="date" class="form-label">Start Date/Time</label>
-              <input type="text" id="date" name="date" class="form-control" value="<%= event.date || '' %>">
+              <input type="datetime-local" id="date" name="date" class="form-control" value="<%= event.dateInputValue || '' %>">
             </div>
 
             <div class="col-md-6 mb-3">
               <label for="eventdatetimeend" class="form-label">End Date/Time</label>
-              <input type="text" id="eventdatetimeend" name="eventdatetimeend" class="form-control" value="<%= event.eventdatetimeend || '' %>">
+              <input type="datetime-local" id="eventdatetimeend" name="eventdatetimeend" class="form-control" value="<%= event.eventdatetimeendInputValue || '' %>">
             </div>
           </div>
 
@@ -65,7 +65,7 @@
 
             <div class="col-md-4 mb-3">
               <label for="eventregistrationdeadline" class="form-label">Registration Deadline</label>
-              <input type="text" id="eventregistrationdeadline" name="eventregistrationdeadline" class="form-control" value="<%= event.eventregistrationdeadline || '' %>">
+              <input type="datetime-local" id="eventregistrationdeadline" name="eventregistrationdeadline" class="form-control" value="<%= event.eventregistrationdeadlineInputValue || '' %>">
             </div>
           </div>
 
