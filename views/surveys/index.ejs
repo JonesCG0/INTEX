@@ -17,8 +17,25 @@
     </div>
     <% } %>
 
+    <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 mb-3">
+      <div class="d-flex align-items-center gap-2 flex-grow-1 flex-lg-grow-0">
+        <input
+          type="search"
+          class="form-control w-auto"
+          style="min-width: 240px; max-width: 320px;"
+          placeholder="Search surveys"
+          aria-label="Search surveys"
+          data-search-for="surveys-table"
+        />
+        <nav aria-label="Surveys pagination (top)">
+          <ul class="pagination pagination-sm mb-0" data-pagination-for="surveys-table"></ul>
+        </nav>
+      </div>
+      <div class="text-muted small ms-lg-auto">Showing 20 per page</div>
+    </div>
+
     <div class="table-responsive">
-      <table class="table">
+      <table class="table" data-table-id="surveys-table">
         <thead>
           <tr>
             <th>
@@ -147,6 +164,11 @@
           <% }) %>
         </tbody>
       </table>
+    </div>
+    <div class="d-flex justify-content-center mt-3">
+      <nav aria-label="Surveys pagination">
+        <ul class="pagination pagination-sm mb-0" data-pagination-for="surveys-table"></ul>
+      </nav>
     </div>
   </div>
 </div>
