@@ -13,6 +13,7 @@ const {
   getAnonymousDonorUser,
   recordDonation,
 } = require("../utils/donationService");
+const { sendEmail } = require("../utils/mailer");
 
 const SUPPORT_METADATA_TABLE = "support_donations";
 let metadataTableReady = false;
@@ -198,6 +199,55 @@ router.post("/support/donate", async (req, res) => {
           });
       }
     });
+
+    if (cleanEmail) {
+      const donorFirstName = cleanFirstName || firstName || null;
+      const donorLastName = cleanLastName || lastName || null;
+      const displayName = [donorFirstName, donorLastName]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+      const greetingName = donorFirstName || displayName || "there";
+      const formattedAmount = Number(cleanAmount).toFixed(2);
+      const escapeHtml = (value) =>
+        value
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      const textBody = [
+        `Hi ${greetingName},`,
+        "",
+        "Thank you for supporting our participants.",
+        `We have recorded your donation of $${formattedAmount}.`,
+        "",
+        cleanMessage ? `Your note: "${cleanMessage}"` : null,
+        "If you have any questions, reply to this email.",
+        "",
+        "— The INTEX Team",
+      ]
+        .filter(Boolean)
+        .join("\n");
+      const htmlBody = `
+        <p>Hi ${greetingName},</p>
+        <p>Thank you for supporting our participants.</p>
+        <p>We have recorded your donation of <strong>$${formattedAmount}</strong>.</p>
+        ${
+          cleanMessage
+            ? `<p><em>Your note:</em> ${escapeHtml(cleanMessage)}</p>`
+            : ""
+        }
+        <p>If you have any questions, reply to this email.</p>
+        <p>— The INTEX Team</p>
+      `;
+      sendEmail({
+        to: cleanEmail,
+        subject: "Thank you for supporting INTEX",
+        text: textBody,
+        html: htmlBody,
+      }).catch((emailErr) => {
+        console.error("Unable to send support donation receipt:", emailErr);
+      });
+    }
 
     return renderSupport(
       {
