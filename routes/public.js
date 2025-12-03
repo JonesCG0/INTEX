@@ -62,7 +62,7 @@ async function ensureSupportDonationMetadataTable() {
 router.get("/", async (req, res) => {
   try {
     // Fetch counts from database
-    const [participantCount] = await db("participants").count("* as count");
+    const [participantCount] = await db("users").count("* as count");
     const [eventCount] = await db("eventoccurrences").count("* as count");
     const [milestoneCount] = await db("milestones").count("* as count");
     const donationSum = await db("donationtotals")
