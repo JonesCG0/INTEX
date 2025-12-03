@@ -35,11 +35,28 @@ router.get("/", requireAuth, async (req, res) => {
 // ---------------------------------------------------------------------------
 // New event form (ADMIN)
 // ---------------------------------------------------------------------------
-router.get("/new", requireAdmin, (req, res) => {
-  res.render("events/new", {
-    error: null,
-    user: req.session.user,
-  });
+router.get("/new", requireAdmin, async (req, res) => {
+  try {
+    // Fetch all event templates to populate the dropdowns
+    const eventTemplates = await db
+      .select("eventtemplateid", "eventname")
+      .from("eventtemplates")
+      .whereNotNull("eventname")
+      .orderBy("eventname", "asc");
+
+    res.render("events/new", {
+      error: null,
+      user: req.session.user,
+      eventTemplates: eventTemplates,
+    });
+  } catch (err) {
+    console.error("Fetch event templates error:", err);
+    res.render("events/new", {
+      error: "Unable to load event templates.",
+      user: req.session.user,
+      eventTemplates: [],
+    });
+  }
 });
 
 // ---------------------------------------------------------------------------
@@ -47,39 +64,40 @@ router.get("/new", requireAdmin, (req, res) => {
 // Creates a new template + a single occurrence based on title + date
 // ---------------------------------------------------------------------------
 router.post("/new", requireAdmin, async (req, res) => {
-  const { title, date } = req.body;
+  // Helper function to fetch event templates
+  const getEventTemplates = async () => {
+    try {
+      return await db
+        .select("eventtemplateid", "eventname")
+        .from("eventtemplates")
+        .whereNotNull("eventname")
+        .orderBy("eventname", "asc");
+    } catch (err) {
+      console.error("Fetch event templates error:", err);
+      return [];
+    }
+  };
 
-  if (!title || !date) {
+  if (!req.body.eventTemplateID || !req.body.eventdatetimestart) {
+    const eventTemplates = await getEventTemplates();
     return res.status(400).render("events/new", {
       error: "Title and date are required.",
       user: req.session.user,
+      eventTemplates: eventTemplates,
     });
   }
 
   try {
     const eventId = await db.transaction(async (trx) => {
-      // 1) Create an event template (minimal fields)
-      const [template] = await trx("eventtemplates")
-        .insert({
-          eventname: title,
-          eventtype: null,
-          eventdescription: null,
-          eventrecurrencepattern: null,
-          eventdefaultcapacity: null,
-        })
-        .returning("eventtemplateid");
-
-      const templateId = template.eventtemplateid;
-
-      // 2) Create the event occurrence
+      // Create the event occurrence
       const [occurrence] = await trx("eventoccurrences")
         .insert({
-          eventdatetimestart: date,
-          eventdatetimeend: null,
-          eventlocation: null,
-          eventcapacity: null,
-          eventregistrationdeadline: null,
-          eventtemplateid: templateId,
+          eventdatetimestart: req.body.eventdatetimestart,
+          eventdatetimeend: req.body.eventdatetimeend,
+          eventlocation: req.body.eventlocation,
+          eventcapacity: req.body.eventcapacity,
+          eventregistrationdeadline: req.body.eventregistrationdeadline,
+          eventtemplateid: req.body.eventTemplateID,
         })
         .returning("eventoccurrenceid");
 
@@ -90,9 +108,11 @@ router.post("/new", requireAdmin, async (req, res) => {
     res.redirect(`/events/${eventId}`);
   } catch (err) {
     console.error("Create event error:", err);
+    const eventTemplates = await getEventTemplates();
     res.status(500).render("events/new", {
       error: "There was a problem creating the event.",
       user: req.session.user,
+      eventTemplates: eventTemplates,
     });
   }
 });

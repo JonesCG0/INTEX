@@ -12,25 +12,44 @@
     <div class="col-lg-6">
       <div class="card">
         <% if (error) { %>
-          <div class="alert alert-danger">
-            <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
-          </div>
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+        </div>
         <% } %>
 
         <form action="/milestones/new" method="POST">
           <div class="mb-3">
-            <label for="milestonetitle" class="form-label">Milestone Title</label>
-            <input type="text" id="milestonetitle" name="milestonetitle" class="form-control" placeholder="Enter milestone title">
+            <label for="milestonetitle" class="form-label"
+              >Milestone Title</label
+            >
+            <input
+              type="text"
+              id="milestonetitle"
+              name="milestonetitle"
+              class="form-control"
+              placeholder="Enter milestone title"
+            />
           </div>
 
           <div class="mb-3">
             <label for="milestonedate" class="form-label">Milestone Date</label>
-            <input type="text" id="milestonedate" name="milestonedate" class="form-control" placeholder="YYYY-MM-DD">
+            <input
+              type="date"
+              id="milestonedate"
+              name="milestonedate"
+              class="form-control"
+            />
           </div>
 
           <div class="mb-3">
             <label for="participantid" class="form-label">Participant ID</label>
-            <input type="number" id="participantid" name="participantid" class="form-control" placeholder="Enter participant ID">
+            <input
+              type="number"
+              id="userid"
+              name="userid"
+              class="form-control"
+              placeholder="Enter participant ID"
+            />
           </div>
 
           <div class="d-grid gap-2 d-md-flex">
