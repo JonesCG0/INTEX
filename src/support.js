@@ -6,6 +6,7 @@ const path = require("path");
 const db = require("../db");
 const multer = require("multer");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+const { hashPassword, verifyPassword } = require("../utils/passwords");
 
 const app = express();
 
@@ -151,15 +152,29 @@ app.get("/auth/login", (req, res) => {
 
 // Login submit
 app.post("/auth/login", async (req, res) => {
-  const { username, password } = req.body;
+  const cleanUsername = typeof req.body.username === "string" ? req.body.username.trim() : "";
+  const cleanPassword = typeof req.body.password === "string" ? req.body.password.trim() : "";
+
+  if (!cleanUsername || !cleanPassword) {
+    return res.render("auth/login", {
+      error: "Username and password are required",
+    });
+  }
 
   try {
-    const user = await db('users')
-      .select('userid', 'username', 'password', 'photo', 'userrole as role')
-      .where({ username, password })
+    const user = await db("users")
+      .select("userid", "username", "password", "photo", "userrole as role")
+      .where({ username: cleanUsername })
       .first();
 
     if (!user) {
+      return res.render("auth/login", {
+        error: "Invalid username or password",
+      });
+    }
+
+    const validPassword = await verifyPassword(cleanPassword, user.password);
+    if (!validPassword) {
       return res.render("auth/login", {
         error: "Invalid username or password",
       });
@@ -230,9 +245,11 @@ app.post(
   requireAdmin,
   upload.single("photoFile"),
   async (req, res) => {
-    const { username, password, role } = req.body;
+    const cleanUsername = typeof req.body.username === "string" ? req.body.username.trim() : "";
+    const cleanPassword = typeof req.body.password === "string" ? req.body.password.trim() : "";
+    const { role } = req.body;
 
-    if (!username || !password) {
+    if (!cleanUsername || !cleanPassword) {
       return res.render("addUser", {
         error: "Username and password are required",
         user: req.session.user,
@@ -248,11 +265,13 @@ app.post(
         photoUrl = await uploadToS3(req.file);
       }
 
-      await db('users').insert({
-        username,
-        password,
+      const passwordHash = await hashPassword(cleanPassword);
+
+      await db("users").insert({
+        username: cleanUsername,
+        password: passwordHash,
         photo: photoUrl,
-        userrole: safeRole
+        userrole: safeRole,
       });
 
       res.redirect("/users");
@@ -296,12 +315,14 @@ app.post(
   requireAdmin,
   upload.single("photoFile"),
   async (req, res) => {
-    const { username, password, existingPhoto, role } = req.body;
+    const cleanUsername = typeof req.body.username === "string" ? req.body.username.trim() : "";
+    const cleanPassword = typeof req.body.password === "string" ? req.body.password.trim() : "";
+    const { existingPhoto, role } = req.body;
     const userid = req.params.userid;
 
-    if (!username) {
+    if (!cleanUsername) {
       return res.render("editUser", {
-        userRecord: { userid, username, photo: existingPhoto, role },
+        userRecord: { userid, username: cleanUsername, photo: existingPhoto, role },
         error: "Username is required",
         user: req.session.user,
       });
@@ -317,18 +338,16 @@ app.post(
       }
 
       const updateData = {
-        username,
+        username: cleanUsername,
         photo: photoUrl,
-        userrole: safeRole
+        userrole: safeRole,
       };
 
-      if (password) {
-        updateData.password = password;
+      if (cleanPassword) {
+        updateData.password = await hashPassword(cleanPassword);
       }
 
-      await db('users')
-        .where({ userid })
-        .update(updateData);
+      await db("users").where({ userid }).update(updateData);
 
       res.redirect("/users");
     } catch (err) {

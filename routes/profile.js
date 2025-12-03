@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../db");
 const { upload, uploadToS3 } = require("../s3");
+const { hashPassword } = require("../utils/passwords");
 
 // View profile (any logged-in user can view their own profile)
 router.get("/", async (req, res) => {
@@ -52,8 +53,10 @@ router.get("/edit", async (req, res) => {
 router.post("/edit", upload.single("photoFile"), async (req, res) => {
   const { username, password, existingPhoto } = req.body;
   const userid = req.session.user.userid;
+  const cleanUsername = typeof username === "string" ? username.trim() : "";
+  const cleanPassword = typeof password === "string" ? password.trim() : "";
 
-  if (!username) {
+  if (!cleanUsername) {
     const userRecord = await db("users")
       .select("userid", "username", "password", "photo", "userrole as role")
       .where({ userid })
@@ -74,18 +77,18 @@ router.post("/edit", upload.single("photoFile"), async (req, res) => {
     }
 
     const updateData = {
-      username,
+      username: cleanUsername,
       photo: photoUrl,
     };
 
-    if (password) {
-      updateData.password = password;
+    if (cleanPassword) {
+      updateData.password = await hashPassword(cleanPassword);
     }
 
     await db("users").where({ userid }).update(updateData);
 
     // Update session with new username
-    req.session.user.username = username;
+    req.session.user.username = cleanUsername;
 
     res.redirect("/profile");
   } catch (err) {

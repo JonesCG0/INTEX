@@ -9,6 +9,7 @@ const {
   sanitizeZip,
   sanitizeISODate
 } = require('../utils/validators');
+const { hashPassword, verifyPassword } = require('../utils/passwords');
 
 function ensureValidRole(role) {
   if (typeof role !== 'string') {
@@ -30,15 +31,25 @@ router.get('/login', (req, res) => {
 
 // Login submit
 router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  const cleanUsername = sanitizeText(req.body.username);
+  const cleanPassword = typeof req.body.password === 'string' ? req.body.password.trim() : '';
+
+  if (!cleanUsername || !cleanPassword) {
+    return res.render('auth/login', { error: 'Username and password are required' });
+  }
 
   try {
     const user = await db('users')
       .select('userid', 'username', 'password', 'photo', 'userrole as role')
-      .where({ username, password })
+      .where({ username: cleanUsername })
       .first();
 
     if (!user) {
+      return res.render('auth/login', { error: 'Invalid username or password' });
+    }
+
+    const validPassword = await verifyPassword(cleanPassword, user.password);
+    if (!validPassword) {
       return res.render('auth/login', { error: 'Invalid username or password' });
     }
 
@@ -148,9 +159,11 @@ router.post('/signup', async (req, res) => {
       return res.render('auth/signup', { error: 'Username already taken' });
     }
 
+    const passwordHash = await hashPassword(cleanPassword);
+
     const newUserPayload = {
       username: cleanUsername,
-      password: cleanPassword,
+      password: passwordHash,
       userrole: 'participant',
       userfirstname: cleanFirstName,
       userlastname: cleanLastName,

@@ -4,6 +4,7 @@ const db = require("../db");
 const { upload, uploadToS3 } = require("../s3");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 const { sanitizeText } = require("../utils/validators");
+const { hashPassword } = require("../utils/passwords");
 
 function parseRole(rawRole) {
   if (typeof rawRole !== "string") {
@@ -63,9 +64,11 @@ router.post(
         photoUrl = await uploadToS3(req.file);
       }
 
+      const passwordHash = await hashPassword(cleanPassword);
+
       await db("users").insert({
         username: cleanUsername,
-        password: cleanPassword,
+        password: passwordHash,
         photo: photoUrl,
         userrole: safeRole,
       });
@@ -141,7 +144,7 @@ router.post(
       };
 
       if (cleanPassword) {
-        updateData.password = cleanPassword;
+        updateData.password = await hashPassword(cleanPassword);
       }
 
       await db("users").where({ userid }).update(updateData);

@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const db = require("../db");
 const donationConfig = require("../config/donations");
+const { hashPassword } = require("./passwords");
 
 const anonymousDonorId =
   Number(
@@ -65,11 +66,12 @@ async function createSupportUser({ firstName, lastName, email }, trx = null) {
   const usernameBase = email || `${firstName || "donor"}.${lastName || "supporter"}`;
   const username = await generateUniqueUsername(usernameBase, executor);
   const password = crypto.randomBytes(8).toString("hex");
+  const passwordHash = await hashPassword(password);
 
   const [created] = await executor("users")
     .insert({
       username,
-      password,
+      password: passwordHash,
       userrole: "participant",
       userfirstname: firstName || null,
       userlastname: lastName || null,

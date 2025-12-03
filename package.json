@@ -5,10 +5,12 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test:email": "node scripts/testEmail.js"
+    "test:email": "node scripts/testEmail.js",
+    "migrate:passwords": "node scripts/hashPasswords.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.669.0",
+    "bcrypt": "^6.0.0",
     "dotenv": "^16.6.1",
     "ejs": "^3.1.10",
     "express": "^4.19.2",
