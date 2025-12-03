@@ -10,6 +10,7 @@ const {
 const {
   findOrCreateSupportUser,
   findUserById,
+  getAnonymousDonorUser,
   recordDonation,
 } = require("../utils/donationService");
 
@@ -31,11 +32,22 @@ async function ensureSupportDonationMetadataTable() {
           .onDelete("CASCADE");
         table.string("firstname", 120).notNullable();
         table.string("lastname", 120).notNullable();
-        table.string("email", 255).notNullable();
+        table.string("email", 255).nullable();
         table.decimal("donationamount", 12, 2).notNullable();
         table.text("message");
         table.timestamp("createdat").defaultTo(db.fn.now());
       });
+    } else {
+      await db.schema
+        .alterTable(SUPPORT_METADATA_TABLE, (table) => {
+          table.string("email", 255).nullable().alter();
+        })
+        .catch((err) => {
+          console.warn(
+            "Unable to alter support donation metadata email column (continuing):",
+            err
+          );
+        });
     }
     metadataTableReady = true;
     return true;
@@ -102,7 +114,13 @@ router.post("/support/donate", async (req, res) => {
   const errors = [];
   const cleanFirstName = sanitizeText(firstName);
   const cleanLastName = sanitizeText(lastName);
-  const cleanEmail = sanitizeEmail(email);
+  let cleanEmail = null;
+  if (hasText(email)) {
+    cleanEmail = sanitizeEmail(email);
+    if (!cleanEmail) {
+      errors.push("Please enter a valid email address or leave it blank.");
+    }
+  }
   const cleanAmount = sanitizeDecimal(amount, { min: 1 });
   const cleanMessage = hasText(message) ? message.trim() : null;
 
@@ -111,9 +129,6 @@ router.post("/support/donate", async (req, res) => {
   }
   if (!cleanLastName) {
     errors.push("Last name is required");
-  }
-  if (!cleanEmail) {
-    errors.push("A valid email address is required");
   }
   if (!cleanAmount) {
     errors.push("Please enter a donation amount of at least $1.00");
@@ -150,11 +165,13 @@ router.post("/support/donate", async (req, res) => {
         if (!donorUser) {
           throw new Error(`Authenticated user ${sessionUser.userid} not found`);
         }
-      } else {
+      } else if (cleanEmail) {
         donorUser = await findOrCreateSupportUser(
           { firstName: cleanFirstName, lastName: cleanLastName, email: cleanEmail },
           trx
         );
+      } else {
+        donorUser = await getAnonymousDonorUser(trx);
       }
 
       donationRecord = await recordDonation(

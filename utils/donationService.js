@@ -1,5 +1,13 @@
 const crypto = require("crypto");
 const db = require("../db");
+const donationConfig = require("../config/donations");
+
+const anonymousDonorId =
+  Number(
+    process.env.ANONYMOUS_DONOR_USERID ||
+      donationConfig.anonymousDonorUserId ||
+      0
+  ) || null;
 
 function getExecutor(trx) {
   return trx || db;
@@ -81,6 +89,21 @@ async function findOrCreateSupportUser({ firstName, lastName, email }, trx = nul
   return createSupportUser({ firstName, lastName, email }, trx);
 }
 
+async function getAnonymousDonorUser(trx = null) {
+  if (!anonymousDonorId) {
+    throw new Error(
+      "Anonymous donor user ID is not configured. Please set ANONYMOUS_DONOR_USERID in your environment."
+    );
+  }
+  const user = await findUserById(anonymousDonorId, trx);
+  if (!user) {
+    throw new Error(
+      `Anonymous donor user with ID ${anonymousDonorId} was not found in the database`
+    );
+  }
+  return user;
+}
+
 async function recordDonation({ userid, amount, donationDate }, trx = null) {
   if (!userid) {
     throw new Error("A valid user ID is required to record a donation");
@@ -112,4 +135,5 @@ module.exports = {
   findOrCreateSupportUser,
   findUserById,
   recordDonation,
+  getAnonymousDonorUser,
 };
