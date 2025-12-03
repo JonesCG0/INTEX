@@ -9,30 +9,29 @@
 
 <div class="container">
   <div class="card">
-    <% if (user && user.role === 'admin') { %>
-    <div class="mb-3">
-      <a href="/surveys/new" class="btn btn-success">
-        <i class="bi bi-plus-circle-fill"></i> Add New Survey
-      </a>
-    </div>
-    <% } %>
-
-    <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 mb-3">
+    <div
+      class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 mb-3"
+    >
       <div class="d-flex align-items-center gap-2 flex-grow-1 flex-lg-grow-0">
         <input
           type="search"
           class="form-control w-auto"
-          style="min-width: 240px; max-width: 320px;"
+          style="min-width: 240px; max-width: 320px"
           placeholder="Search surveys"
           aria-label="Search surveys"
           data-search-for="surveys-table"
         />
         <nav aria-label="Surveys pagination (top)">
-          <ul class="pagination pagination-sm mb-0 pagination-soft" data-pagination-for="surveys-table"></ul>
+          <ul
+            class="pagination pagination-sm mb-0 pagination-soft"
+            data-pagination-for="surveys-table"
+          ></ul>
         </nav>
       </div>
       <div class="d-flex align-items-center gap-2 ms-lg-auto">
-        <label for="surveys-page-size" class="text-muted small mb-0">Rows/page</label>
+        <label for="surveys-page-size" class="text-muted small mb-0"
+          >Rows/page</label
+        >
         <select
           id="surveys-page-size"
           class="form-select form-select-sm w-auto"
@@ -51,76 +50,142 @@
       <table class="table" data-table-id="surveys-table">
         <thead>
           <tr>
+            <th>Participant</th>
+            <th>Event</th>
             <th>
-              <a href="?sortBy=surveysatisfactionscore&sortOrder=<%= sortBy === 'surveysatisfactionscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
-                Satisfaction
-                <% if (sortBy === 'surveysatisfactionscore') { %>
-                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+              <a
+                href="?sortBy=surveysatisfactionscore&sortOrder=<%= sortBy === 'surveysatisfactionscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>"
+                style="
+                  color: inherit;
+                  text-decoration: none;
+                  cursor: pointer;
+                  white-space: nowrap;
+                "
+              >
+                Satisfaction <% if (sortBy === 'surveysatisfactionscore') { %>
+                <i
+                  class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"
+                ></i>
                 <% } else { %>
-                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <i
+                  class="bi bi-arrow-down-up"
+                  style="opacity: 0.3; font-size: 0.8em"
+                ></i>
                 <% } %>
               </a>
             </th>
             <th>
-              <a href="?sortBy=surveyusefulnessscore&sortOrder=<%= sortBy === 'surveyusefulnessscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
-                Usefulness
-                <% if (sortBy === 'surveyusefulnessscore') { %>
-                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+              <a
+                href="?sortBy=surveyusefulnessscore&sortOrder=<%= sortBy === 'surveyusefulnessscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>"
+                style="
+                  color: inherit;
+                  text-decoration: none;
+                  cursor: pointer;
+                  white-space: nowrap;
+                "
+              >
+                Usefulness <% if (sortBy === 'surveyusefulnessscore') { %>
+                <i
+                  class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"
+                ></i>
                 <% } else { %>
-                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <i
+                  class="bi bi-arrow-down-up"
+                  style="opacity: 0.3; font-size: 0.8em"
+                ></i>
                 <% } %>
               </a>
             </th>
             <th>
-              <a href="?sortBy=surveyinstructorscore&sortOrder=<%= sortBy === 'surveyinstructorscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
-                Instructor
-                <% if (sortBy === 'surveyinstructorscore') { %>
-                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+              <a
+                href="?sortBy=surveyinstructorscore&sortOrder=<%= sortBy === 'surveyinstructorscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>"
+                style="
+                  color: inherit;
+                  text-decoration: none;
+                  cursor: pointer;
+                  white-space: nowrap;
+                "
+              >
+                Instructor <% if (sortBy === 'surveyinstructorscore') { %>
+                <i
+                  class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"
+                ></i>
                 <% } else { %>
-                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <i
+                  class="bi bi-arrow-down-up"
+                  style="opacity: 0.3; font-size: 0.8em"
+                ></i>
                 <% } %>
               </a>
             </th>
             <th>
-              <a href="?sortBy=surveyrecommendationscore&sortOrder=<%= sortBy === 'surveyrecommendationscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
-                Recommendation
-                <% if (sortBy === 'surveyrecommendationscore') { %>
-                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+              <a
+                href="?sortBy=surveyrecommendationscore&sortOrder=<%= sortBy === 'surveyrecommendationscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>"
+                style="
+                  color: inherit;
+                  text-decoration: none;
+                  cursor: pointer;
+                  white-space: nowrap;
+                "
+              >
+                Recommendation <% if (sortBy === 'surveyrecommendationscore') {
+                %>
+                <i
+                  class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"
+                ></i>
                 <% } else { %>
-                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <i
+                  class="bi bi-arrow-down-up"
+                  style="opacity: 0.3; font-size: 0.8em"
+                ></i>
                 <% } %>
               </a>
             </th>
             <th>
-              <a href="?sortBy=surveyoverallscore&sortOrder=<%= sortBy === 'surveyoverallscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
-                Overall
-                <% if (sortBy === 'surveyoverallscore') { %>
-                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+              <a
+                href="?sortBy=surveyoverallscore&sortOrder=<%= sortBy === 'surveyoverallscore' && sortOrder === 'asc' ? 'desc' : 'asc' %>"
+                style="
+                  color: inherit;
+                  text-decoration: none;
+                  cursor: pointer;
+                  white-space: nowrap;
+                "
+              >
+                Overall <% if (sortBy === 'surveyoverallscore') { %>
+                <i
+                  class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"
+                ></i>
                 <% } else { %>
-                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <i
+                  class="bi bi-arrow-down-up"
+                  style="opacity: 0.3; font-size: 0.8em"
+                ></i>
                 <% } %>
               </a>
             </th>
             <th>
-              <a href="?sortBy=surveysubmissiondate&sortOrder=<%= sortBy === 'surveysubmissiondate' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
-                Submission Date
-                <% if (sortBy === 'surveysubmissiondate') { %>
-                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
+              <a
+                href="?sortBy=surveysubmissiondate&sortOrder=<%= sortBy === 'surveysubmissiondate' && sortOrder === 'asc' ? 'desc' : 'asc' %>"
+                style="
+                  color: inherit;
+                  text-decoration: none;
+                  cursor: pointer;
+                  white-space: nowrap;
+                "
+              >
+                Submission Date <% if (sortBy === 'surveysubmissiondate') { %>
+                <i
+                  class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"
+                ></i>
                 <% } else { %>
-                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
+                <i
+                  class="bi bi-arrow-down-up"
+                  style="opacity: 0.3; font-size: 0.8em"
+                ></i>
                 <% } %>
               </a>
             </th>
-            <th>
-              <a href="?sortBy=registrationid&sortOrder=<%= sortBy === 'registrationid' && sortOrder === 'asc' ? 'desc' : 'asc' %>" style="color: inherit; text-decoration: none; cursor: pointer; white-space: nowrap;">
-                Registration ID
-                <% if (sortBy === 'registrationid') { %>
-                  <i class="bi bi-arrow-<%= sortOrder === 'asc' ? 'up' : 'down' %>"></i>
-                <% } else { %>
-                  <i class="bi bi-arrow-down-up" style="opacity: 0.3; font-size: 0.8em;"></i>
-                <% } %>
-              </a>
-            </th>
+
             <% if (user && user.role === 'admin') { %>
             <th>Actions</th>
             <% } %>
@@ -129,6 +194,8 @@
         <tbody>
           <% surveys.forEach(s => { %>
           <tr>
+            <td><%= s.userfirstname %> <%= s.userlastname %></td>
+            <td><%= s.eventname || '—' %></td>
             <td>
               <span class="badge bg-success"
                 ><%= s.surveysatisfactionscore || '—' %></span
@@ -153,19 +220,12 @@
               <strong><%= s.surveyoverallscore || '—' %></strong>
             </td>
             <td>
-              <% if (s.surveysubmissiondate) { %>
-                <%= new Date(s.surveysubmissiondate).toLocaleString('en-US', {
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                }) %>
-              <% } else { %>
-                —
-              <% } %>
+              <% if (s.surveysubmissiondate) { %> <%= new
+              Date(s.surveysubmissiondate).toLocaleString('en-US', { year:
+              'numeric', month: 'short', day: 'numeric', hour: '2-digit',
+              minute: '2-digit' }) %> <% } else { %> — <% } %>
             </td>
-            <td><%= s.registrationid || '—' %></td>
+
             <% if (user && user.role === 'admin') { %>
             <td>
               <a href="/surveys/<%= s.surveyid %>" class="btn btn-sm btn-info">
@@ -180,7 +240,10 @@
     </div>
     <div class="d-flex justify-content-center mt-3">
       <nav aria-label="Surveys pagination">
-        <ul class="pagination pagination-sm mb-0 pagination-soft" data-pagination-for="surveys-table"></ul>
+        <ul
+          class="pagination pagination-sm mb-0 pagination-soft"
+          data-pagination-for="surveys-table"
+        ></ul>
       </nav>
     </div>
   </div>

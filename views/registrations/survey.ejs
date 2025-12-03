@@ -1,0 +1,163 @@
+<%- include('../partials/header', { title: 'Submit Event Survey', user: user })
+%>
+
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-clipboard-check-fill"></i> Event Feedback Survey</h1>
+    <p>Share your experience with us</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <h3 class="mb-3"><%= registration.eventname %></h3>
+        <% if (registration.eventdescription) { %>
+        <p class="text-muted"><%= registration.eventdescription %></p>
+        <% } %>
+        <p class="text-muted mb-4">
+          <i class="bi bi-calendar"></i>
+          <%= new
+          Date(registration.eventdatetimestart).toLocaleDateString('en-US', {
+          year: 'numeric', month: 'long', day: 'numeric' }) %>
+        </p>
+
+        <% if (error) { %>
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+        </div>
+        <% } %>
+
+        <form
+          action="/registrations/<%= registration.registrationid %>/survey"
+          method="POST"
+        >
+          <div class="mb-4">
+            <label for="surveysatisfactionscore" class="form-label">
+              <strong>How satisfied were you with this event?</strong>
+            </label>
+            <div class="d-flex align-items-center gap-3">
+              <input
+                type="range"
+                id="surveysatisfactionscore"
+                name="surveysatisfactionscore"
+                class="form-range"
+                min="1"
+                max="5"
+                value="3"
+                required
+              />
+              <span class="badge bg-primary" id="satisfactionValue">3</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <small class="text-muted">Very Dissatisfied (1)</small>
+              <small class="text-muted">Very Satisfied (5)</small>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="surveyusefulnessscore" class="form-label">
+              <strong>How useful was the content?</strong>
+            </label>
+            <div class="d-flex align-items-center gap-3">
+              <input
+                type="range"
+                id="surveyusefulnessscore"
+                name="surveyusefulnessscore"
+                class="form-range"
+                min="1"
+                max="5"
+                value="3"
+                required
+              />
+              <span class="badge bg-primary" id="usefulnessValue">3</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <small class="text-muted">Not Useful (1)</small>
+              <small class="text-muted">Very Useful (5)</small>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="surveyinstructorscore" class="form-label">
+              <strong>How would you rate the instructor/facilitator?</strong>
+            </label>
+            <div class="d-flex align-items-center gap-3">
+              <input
+                type="range"
+                id="surveyinstructorscore"
+                name="surveyinstructorscore"
+                class="form-range"
+                min="1"
+                max="5"
+                value="3"
+                required
+              />
+              <span class="badge bg-primary" id="instructorValue">3</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <small class="text-muted">Poor (1)</small>
+              <small class="text-muted">Excellent (5)</small>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label for="surveyrecommendationscore" class="form-label">
+              <strong
+                >How likely are you to recommend this event to others?</strong
+              >
+            </label>
+            <div class="d-flex align-items-center gap-3">
+              <input
+                type="range"
+                id="surveyrecommendationscore"
+                name="surveyrecommendationscore"
+                class="form-range"
+                min="1"
+                max="5"
+                value="3"
+                required
+              />
+              <span class="badge bg-primary" id="recommendationValue">3</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <small class="text-muted">Not Likely (1)</small>
+              <small class="text-muted">Very Likely (5)</small>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex mt-4">
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-check-circle-fill"></i> Submit Survey
+            </button>
+            <a href="/registrations" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Update the displayed values when sliders change
+  const sliders = [
+    { id: "surveysatisfactionscore", valueId: "satisfactionValue" },
+    { id: "surveyusefulnessscore", valueId: "usefulnessValue" },
+    { id: "surveyinstructorscore", valueId: "instructorValue" },
+    { id: "surveyrecommendationscore", valueId: "recommendationValue" },
+  ];
+
+  sliders.forEach((slider) => {
+    const input = document.getElementById(slider.id);
+    const display = document.getElementById(slider.valueId);
+
+    input.addEventListener("input", function () {
+      display.textContent = this.value;
+    });
+  });
+</script>
+
+<%- include('../partials/footer-scripts') %>

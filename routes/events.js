@@ -196,10 +196,10 @@ router.get("/:id/edit", requireAdmin, async (req, res) => {
 
 // ---------------------------------------------------------------------------
 // Update event (ADMIN)
-// Updates template name + occurrence start date
+// Updates event occurrence and template details
 // ---------------------------------------------------------------------------
 router.post("/:id/edit", requireAdmin, async (req, res) => {
-  const { title, date } = req.body;
+  const { title, date, eventdatetimeend, eventlocation, eventcapacity, eventregistrationdeadline } = req.body;
   const eventId = req.params.id;
 
   try {
@@ -232,6 +232,11 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
         return res.status(404).send("Event not found");
       }
 
+      // Format dates for datetime-local inputs
+      existing.dateInputValue = formatAsDatetimeLocalInput(existing.date);
+      existing.eventdatetimeendInputValue = formatAsDatetimeLocalInput(existing.eventdatetimeend);
+      existing.eventregistrationdeadlineInputValue = formatAsDatetimeLocalInput(existing.eventregistrationdeadline);
+
       return res.status(400).render("events/edit", {
         event: existing,
         error: "Title and date are required.",
@@ -257,10 +262,16 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
         .where({ eventtemplateid: templateId })
         .update({ eventname: title });
 
-      // 2) Update occurrence date
+      // 2) Update occurrence details
       await trx("eventoccurrences")
         .where({ eventoccurrenceid: eventId })
-        .update({ eventdatetimestart: date });
+        .update({
+          eventdatetimestart: date,
+          eventdatetimeend: eventdatetimeend || null,
+          eventlocation: eventlocation || null,
+          eventcapacity: eventcapacity || null,
+          eventregistrationdeadline: eventregistrationdeadline || null,
+        });
     });
 
     res.redirect(`/events/${eventId}`);

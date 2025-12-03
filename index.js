@@ -34,6 +34,7 @@ const milestonesRoutes = require("./routes/milestones");
 const donationsRoutes = require("./routes/donations");
 const dashboardRoutes = require("./routes/dashboard");
 const publicRoutes = require("./routes/public");
+const registrationsRoutes = require("./routes/registrations");
 
 // ---------- USE ROUTES ----------
 // Public routes (no auth required)
@@ -49,6 +50,7 @@ app.use("/surveys", requireAuth, surveysRoutes);
 app.use("/milestones", requireAuth, milestonesRoutes);
 app.use("/donations", requireAuth, donationsRoutes);
 app.use("/dashboard", requireAuth, dashboardRoutes);
+app.use("/registrations", requireAuth, registrationsRoutes);
 
 // Profile routes
 const profileRoutes = require("./routes/profile");

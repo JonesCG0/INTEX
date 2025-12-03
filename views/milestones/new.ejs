@@ -42,14 +42,24 @@
           </div>
 
           <div class="mb-3">
-            <label for="participantid" class="form-label">Participant ID</label>
+            <label for="participantSearch" class="form-label">Participant</label>
             <input
-              type="number"
-              id="userid"
-              name="userid"
+              type="text"
+              id="participantSearch"
               class="form-control"
-              placeholder="Enter participant ID"
+              placeholder="Search by name, email, or ID..."
+              list="participantList"
+              autocomplete="off"
             />
+            <datalist id="participantList">
+              <% users.forEach(u => { %>
+                <option value="ID: <%= u.userid %> - <%= u.userfirstname %> <%= u.userlastname %>" data-userid="<%= u.userid %>">
+                  <%= u.useremail %>
+                </option>
+              <% }); %>
+            </datalist>
+            <input type="hidden" id="userid" name="userid" required />
+            <small class="form-text text-muted">Start typing to search by name, email, or ID</small>
           </div>
 
           <div class="d-grid gap-2 d-md-flex">
@@ -65,5 +75,33 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Handle participant selection
+  const participantSearch = document.getElementById('participantSearch');
+  const useridInput = document.getElementById('userid');
+
+  participantSearch.addEventListener('input', function() {
+    const selectedValue = this.value;
+
+    // Extract user ID from the format "ID: 123 - FirstName LastName"
+    const match = selectedValue.match(/^ID:\s*(\d+)\s*-/);
+
+    if (match) {
+      useridInput.value = match[1];
+    } else {
+      useridInput.value = '';
+    }
+  });
+
+  // Validate that a user is selected before submitting
+  const form = participantSearch.closest('form');
+  form.addEventListener('submit', function(e) {
+    if (!useridInput.value) {
+      e.preventDefault();
+      alert('Please select a valid participant from the list.');
+    }
+  });
+</script>
 
 <%- include('../partials/footer-scripts') %>
