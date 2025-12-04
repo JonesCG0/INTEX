@@ -386,6 +386,10 @@
                 type="text"
                 class="form-control"
                 placeholder="Zip Code"
+                inputmode="numeric"
+                maxlength="10"
+                pattern="^\d{5}(-?\d{4})?$"
+                title="Enter 5 digits or 9 digits with an optional dash (e.g., 84097 or 84097-1234)"
                 required
               />
             </div>
@@ -467,10 +471,12 @@
         const confirmPasswordField = form.querySelector(
           'input[name="confirmPassword"]'
         );
+        const zipField = form.querySelector('input[name="participantZip"]');
         const submitButton = form.querySelector('button[type="submit"]');
 
         const MIN_PASSWORD_LENGTH = 8;
         const phonePattern = /^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;
+        const zipPattern = /^\d{5}(?:-?\d{4})?$/;
 
         const shouldValidate = (field) => {
           if (!field.required && field.value.trim() === "") {
@@ -560,6 +566,23 @@
           );
         };
 
+        const applyZipValidation = () => {
+          if (!zipField) return;
+          const value = zipField.value.trim();
+          if (value === "") {
+            zipField.setCustomValidity("Please enter a ZIP code.");
+          } else if (!zipPattern.test(value)) {
+            zipField.setCustomValidity(
+              "Enter 5 digits or 9 digits with an optional dash (e.g., 84097-1234)."
+            );
+          } else {
+            zipField.setCustomValidity("");
+          }
+          if (zipField.dataset.touched === "true") {
+            updateFieldState(zipField);
+          }
+        };
+
         if (submitButton) {
           submitButton.disabled = true;
         }
@@ -580,6 +603,11 @@
         if (phoneField) {
           phoneField.addEventListener("input", applyPhoneValidation);
           phoneField.addEventListener("blur", applyPhoneValidation);
+        }
+
+        if (zipField) {
+          zipField.addEventListener("input", applyZipValidation);
+          zipField.addEventListener("blur", applyZipValidation);
         }
 
         if (passwordField && confirmPasswordField) {
@@ -608,6 +636,9 @@
 
         if (phoneField) {
           applyPhoneValidation();
+        }
+        if (zipField) {
+          applyZipValidation();
         }
       })();
     </script>
