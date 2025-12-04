@@ -112,7 +112,7 @@ router.post("/signup", async (req, res) => {
     confirmPassword,
     participantGuardianFirstName,
     participantGuardianLastName,
-    participantGuardianEmail,
+    participantEmail,
     participantFirstName,
     participantLastName,
     participantDOB,
@@ -137,11 +137,11 @@ router.post("/signup", async (req, res) => {
   const cleanZip = sanitizeZip(participantZip);
   const guardianFirstName = sanitizeText(participantGuardianFirstName);
   const guardianLastName = sanitizeText(participantGuardianLastName);
-  let guardianEmail = null;
-  if (hasText(participantGuardianEmail)) {
-    guardianEmail = sanitizeEmail(participantGuardianEmail);
-    if (!guardianEmail) {
-      errors.push("Guardian email must be valid");
+  let userEmail = null;
+  if (hasText(participantEmail)) {
+    userEmail = sanitizeEmail(participantEmail);
+    if (!userEmail) {
+      errors.push("Participant email must be valid");
     }
   }
 //  validates the required fields. 
@@ -202,8 +202,8 @@ router.post("/signup", async (req, res) => {
       userzip: cleanZip,
       guardianfirstname: guardianFirstName,
       guardianlastname: guardianLastName,
-      guardianemail: guardianEmail,
-      useremail: guardianEmail,
+      guardianemail: null,
+      useremail: userEmail,
     };
 //  inserts a new user
     const [newUser] = await db("users")

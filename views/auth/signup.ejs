@@ -235,16 +235,6 @@
             </div>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Parent/Guardian Email</label>
-            <input
-              name="participantGuardianEmail"
-              type="email"
-              class="form-control"
-              placeholder="Enter Email"
-            />
-          </div>
-
           <!-- Participant Information -->
           <div class="row">
             <div class="col-md-6 mb-3">
@@ -269,6 +259,16 @@
             </div>
           </div>
 
+          <div class="mb-3">
+            <label class="form-label">Participant Email</label>
+            <input
+              name="participantEmail"
+              type="email"
+              class="form-control"
+              placeholder="Enter email"
+            />
+          </div>
+
           <div class="row">
             <div class="col-md-6 mb-3">
               <label class="form-label">Participant Birth Date</label>
@@ -286,6 +286,9 @@
                 type="tel"
                 class="form-control"
                 placeholder="Enter Phone Number"
+                inputmode="tel"
+                pattern="^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$"
+                title="Use a 10-digit phone number (e.g., 555-555-5555)"
                 required
               />
             </div>
@@ -392,6 +395,8 @@
                 type="password"
                 class="form-control"
                 placeholder="Create a password"
+                minlength="8"
+                maxlength="128"
                 required
               />
             </div>
@@ -402,6 +407,8 @@
                 type="password"
                 class="form-control"
                 placeholder="Confirm password"
+                minlength="8"
+                maxlength="128"
                 required
               />
             </div>
@@ -439,6 +446,15 @@
         if (!form) return;
 
         const controls = Array.from(form.querySelectorAll(".form-control"));
+        const phoneField = form.querySelector('input[name="participantPhone"]');
+        const passwordField = form.querySelector('input[name="password"]');
+        const confirmPasswordField = form.querySelector(
+          'input[name="confirmPassword"]'
+        );
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        const MIN_PASSWORD_LENGTH = 8;
+        const phonePattern = /^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;
 
         const shouldValidate = (field) => {
           if (!field.required && field.value.trim() === "") {
@@ -462,6 +478,76 @@
           }
         };
 
+        const applyPhoneValidation = () => {
+          if (!phoneField) return;
+          const value = phoneField.value.trim();
+          if (value === "") {
+            phoneField.setCustomValidity("Please enter a phone number.");
+          } else if (!phonePattern.test(value)) {
+            phoneField.setCustomValidity("Enter a valid 10-digit phone number.");
+          } else {
+            phoneField.setCustomValidity("");
+          }
+          if (phoneField.dataset.touched === "true") {
+            updateFieldState(phoneField);
+          }
+        };
+
+        const enforcePasswordRules = () => {
+          if (!passwordField || !confirmPasswordField || !submitButton) return;
+
+          const passwordValue = passwordField.value;
+          const confirmValue = confirmPasswordField.value;
+
+          if (passwordValue && passwordValue.length < MIN_PASSWORD_LENGTH) {
+            passwordField.setCustomValidity(
+              `Password must be at least ${MIN_PASSWORD_LENGTH} characters long.`
+            );
+          } else {
+            passwordField.setCustomValidity("");
+          }
+
+          if (
+            confirmValue &&
+            confirmValue.length >= MIN_PASSWORD_LENGTH &&
+            confirmValue !== passwordValue
+          ) {
+            confirmPasswordField.setCustomValidity("Passwords must match.");
+          } else if (
+            confirmValue &&
+            confirmValue.length < MIN_PASSWORD_LENGTH
+          ) {
+            confirmPasswordField.setCustomValidity(
+              `Password must be at least ${MIN_PASSWORD_LENGTH} characters long.`
+            );
+          } else {
+            confirmPasswordField.setCustomValidity("");
+          }
+
+          if (passwordField.dataset.touched === "true") {
+            updateFieldState(passwordField);
+          }
+          if (confirmPasswordField.dataset.touched === "true") {
+            updateFieldState(confirmPasswordField);
+          }
+
+          const passwordLongEnough =
+            passwordValue.length >= MIN_PASSWORD_LENGTH;
+          const confirmLongEnough =
+            confirmValue.length >= MIN_PASSWORD_LENGTH;
+          const passwordsMatch =
+            passwordValue.length > 0 && passwordValue === confirmValue;
+          submitButton.disabled = !(
+            passwordLongEnough &&
+            confirmLongEnough &&
+            passwordsMatch
+          );
+        };
+
+        if (submitButton) {
+          submitButton.disabled = true;
+        }
+
         controls.forEach((field) => {
           field.addEventListener("blur", () => {
             field.dataset.touched = "true";
@@ -474,6 +560,18 @@
             }
           });
         });
+
+        if (phoneField) {
+          phoneField.addEventListener("input", applyPhoneValidation);
+          phoneField.addEventListener("blur", applyPhoneValidation);
+        }
+
+        if (passwordField && confirmPasswordField) {
+          passwordField.addEventListener("input", enforcePasswordRules);
+          confirmPasswordField.addEventListener("input", enforcePasswordRules);
+        }
+
+        enforcePasswordRules();
 
         form.addEventListener("submit", (event) => {
           let formIsValid = true;
@@ -491,6 +589,10 @@
             event.stopPropagation();
           }
         });
+
+        if (phoneField) {
+          applyPhoneValidation();
+        }
       })();
     </script>
     <script src="/teapot.js"></script>

@@ -5,13 +5,19 @@ Carson Jones, Merrick Morgan, Cameron Webb, Tobin Whitworth
 
 ## ACCESS
 - Website can be accessed at https://jonescg0.net/
-- Default admin credentials 
-    Username: admin
-    Password: adminaccountpassword
-- Default user credentials
-    Username: user
-    Password: adminaccountpassword
+- **Default admin credentials**
+    Username: `admin`
+    Password: *adminaccountpassword*
+- **Default user credentials**
+    Username: `user`
+    Password: *useraccountpassword*
 - All of the tools are listed under the tool tab in the Navigation Bar once logged in.
+
+
+## Easter Eggs
+- Type `teapot` anywhere on the website (Does not need to be in a field)
+    to return your Error Code 418.
+- Type `dom`, `redundancy`, `tableau`, `chopped`, and `rick` for others.
 
 INTEX is a Node.js + Express web application that helps program administrators manage participants, events, registrations, surveys, milestones, and fundraising activity. Authenticated staff members get a full dashboard to organize data, while the public landing and support pages highlight program impact and capture online donations.
 
