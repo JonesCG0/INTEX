@@ -117,9 +117,10 @@ app.get("/", async (req, res) => {
     const [participantCount] = await db("participants").count("* as count");
     const [eventCount] = await db("eventoccurrences").count("* as count");
     const [milestoneCount] = await db("milestones").count("* as count");
-    const donationSum = await db("donationTotals")
-      .select(db.raw("SUM(CAST(totalDonationCalculated AS DECIMAL)) as total"))
+    const donationSum = await db("donations")
+      .sum({ total: "donationamount" })
       .first();
+    const totalDonations = donationSum && donationSum.total ? Number(donationSum.total) : 0;
 
     res.render("landing", {
       user: req.session.user || null,
@@ -127,7 +128,7 @@ app.get("/", async (req, res) => {
         participants: participantCount.count,
         events: eventCount.count,
         milestones: milestoneCount.count,
-        donations: donationSum.total || 0,
+        donations: totalDonations,
       },
     });
   } catch (err) {
