@@ -4,6 +4,17 @@ const db = require("../db");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 const { formatAsDatetimeLocalInput } = require("../utils/dateHelpers");
 
+const normalizeField = (value) => {
+  if (value === undefined || value === null) {
+    return null;
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed === "" ? null : trimmed;
+  }
+  return value;
+};
+
 // ---------------------------------------------------------------------------
 // List all events
 // ---------------------------------------------------------------------------
@@ -94,10 +105,12 @@ router.post("/new", requireAdmin, async (req, res) => {
       const [occurrence] = await trx("eventoccurrences")
         .insert({
           eventdatetimestart: req.body.eventdatetimestart,
-          eventdatetimeend: req.body.eventdatetimeend,
-          eventlocation: req.body.eventlocation,
-          eventcapacity: req.body.eventcapacity,
-          eventregistrationdeadline: req.body.eventregistrationdeadline,
+          eventdatetimeend: normalizeField(req.body.eventdatetimeend),
+          eventlocation: normalizeField(req.body.eventlocation),
+          eventcapacity: normalizeField(req.body.eventcapacity),
+          eventregistrationdeadline: normalizeField(
+            req.body.eventregistrationdeadline
+          ),
           eventtemplateid: req.body.eventTemplateID,
         })
         .returning("eventoccurrenceid");
@@ -267,10 +280,12 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
         .where({ eventoccurrenceid: eventId })
         .update({
           eventdatetimestart: date,
-          eventdatetimeend: eventdatetimeend || null,
-          eventlocation: eventlocation || null,
-          eventcapacity: eventcapacity || null,
-          eventregistrationdeadline: eventregistrationdeadline || null,
+          eventdatetimeend: normalizeField(eventdatetimeend),
+          eventlocation: normalizeField(eventlocation),
+          eventcapacity: normalizeField(eventcapacity),
+          eventregistrationdeadline: normalizeField(
+            eventregistrationdeadline
+          ),
         });
     });
 
