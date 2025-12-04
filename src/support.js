@@ -132,24 +132,38 @@ app.use("/surveys", surveysRouter);
 
 // Home
 app.get("/", async (req, res) => {
-  const participants = await safeCount(() =>
-    db("users")
-      .whereRaw("LOWER(userrole) = 'participant'")
-      .count("* as count")
-  );
-  const events = await safeCount(() => db("eventoccurrences").count("* as count"));
-  const milestones = await safeCount(() => db("milestones").count("* as count"));
-  const donations = await safeDonationTotal();
+  try {
+    // Fetch counts from database
+    const [participantCount] = await db("participants").count("* as count");
+    const [eventCount] = await db("eventoccurrences").count("* as count");
+    const [milestoneCount] = await db("milestones").count("* as count");
+    const donationSum = await db("donations")
+      .sum({ total: "donationamount" })
+      .first();
+    const totalDonations = donationSum && donationSum.total ? Number(donationSum.total) : 0;
 
-  res.render("landing", {
-    user: req.session.user || null,
-    stats: {
-      participants,
-      events,
-      milestones,
-      donations,
-    },
-  });
+    res.render("landing", {
+      user: req.session.user || null,
+      stats: {
+        participants: participantCount.count,
+        events: eventCount.count,
+        milestones: milestoneCount.count,
+        donations: totalDonations,
+      },
+    });
+  } catch (err) {
+    console.error("Landing page error:", err);
+    // Render with default values if there's an error
+    res.render("landing", {
+      user: req.session.user || null,
+      stats: {
+        participants: 0,
+        events: 0,
+        milestones: 0,
+        donations: 0,
+      },
+    });
+  }
 });
 
 // Login form
