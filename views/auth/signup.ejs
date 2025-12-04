@@ -30,11 +30,20 @@
 
       body {
         font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, #FFd8d1, #f9afb1);
+        background: linear-gradient(135deg, #ffd8d1, #f9afb1);
         min-height: 100vh;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
+        padding: 40px 20px;
+      }
+
+      .signup-wrapper {
+        display: flex;
+        gap: 30px;
+        max-width: 1200px;
+        width: 100%;
+        align-items: flex-start;
       }
 
       .signup-container {
@@ -42,8 +51,47 @@
         padding: 50px;
         border-radius: 20px;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-        max-width: 450px;
+        flex: 1;
+        max-width: 700px;
+      }
+
+      .image-collage {
+        flex: 0 0 400px;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .collage-image {
         width: 100%;
+        height: 500px;
+        object-fit: cover;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      @media (max-width: 992px) {
+        .signup-wrapper {
+          flex-direction: column;
+        }
+
+        .image-collage {
+          flex: 1;
+          width: 100%;
+          max-width: 600px;
+          order: -1;
+        }
+
+        .collage-image {
+          height: 350px;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .collage-image {
+          height: 250px;
+        }
       }
 
       .signup-header {
@@ -87,8 +135,18 @@
         box-shadow: 0 0 0 0.2rem rgba(212, 101, 76, 0.15);
       }
 
+      .form-control.is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.2);
+      }
+
+      .form-control.is-valid {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.2);
+      }
+
       .btn-signup {
-        background: linear-gradient(135deg, #FFd8d1, #f9afb1);
+        background: linear-gradient(135deg, #ffd8d1, #f9afb1);
         border: none;
         padding: 14px;
         font-weight: 600;
@@ -126,177 +184,315 @@
     </style>
   </head>
   <body>
-    <div class="signup-container">
-      <div class="signup-header">
-        <img src="/Ella_Rises_Logo.avif" alt="Ella Rises Logo" />
-        <h1>Create Account</h1>
-        <p>Join Ella Rises</p>
+    <div class="signup-wrapper">
+      <div class="image-collage">
+        <img
+          src="/signup/DSC_5359.jpg"
+          alt="Ella Rises Workshop"
+          class="collage-image"
+        />
+        <img
+          src="/signup/ER_STEM_Workshop.jpg"
+          alt="Ella Rises Workshop"
+          class="collage-image"
+        />
       </div>
 
-      <% if (error) { %>
-      <div class="alert alert-danger">
-        <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
-      </div>
-      <% } %>
-
-      <form action="/auth/signup" method="POST">
-        <div class="mb-3">
-          <label class="form-label">Parent/Guardian First Name</label>
-          <input
-            name="participantGuardianFirstName"
-            type="text"
-            class="form-control"
-            placeholder="Enter Parent/Guardian First Name"
-            autofocus
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Parent/Guardian Last Name</label>
-          <input
-            name="participantGuardianLastName"
-            type="text"
-            class="form-control"
-            placeholder="Enter Parent/Guardian Last Name"
-            autofocus
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Parent/Guardian Email</label>
-          <input
-            name="participantGuardianEmail"
-            type="email"
-            class="form-control"
-            placeholder="Enter Email"
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Participant First Name</label>
-          <input
-            name="participantFirstName"
-            type="text"
-            class="form-control"
-            placeholder="Enter Participant First Name"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Participant Last Name</label>
-          <input
-            name="participantLastName"
-            type="text"
-            class="form-control"
-            placeholder="Enter Participant Last Name"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Participant Birth Date</label>
-          <input
-            name="participantDOB"
-            type="date"
-            class="form-control"
-            placeholder="Enter Participant Birth Date"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Participant Phone Number</label>
-          <input
-            name="participantPhone"
-            type="tel"
-            class="form-control"
-            placeholder="Enter Participant Phone Number"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">City</label>
-          <input
-            name="participantCity"
-            type="text"
-            class="form-control"
-            placeholder="Enter City"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">State</label>
-          <input
-            name="participantState"
-            type="text"
-            class="form-control"
-            placeholder="Enter State"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Zip Code</label>
-          <input
-            name="participantZip"
-            type="text"
-            class="form-control"
-            placeholder="Enter Zip Code"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Username</label>
-          <input
-            name="username"
-            type="text"
-            class="form-control"
-            placeholder="Choose a username"
-            required
-          />
+      <div class="signup-container">
+        <div class="signup-header">
+          <img src="/Ella_Rises_Logo.avif" alt="Ella Rises Logo" />
+          <h1>Create Account</h1>
+          <p>Join Ella Rises</p>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">Password</label>
-          <input
-            name="password"
-            type="password"
-            class="form-control"
-            placeholder="Create a password"
-            required
-          />
+        <% if (error) { %>
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+        </div>
+        <% } %>
+
+        <form id="signupForm" action="/auth/signup" method="POST" novalidate>
+          <!-- Guardian Information -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Parent/Guardian First Name</label>
+              <input
+                name="participantGuardianFirstName"
+                type="text"
+                class="form-control"
+                placeholder="Enter First Name"
+                autofocus
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Parent/Guardian Last Name</label>
+              <input
+                name="participantGuardianLastName"
+                type="text"
+                class="form-control"
+                placeholder="Enter Last Name"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Parent/Guardian Email</label>
+            <input
+              name="participantGuardianEmail"
+              type="email"
+              class="form-control"
+              placeholder="Enter Email"
+            />
+          </div>
+
+          <!-- Participant Information -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Participant First Name</label>
+              <input
+                name="participantFirstName"
+                type="text"
+                class="form-control"
+                placeholder="Enter First Name"
+                required
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Participant Last Name</label>
+              <input
+                name="participantLastName"
+                type="text"
+                class="form-control"
+                placeholder="Enter Last Name"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Participant Birth Date</label>
+              <input
+                name="participantDOB"
+                type="date"
+                class="form-control"
+                required
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Participant Phone Number</label>
+              <input
+                name="participantPhone"
+                type="tel"
+                class="form-control"
+                placeholder="Enter Phone Number"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Address Information -->
+          <div class="row">
+            <div class="col-md-5 mb-3">
+              <label class="form-label">City</label>
+              <input
+                name="participantCity"
+                type="text"
+                class="form-control"
+                placeholder="Enter City"
+                required
+              />
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">State</label>
+              <select name="participantState" class="form-control" required>
+                <option value="">Select State</option>
+                <option value="AL">Alabama</option>
+                <option value="AK">Alaska</option>
+                <option value="AZ">Arizona</option>
+                <option value="AR">Arkansas</option>
+                <option value="CA">California</option>
+                <option value="CO">Colorado</option>
+                <option value="CT">Connecticut</option>
+                <option value="DE">Delaware</option>
+                <option value="FL">Florida</option>
+                <option value="GA">Georgia</option>
+                <option value="HI">Hawaii</option>
+                <option value="ID">Idaho</option>
+                <option value="IL">Illinois</option>
+                <option value="IN">Indiana</option>
+                <option value="IA">Iowa</option>
+                <option value="KS">Kansas</option>
+                <option value="KY">Kentucky</option>
+                <option value="LA">Louisiana</option>
+                <option value="ME">Maine</option>
+                <option value="MD">Maryland</option>
+                <option value="MA">Massachusetts</option>
+                <option value="MI">Michigan</option>
+                <option value="MN">Minnesota</option>
+                <option value="MS">Mississippi</option>
+                <option value="MO">Missouri</option>
+                <option value="MT">Montana</option>
+                <option value="NE">Nebraska</option>
+                <option value="NV">Nevada</option>
+                <option value="NH">New Hampshire</option>
+                <option value="NJ">New Jersey</option>
+                <option value="NM">New Mexico</option>
+                <option value="NY">New York</option>
+                <option value="NC">North Carolina</option>
+                <option value="ND">North Dakota</option>
+                <option value="OH">Ohio</option>
+                <option value="OK">Oklahoma</option>
+                <option value="OR">Oregon</option>
+                <option value="PA">Pennsylvania</option>
+                <option value="RI">Rhode Island</option>
+                <option value="SC">South Carolina</option>
+                <option value="SD">South Dakota</option>
+                <option value="TN">Tennessee</option>
+                <option value="TX">Texas</option>
+                <option value="UT">Utah</option>
+                <option value="VT">Vermont</option>
+                <option value="VA">Virginia</option>
+                <option value="WA">Washington</option>
+                <option value="WV">West Virginia</option>
+                <option value="WI">Wisconsin</option>
+                <option value="WY">Wyoming</option>
+                <option value="OTHER">Out of US</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Zip Code</label>
+              <input
+                name="participantZip"
+                type="text"
+                class="form-control"
+                placeholder="Zip Code"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Account Information -->
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input
+              name="username"
+              type="text"
+              class="form-control"
+              placeholder="Choose a username"
+              required
+            />
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Password (8 Characters)</label>
+              <input
+                name="password"
+                type="password"
+                class="form-control"
+                placeholder="Create a password"
+                required
+              />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Confirm Password (8 Characters)</label>
+              <input
+                name="confirmPassword"
+                type="password"
+                class="form-control"
+                placeholder="Confirm password"
+                required
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-signup w-100">
+            <i class="bi bi-check-circle-fill"></i> Sign Up
+          </button>
+        </form>
+
+        <div class="text-center mt-3">
+          <p class="mb-0">
+            Already have an account?
+            <a
+              href="/auth/login"
+              style="
+                color: var(--primary-color);
+                font-weight: 600;
+                text-decoration: none;
+              "
+              >Login</a
+            >
+          </p>
         </div>
 
-        <div class="mb-3">
-          <label class="form-label">Confirm Password</label>
-          <input
-            name="confirmPassword"
-            type="password"
-            class="form-control"
-            placeholder="Confirm your password"
-            required
-          />
+        <div class="back-link">
+          <a href="/"> <i class="bi bi-arrow-left"></i> Back to Home </a>
         </div>
-
-        <button type="submit" class="btn btn-signup w-100">
-          <i class="bi bi-check-circle-fill"></i> Sign Up
-        </button>
-      </form>
-
-      <div class="text-center mt-3">
-        <p class="mb-0">
-          Already have an account?
-          <a
-            href="/auth/login"
-            style="
-              color: var(--primary-color);
-              font-weight: 600;
-              text-decoration: none;
-            "
-            >Login</a
-          >
-        </p>
-      </div>
-
-      <div class="back-link">
-        <a href="/"> <i class="bi bi-arrow-left"></i> Back to Home </a>
       </div>
     </div>
 
+    <script>
+      (() => {
+        const form = document.getElementById("signupForm");
+        if (!form) return;
+
+        const controls = Array.from(form.querySelectorAll(".form-control"));
+
+        const shouldValidate = (field) => {
+          if (!field.required && field.value.trim() === "") {
+            return false;
+          }
+          return true;
+        };
+
+        const updateFieldState = (field) => {
+          if (!shouldValidate(field)) {
+            field.classList.remove("is-invalid", "is-valid");
+            return;
+          }
+
+          if (field.checkValidity()) {
+            field.classList.add("is-valid");
+            field.classList.remove("is-invalid");
+          } else {
+            field.classList.add("is-invalid");
+            field.classList.remove("is-valid");
+          }
+        };
+
+        controls.forEach((field) => {
+          field.addEventListener("blur", () => {
+            field.dataset.touched = "true";
+            updateFieldState(field);
+          });
+
+          field.addEventListener("input", () => {
+            if (field.dataset.touched === "true") {
+              updateFieldState(field);
+            }
+          });
+        });
+
+        form.addEventListener("submit", (event) => {
+          let formIsValid = true;
+
+          controls.forEach((field) => {
+            field.dataset.touched = "true";
+            updateFieldState(field);
+            if (!field.checkValidity()) {
+              formIsValid = false;
+            }
+          });
+
+          if (!formIsValid) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        });
+      })();
+    </script>
     <script src="/teapot.js"></script>
   </body>
 </html>

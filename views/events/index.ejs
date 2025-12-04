@@ -9,13 +9,22 @@
 
 <div class="container">
   <div class="card">
-    <% if (user && user.role === 'admin') { %>
-    <div class="mb-3">
+    <% if (error) { %>
+    <div class="alert alert-danger">
+      <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+    </div>
+    <% } %>
+
+    <div class="mb-3 d-flex gap-2">
+      <% if (user && user.role === 'admin') { %>
       <a href="/events/new" class="btn btn-success">
         <i class="bi bi-plus-circle-fill"></i> Add New Event
       </a>
+      <% } %>
+      <a href="/registrations/register" class="btn btn-primary">
+        <i class="bi bi-calendar-plus-fill"></i> Register for Events
+      </a>
     </div>
-    <% } %>
 
     <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 mb-3">
       <div class="d-flex align-items-center gap-2 flex-grow-1 flex-lg-grow-0">
@@ -119,23 +128,23 @@
         <tbody>
           <% events.forEach(event => { %>
           <tr>
-            <td><strong><%= event.eventname || 'â€”' %></strong></td>
+            <td><strong><%= event.eventname || 'ƒ?"' %></strong></td>
             <td>
-              <span class="badge bg-info"><%= event.eventtype || 'â€”' %></span>
+              <span class="badge bg-info"><%= event.eventtype || 'ƒ?"' %></span>
             </td>
             <td>
               <% if (event.eventdatetimestart) { %> <%= new
               Date(event.eventdatetimestart).toLocaleString('en-US', { year:
               'numeric', month: 'short', day: 'numeric', hour: '2-digit',
-              minute: '2-digit' }) %> <% } else { %> â€” <% } %>
+              minute: '2-digit' }) %> <% } else { %> ƒ?" <% } %>
             </td>
-            <td><%= event.eventlocation || 'â€”' %></td>
-            <td><%= event.eventcapacity || 'â€”' %></td>
+            <td><%= event.eventlocation || 'ƒ?"' %></td>
+            <td><%= event.eventcapacity || 'ƒ?"' %></td>
             <td>
               <% if (event.eventregistrationdeadline) { %> <%= new
               Date(event.eventregistrationdeadline).toLocaleString('en-US', {
               year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit',
-              minute: '2-digit' }) %> <% } else { %> â€” <% } %>
+              minute: '2-digit' }) %> <% } else { %> ƒ?" <% } %>
             </td>
             <% if (user && user.role === 'admin') { %>
             <td>
@@ -147,10 +156,22 @@
               </a>
               <a
                 href="/events/<%= event.eventoccurrenceid %>/edit"
-                class="btn btn-sm btn-primary"
+                class="btn btn-sm btn-primary me-1"
               >
                 <i class="bi bi-pencil-fill"></i> Edit
               </a>
+              <form
+                action="/events/<%= event.eventoccurrenceid %>/delete"
+                method="POST"
+                style="display: inline"
+              >
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="return confirm('Delete event "<%= event.eventname %>"? This cannot be undone.');"
+                >
+                  <i class="bi bi-trash-fill"></i> Delete
+                </button>
+              </form>
             </td>
             <% } %>
           </tr>

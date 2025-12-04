@@ -1,0 +1,107 @@
+<%- include('../partials/header', { title: 'Edit Milestone', user: user }) %>
+
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-flag-fill"></i> Edit Milestone</h1>
+    <p>Update an existing achievement milestone</p>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card">
+        <% if (error) { %>
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+        </div>
+        <% } %>
+
+        <form action="/milestones/<%= milestone.milestoneid %>/edit" method="POST">
+          <div class="mb-3">
+            <label for="milestonetitle" class="form-label">Milestone Title</label>
+            <input
+              type="text"
+              id="milestonetitle"
+              name="milestonetitle"
+              class="form-control"
+              value="<%= milestone.milestonetitle || '' %>"
+              placeholder="Enter milestone title"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="milestonedate" class="form-label">Milestone Date</label>
+            <input
+              type="date"
+              id="milestonedate"
+              name="milestonedate"
+              class="form-control"
+              value="<%= milestone.milestonedate ? new Date(milestone.milestonedate).toISOString().slice(0, 10) : '' %>"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="participantSearch" class="form-label">Participant</label>
+            <input
+              type="text"
+              id="participantSearch"
+              class="form-control"
+              placeholder="Search by name, email, or ID..."
+              list="participantList"
+              autocomplete="off"
+              value="ID: <%= milestone.userid %> - <%= milestone.userfirstname || '' %> <%= milestone.userlastname || '' %>"
+            />
+            <datalist id="participantList">
+              <% users.forEach(u => { %>
+                <option value="ID: <%= u.userid %> - <%= u.userfirstname %> <%= u.userlastname %>">
+                  <%= u.useremail %>
+                </option>
+              <% }); %>
+            </datalist>
+            <input type="hidden" id="userid" name="userid" value="<%= milestone.userid %>" required />
+            <small class="form-text text-muted">Start typing to search by name, email, or ID</small>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex">
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-check-circle-fill"></i> Save Changes
+            </button>
+            <a href="/milestones" class="btn btn-secondary">
+              <i class="bi bi-x-circle"></i> Cancel
+            </a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const participantSearch = document.getElementById('participantSearch');
+  const useridInput = document.getElementById('userid');
+
+  participantSearch.addEventListener('input', function() {
+    const selectedValue = this.value;
+    const match = selectedValue.match(/^ID:\s*(\d+)\s*-/);
+
+    if (match) {
+      useridInput.value = match[1];
+    } else {
+      useridInput.value = '';
+    }
+  });
+
+  const form = participantSearch.closest('form');
+  form.addEventListener('submit', function(e) {
+    if (!useridInput.value) {
+      e.preventDefault();
+      alert('Please select a valid participant from the list.');
+    }
+  });
+</script>
+
+<%- include('../partials/footer-scripts') %>
+

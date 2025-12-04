@@ -1,46 +1,49 @@
 // Connecting to the database so we can run Queryies
-const pool = require('../db');
+const db = require("../db");
+const { participantSelectColumns } = require("../utils/participantsModel");
 
 // Get the participants and display them on the participants/index page
 exports.getAllParticipants = async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM participants ORDER BY participantid');
-    res.render('participants/index', {
-      participants: result.rows,
-      user: req.session.user
+    const participants = await db("users")
+      .select(participantSelectColumns)
+      .orderBy("userid");
+    res.render("participants/index", {
+      participants,
+      user: req.session.user,
     });
   } catch (err) {
-    console.error('Fetch participants error:', err);
-    res.status(500).send('Server error');
+    console.error("Fetch participants error:", err);
+    res.status(500).send("Server error");
   }
 };
 
 // Get a single participant and show their details
 exports.getParticipantById = async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT * FROM participants WHERE participantid = $1',
-      [req.params.id]
-    );
+    const participant = await db("users")
+      .select(participantSelectColumns)
+      .where({ userid: req.params.id })
+      .first();
 
-    if (result.rows.length === 0) {
-      return res.status(404).send('Participant not found');
+    if (!participant) {
+      return res.status(404).send("Participant not found");
     }
 
-    res.render('participants/show', {
-      participant: result.rows[0],
-      user: req.session.user
+    res.render("participants/show", {
+      participant,
+      user: req.session.user,
     });
   } catch (err) {
-    console.error('Fetch participant error:', err);
-    res.status(500).send('Server error');
+    console.error("Fetch participant error:", err);
+    res.status(500).send("Server error");
   }
 };
 
 // Create a new participant
 exports.createParticipant = async (req, res) => {
   // Add your create logic here
-  res.redirect('/participants');
+  res.redirect("/participants");
 };
 
 // Update a participants information
@@ -52,10 +55,10 @@ exports.updateParticipant = async (req, res) => {
 // Delete a participant
 exports.deleteParticipant = async (req, res) => {
   try {
-    await pool.query('DELETE FROM participants WHERE participantid = $1', [req.params.id]);
-    res.redirect('/participants');
+    await db("users").where({ userid: req.params.id }).del();
+    res.redirect("/participants");
   } catch (err) {
-    console.error('Delete participant error:', err);
-    res.status(500).send('Server error');
+    console.error("Delete participant error:", err);
+    res.status(500).send("Server error");
   }
 };

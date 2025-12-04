@@ -46,32 +46,150 @@
           <% } %>
         </div>
 
-        <div class="row mb-3">
-          <div class="col-md-4">
-            <strong>Username:</strong>
+        <!-- Account Information -->
+        <div class="mb-4">
+          <h5 class="border-bottom pb-2 mb-3">
+            <i class="bi bi-person-badge"></i> Account Information
+          </h5>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>Username:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.username || '—' %></div>
           </div>
-          <div class="col-md-8"><%= userRecord.username %></div>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>User ID:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.userid || '—' %></div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>Role:</strong>
+            </div>
+            <div class="col-md-8">
+              <span
+                class="badge bg-<%= userRecord.userrole === 'admin' ? 'danger' : 'info' %>"
+              >
+                <%= userRecord.userrole === 'admin' ? 'Administrator' : 'Participant' %>
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div class="row mb-3">
-          <div class="col-md-4">
-            <strong>User ID:</strong>
+        <!-- Personal Information -->
+        <div class="mb-4">
+          <h5 class="border-bottom pb-2 mb-3">
+            <i class="bi bi-person"></i> Personal Information
+          </h5>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>First Name:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.userfirstname || '—' %></div>
           </div>
-          <div class="col-md-8"><%= userRecord.userid %></div>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>Last Name:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.userlastname || '—' %></div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>Email:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.useremail || '—' %></div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>Date of Birth:</strong>
+            </div>
+            <div class="col-md-8">
+              <% if (userRecord.userdob) { %>
+                <%= new Date(userRecord.userdob).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+              <% } else { %>
+                —
+              <% } %>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>Phone:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.userphone || '—' %></div>
+          </div>
         </div>
 
-        <div class="row mb-4">
-          <div class="col-md-4">
-            <strong>Role:</strong>
+        <!-- Address Information -->
+        <div class="mb-4">
+          <h5 class="border-bottom pb-2 mb-3">
+            <i class="bi bi-geo-alt"></i> Address
+          </h5>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>City:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.usercity || '—' %></div>
           </div>
-          <div class="col-md-8">
-            <span
-              class="badge bg-<%= userRecord.userrole === 'admin' ? 'danger' : 'info' %>"
-            >
-              <%= userRecord.userrole === 'admin' ? 'Administrator' : 'Participant' %>
-            </span>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>State:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.userstate || '—' %></div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>ZIP Code:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.userzip || '—' %></div>
           </div>
         </div>
+
+        <!-- Additional Information -->
+        <div class="mb-4">
+          <h5 class="border-bottom pb-2 mb-3">
+            <i class="bi bi-info-circle"></i> Additional Information
+          </h5>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>School/Employer:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.userschooloremployer || '—' %></div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>Field of Interest:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.userfieldofinterest || '—' %></div>
+          </div>
+        </div>
+
+        <!-- Guardian Information -->
+        <% if (userRecord.guardianfirstname || userRecord.guardianlastname || userRecord.guardianemail) { %>
+        <div class="mb-4">
+          <h5 class="border-bottom pb-2 mb-3">
+            <i class="bi bi-shield-check"></i> Guardian Information
+          </h5>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>Guardian First Name:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.guardianfirstname || '—' %></div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>Guardian Last Name:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.guardianlastname || '—' %></div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-4">
+              <strong>Guardian Email:</strong>
+            </div>
+            <div class="col-md-8"><%= userRecord.guardianemail || '—' %></div>
+          </div>
+        </div>
+        <% } %>
 
         <div class="d-grid gap-2 d-md-flex">
           <a href="/profile/edit" class="btn btn-primary">

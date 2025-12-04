@@ -5,6 +5,18 @@ const { requireAuth, requireAdmin } = require("../middleware/auth");
 const { formatAsDatetimeLocalInput } = require("../utils/dateHelpers");
 
 
+const normalizeField = (value) => {
+  if (value === undefined || value === null) {
+    return null;
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed === "" ? null : trimmed;
+  }
+  return value;
+};
+
+
 // List all events EventOccurences joined with the event templates
 // any logged in user cna see
 
@@ -12,6 +24,7 @@ router.get("/", requireAuth, async (req, res) => {
   try {
     const sortBy = req.query.sortBy || "eventoccurrenceid";
     const sortOrder = req.query.sortOrder || "asc";
+    const error = req.query.error || null;
 
       // joines the occurences and template so the row has all the event info
     const events = await db
@@ -28,6 +41,7 @@ router.get("/", requireAuth, async (req, res) => {
       user: req.session.user || null,
       sortBy,
       sortOrder,
+      error,
     });
   } catch (err) {
     console.error("Fetch events error:", err);
@@ -98,10 +112,12 @@ router.post("/new", requireAdmin, async (req, res) => {
       const [occurrence] = await trx("eventoccurrences")
         .insert({
           eventdatetimestart: req.body.eventdatetimestart,
-          eventdatetimeend: req.body.eventdatetimeend,
-          eventlocation: req.body.eventlocation,
-          eventcapacity: req.body.eventcapacity,
-          eventregistrationdeadline: req.body.eventregistrationdeadline,
+          eventdatetimeend: normalizeField(req.body.eventdatetimeend),
+          eventlocation: normalizeField(req.body.eventlocation),
+          eventcapacity: normalizeField(req.body.eventcapacity),
+          eventregistrationdeadline: normalizeField(
+            req.body.eventregistrationdeadline
+          ),
           eventtemplateid: req.body.eventTemplateID,
         })
         .returning("eventoccurrenceid");
@@ -272,10 +288,12 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
         .where({ eventoccurrenceid: eventId })
         .update({
           eventdatetimestart: date,
-          eventdatetimeend: eventdatetimeend || null,
-          eventlocation: eventlocation || null,
-          eventcapacity: eventcapacity || null,
-          eventregistrationdeadline: eventregistrationdeadline || null,
+          eventdatetimeend: normalizeField(eventdatetimeend),
+          eventlocation: normalizeField(eventlocation),
+          eventcapacity: normalizeField(eventcapacity),
+          eventregistrationdeadline: normalizeField(
+            eventregistrationdeadline
+          ),
         });
     });
 
@@ -283,6 +301,28 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
   } catch (err) {
     console.error("Update event error:", err);
     res.status(500).send("Server error");
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Delete event occurrence (ADMIN)
+// ---------------------------------------------------------------------------
+router.post("/:id/delete", requireAdmin, async (req, res) => {
+  const eventId = req.params.id;
+
+  try {
+    await db("eventoccurrences").where({ eventoccurrenceid: eventId }).del();
+    res.redirect("/events");
+  } catch (err) {
+    console.error("Delete event error:", err);
+
+    if (err.code === "23503") {
+      return res.redirect(
+        "/events?error=This event has related records (like registrations or surveys) and cannot be deleted."
+      );
+    }
+
+    res.redirect("/events?error=Unable to delete event due to a server error.");
   }
 });
 

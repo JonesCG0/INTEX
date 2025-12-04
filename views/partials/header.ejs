@@ -54,7 +54,7 @@
         font-family: "DM Serif Display", serif;
         font-weight: 700;
         font-size: 1.6rem;
-        color: var(--accent-color) !important;
+        color: var(--dark-text) !important;
         letter-spacing: -0.5px;
         display: flex;
         align-items: center;
@@ -115,7 +115,7 @@
       }
 
       .page-header {
-        background: linear-gradient(135deg, #FFd8d1, #f9afb1);
+        background: linear-gradient(135deg, #ffd8d1, #f9afb1);
         color: var(--dark-text);
         padding: 30px 0;
         margin-top: 0;
@@ -194,7 +194,7 @@
       }
 
       .table thead {
-        background: linear-gradient(135deg, #FFd8d1, #f9afb1);
+        background: linear-gradient(135deg, #ffd8d1, #f9afb1);
         color: var(--dark-text);
       }
 
@@ -482,8 +482,8 @@
                   <span class="dropdown-item-text">
                     <strong><%= user.username %></strong><br />
                     <small class="text-muted"
-                      ><%= user.role === 'admin' ? 'Administrator' : 'Participant'
-                      %></small
+                      ><%= user.role === 'admin' ? 'Administrator' :
+                      'Participant' %></small
                     >
                   </span>
                 </li>

@@ -1,0 +1,498 @@
+<%- include('../partials/header', { title: 'Register for Events', user: user })
+%>
+
+<div class="page-header">
+  <div class="container">
+    <h1><i class="bi bi-calendar-plus-fill"></i> Register for Events</h1>
+    <p>View and register for upcoming events</p>
+  </div>
+</div>
+
+<div class="container">
+  <% if (success) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle-fill"></i> <%= success %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  <% } %> <% if (error) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  <% } %> <% if (user && user.role === 'admin') { %>
+  <div class="card mb-4" style="border-left: 4px solid var(--bs-warning)">
+    <div class="card-header bg-warning bg-opacity-10">
+      <h5 class="mb-0">
+        <i class="bi bi-shield-fill-check"></i> Admin: Register User for Event
+      </h5>
+    </div>
+    <div class="card-body">
+      <form id="adminRegisterForm">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Search for User</label>
+            <div class="position-relative">
+              <input
+                type="text"
+                class="form-control"
+                id="userSearch"
+                placeholder="Search by name or ID..."
+                autocomplete="off"
+              />
+              <div
+                id="userResults"
+                class="search-results"
+                style="display: none"
+              ></div>
+            </div>
+            <input type="hidden" id="selectedUserId" />
+            <div id="selectedUserInfo" class="mt-2"></div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Search for Event</label>
+            <div class="position-relative">
+              <input
+                type="text"
+                class="form-control"
+                id="eventSearch"
+                placeholder="Search by event name or ID..."
+                autocomplete="off"
+              />
+              <div
+                id="eventResults"
+                class="search-results"
+                style="display: none"
+              ></div>
+            </div>
+            <input type="hidden" id="selectedEventId" />
+            <div id="selectedEventInfo" class="mt-2"></div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end">
+          <button type="submit" class="btn btn-warning">
+            <i class="bi bi-person-plus-fill"></i> Register User for Event
+          </button>
+        </div>
+      </form>
+      <div id="adminRegisterMessage" class="mt-3"></div>
+    </div>
+  </div>
+
+  <style>
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #dee2e6;
+      border-top: none;
+      border-radius: 0 0 0.375rem 0.375rem;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-result-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .search-result-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .search-result-title {
+      font-weight: 600;
+      color: #212529;
+    }
+
+    .search-result-details {
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+
+    .selected-info-card {
+      padding: 10px 15px;
+      background: #e7f3ff;
+      border: 1px solid #b3d9ff;
+      border-radius: 0.375rem;
+    }
+  </style>
+  <% } %> <% if (user && user.role === 'participant') { %>
+  <div class="card">
+    <% if (events.length === 0) { %>
+    <div class="text-center py-5">
+      <i class="bi bi-calendar-x" style="font-size: 3rem; color: #6c757d"></i>
+      <h3 class="mt-3">No Upcoming Events</h3>
+      <p class="text-muted">
+        There are no events available for registration at this time.
+      </p>
+      <a href="/events" class="btn btn-primary">View All Events</a>
+    </div>
+    <% } else { %>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Event Name</th>
+            <th>Type</th>
+            <th>Date & Time</th>
+            <th>Location</th>
+            <th>Capacity</th>
+            <th>Registration Deadline</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% events.forEach(event => { %>
+          <tr>
+            <td>
+              <strong><%= event.eventname || '—' %></strong>
+              <% if (event.eventdescription) { %>
+              <br /><small class="text-muted"
+                ><%= event.eventdescription.substring(0, 60) %><%=
+                event.eventdescription.length > 60 ? '...' : '' %></small
+              >
+              <% } %>
+            </td>
+            <td>
+              <% if (event.eventtype) { %>
+              <span class="badge bg-info"><%= event.eventtype %></span>
+              <% } else { %> — <% } %>
+            </td>
+            <td>
+              <% if (event.eventdatetimestart) { %> <%= new
+              Date(event.eventdatetimestart).toLocaleString('en-US', { year:
+              'numeric', month: 'short', day: 'numeric', hour: '2-digit',
+              minute: '2-digit' }) %> <% if (event.eventdatetimeend) { %>
+              <br /><small class="text-muted"
+                >to <%= new
+                Date(event.eventdatetimeend).toLocaleTimeString('en-US', { hour:
+                '2-digit', minute: '2-digit' }) %></small
+              >
+              <% } %> <% } else { %> — <% } %>
+            </td>
+            <td><%= event.eventlocation || '—' %></td>
+            <td>
+              <% if (event.eventcapacity) { %> <%= event.currentRegistrations
+              %>/<%= event.eventcapacity %> <% if (event.isFull) { %>
+              <br /><span class="badge bg-danger">Full</span>
+              <% } %> <% } else { %> <%= event.currentRegistrations %>
+              registered <% } %>
+            </td>
+            <td>
+              <% if (event.eventregistrationdeadline) { %> <%= new
+              Date(event.eventregistrationdeadline).toLocaleString('en-US', {
+              year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit',
+              minute: '2-digit' }) %> <% if (event.registrationClosed) { %>
+              <br /><span class="badge bg-warning">Closed</span>
+              <% } %> <% } else { %> — <% } %>
+            </td>
+            <td>
+              <% if (event.isRegistered) { %>
+              <span class="badge bg-success">
+                <i class="bi bi-check-circle-fill"></i> Registered
+              </span>
+              <% } else if (event.isFull) { %>
+              <span class="badge bg-danger">
+                <i class="bi bi-x-circle-fill"></i> Full
+              </span>
+              <% } else if (event.registrationClosed) { %>
+              <span class="badge bg-warning">
+                <i class="bi bi-clock-fill"></i> Closed
+              </span>
+              <% } else { %>
+              <span class="badge bg-secondary">
+                <i class="bi bi-circle"></i> Available
+              </span>
+              <% } %>
+            </td>
+            <td>
+              <% if (event.isRegistered) { %>
+              <button class="btn btn-sm btn-success" disabled>
+                <i class="bi bi-check-lg"></i> Registered
+              </button>
+              <% } else if (event.isFull || event.registrationClosed) { %>
+              <button class="btn btn-sm btn-secondary" disabled>
+                <i class="bi bi-x-lg"></i> Unavailable
+              </button>
+              <% } else { %>
+              <form
+                action="/registrations/register/<%= event.eventoccurrenceid %>"
+                method="POST"
+                style="display: inline"
+              >
+                <button type="submit" class="btn btn-sm btn-primary">
+                  <i class="bi bi-calendar-check-fill"></i> Register
+                </button>
+              </form>
+              <% } %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </div>
+  <% } %> <% if (user && user.role === 'participant') { %>
+  <div class="mt-3">
+    <a href="/registrations" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> View My Registrations
+    </a>
+  </div>
+  <% } %>
+</div>
+
+<% if (user && user.role === 'admin') { %>
+<script>
+  let userSearchTimeout;
+  let eventSearchTimeout;
+
+  // User search functionality
+  const userSearchInput = document.getElementById("userSearch");
+  const userResults = document.getElementById("userResults");
+  const selectedUserIdInput = document.getElementById("selectedUserId");
+  const selectedUserInfo = document.getElementById("selectedUserInfo");
+
+  userSearchInput.addEventListener("input", (e) => {
+    clearTimeout(userSearchTimeout);
+    const query = e.target.value.trim();
+
+    if (query.length < 1) {
+      userResults.style.display = "none";
+      return;
+    }
+
+    userSearchTimeout = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `/registrations/admin/search-users?q=${encodeURIComponent(query)}`
+        );
+        const users = await response.json();
+
+        if (users.length === 0) {
+          userResults.innerHTML =
+            '<div class="search-result-item text-muted">No users found</div>';
+          userResults.style.display = "block";
+          return;
+        }
+
+        userResults.innerHTML = users
+          .map(
+            (user) => `
+          <div class="search-result-item" data-userid="${user.userid}">
+            <div class="search-result-title">${user.userfirstname} ${user.userlastname}</div>
+            <div class="search-result-details">ID: ${user.userid} | Username: ${user.username}</div>
+          </div>
+        `
+          )
+          .join("");
+        userResults.style.display = "block";
+
+        // Add click handlers
+        document
+          .querySelectorAll("#userResults .search-result-item")
+          .forEach((item) => {
+            item.addEventListener("click", () => selectUser(item));
+          });
+      } catch (error) {
+        console.error("Error searching users:", error);
+      }
+    }, 300);
+  });
+
+  function selectUser(item) {
+    const userId = item.dataset.userid;
+    const userName = item.querySelector(".search-result-title").textContent;
+    const userDetails = item.querySelector(
+      ".search-result-details"
+    ).textContent;
+
+    selectedUserIdInput.value = userId;
+    userSearchInput.value = userName;
+    userResults.style.display = "none";
+
+    selectedUserInfo.innerHTML = `
+      <div class="selected-info-card">
+        <i class="bi bi-check-circle-fill text-success"></i> <strong>Selected:</strong> ${userName}<br>
+        <small>${userDetails}</small>
+      </div>
+    `;
+  }
+
+  // Event search functionality
+  const eventSearchInput = document.getElementById("eventSearch");
+  const eventResults = document.getElementById("eventResults");
+  const selectedEventIdInput = document.getElementById("selectedEventId");
+  const selectedEventInfo = document.getElementById("selectedEventInfo");
+
+  eventSearchInput.addEventListener("input", (e) => {
+    clearTimeout(eventSearchTimeout);
+    const query = e.target.value.trim();
+
+    if (query.length < 1) {
+      eventResults.style.display = "none";
+      return;
+    }
+
+    eventSearchTimeout = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `/registrations/admin/search-events?q=${encodeURIComponent(query)}`
+        );
+        const events = await response.json();
+
+        if (events.length === 0) {
+          eventResults.innerHTML =
+            '<div class="search-result-item text-muted">No events found</div>';
+          eventResults.style.display = "block";
+          return;
+        }
+
+        eventResults.innerHTML = events
+          .map((event) => {
+            const eventDate = new Date(event.eventdatetimestart).toLocaleString(
+              "en-US",
+              {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            );
+            return `
+            <div class="search-result-item" data-eventid="${
+              event.eventoccurrenceid
+            }">
+              <div class="search-result-title">${event.eventname}</div>
+              <div class="search-result-details">ID: ${
+                event.eventoccurrenceid
+              } | ${eventDate} | ${event.eventlocation || "No location"}</div>
+            </div>
+          `;
+          })
+          .join("");
+        eventResults.style.display = "block";
+
+        // Add click handlers
+        document
+          .querySelectorAll("#eventResults .search-result-item")
+          .forEach((item) => {
+            item.addEventListener("click", () => selectEvent(item));
+          });
+      } catch (error) {
+        console.error("Error searching events:", error);
+      }
+    }, 300);
+  });
+
+  function selectEvent(item) {
+    const eventId = item.dataset.eventid;
+    const eventName = item.querySelector(".search-result-title").textContent;
+    const eventDetails = item.querySelector(
+      ".search-result-details"
+    ).textContent;
+
+    selectedEventIdInput.value = eventId;
+    eventSearchInput.value = eventName;
+    eventResults.style.display = "none";
+
+    selectedEventInfo.innerHTML = `
+      <div class="selected-info-card">
+        <i class="bi bi-check-circle-fill text-success"></i> <strong>Selected:</strong> ${eventName}<br>
+        <small>${eventDetails}</small>
+      </div>
+    `;
+  }
+
+  // Hide dropdowns when clicking outside
+  document.addEventListener("click", (e) => {
+    if (
+      !userSearchInput.contains(e.target) &&
+      !userResults.contains(e.target)
+    ) {
+      userResults.style.display = "none";
+    }
+    if (
+      !eventSearchInput.contains(e.target) &&
+      !eventResults.contains(e.target)
+    ) {
+      eventResults.style.display = "none";
+    }
+  });
+
+  // Form submission
+  document
+    .getElementById("adminRegisterForm")
+    .addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const userId = selectedUserIdInput.value;
+      const eventId = selectedEventIdInput.value;
+      const messageDiv = document.getElementById("adminRegisterMessage");
+
+      if (!userId) {
+        messageDiv.innerHTML =
+          '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill"></i> Please select a user</div>';
+        return;
+      }
+
+      if (!eventId) {
+        messageDiv.innerHTML =
+          '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill"></i> Please select an event</div>';
+        return;
+      }
+
+      try {
+        const response = await fetch("/registrations/admin/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userid: userId,
+            eventoccurrenceid: eventId,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          messageDiv.innerHTML =
+            '<div class="alert alert-success"><i class="bi bi-check-circle-fill"></i> ' +
+            data.message +
+            "</div>";
+
+          // Reset form
+          userSearchInput.value = "";
+          eventSearchInput.value = "";
+          selectedUserIdInput.value = "";
+          selectedEventIdInput.value = "";
+          selectedUserInfo.innerHTML = "";
+          selectedEventInfo.innerHTML = "";
+
+          // Reload the page after 1.5 seconds to show updated registration status
+          setTimeout(() => window.location.reload(), 1500);
+        } else {
+          messageDiv.innerHTML =
+            '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill"></i> ' +
+            (data.error || "Registration failed") +
+            "</div>";
+        }
+      } catch (error) {
+        messageDiv.innerHTML =
+          '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle-fill"></i> An error occurred</div>';
+      }
+    });
+</script>
+<% } %> <%- include('../partials/footer-scripts') %>

@@ -11,26 +11,12 @@ const {
   sanitizeISODate,
 } = require("../utils/validators");
 const { formatAsDateInput } = require("../utils/dateHelpers");
-
 // column mapping (users table -> particpant style aliases)
 // \select the user fields 
-const PARTICIPANT_FIELD_MAP = {
-  participantid: "userid",
-  participantfirstname: "userfirstname",
-  participantlastname: "userlastname",
-  participantemail: "useremail",
-  participantphone: "userphone",
-  participantzip: "userzip",
-  participantdob: "userdob",
-  participantrole: "userrole",
-  participantschooloremployer: "userschooloremployer",
-  participantfieldofinterest: "userfieldofinterest",
-};
-
-// Builds a select list in the format: Column as alias. 
-const participantSelectColumns = Object.entries(PARTICIPANT_FIELD_MAP).map(
-  ([alias, column]) => `${column} as ${alias}`
-);
+const {
+  PARTICIPANT_FIELD_MAP,
+  participantSelectColumns,
+} = require("../utils/participantsModel");
 
 // save and valid fields. 
 function resolveSort(sortByRaw, sortOrderRaw) {

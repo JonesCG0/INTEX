@@ -82,12 +82,23 @@
         <hr />
 
         <div class="d-grid gap-2 d-md-flex">
+          <% if (user && user.role === 'admin') { %>
           <a
             href="/events/<%= event.eventoccurrenceid %>/edit"
             class="btn btn-primary"
           >
             <i class="bi bi-pencil-fill"></i> Edit Event
           </a>
+          <form
+            action="/events/<%= event.eventoccurrenceid %>/delete"
+            method="POST"
+            onsubmit="return confirm('Delete event \"<%= event.eventname %>\"? This cannot be undone.');"
+          >
+            <button type="submit" class="btn btn-danger">
+              <i class="bi bi-trash-fill"></i> Delete Event
+            </button>
+          </form>
+          <% } %>
           <a href="/events" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Back to Events
           </a>
