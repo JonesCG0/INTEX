@@ -105,6 +105,38 @@
         width: 20px;
       }
 
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--accent-color);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .user-avatar-placeholder {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 2px solid var(--accent-color);
+        background-color: var(--pink-bg);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent-color);
+        font-size: 1.1rem;
+      }
+
+      .user-avatar-placeholder i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        line-height: 1;
+      }
+
       .text-danger {
         color: var(--danger-color) !important;
       }
@@ -472,7 +504,16 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <i class="bi bi-person-circle"></i><%= user.username %>
+                <span class="d-inline-flex align-items-center gap-2">
+                  <% if (user.photo) { %>
+                    <img src="<%= user.photo %>" alt="Profile photo" class="user-avatar" />
+                  <% } else { %>
+                    <span class="user-avatar-placeholder">
+                      <i class="bi bi-person-fill"></i>
+                    </span>
+                  <% } %>
+                  <span><%= user.username %></span>
+                </span>
               </a>
               <ul
                 class="dropdown-menu dropdown-menu-end"

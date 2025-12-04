@@ -8,6 +8,18 @@
 </div>
 
 <div class="container">
+  <% if (success) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle-fill"></i> <%= success %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  <% } %>
+  <% if (error) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+  <% } %>
   <div class="card">
     <% if (registrations.length === 0) { %>
     <div class="text-center py-5">
@@ -86,22 +98,40 @@
             </td>
             <td>
               <% // Check if user can submit a survey: 1. Has attended flag =1,
-              // 2. Event is in the past, 3. No survey submitted yet const
-              hasAttended = r.registrationattendedflag == 1; const eventEnded =
-              r.eventdatetimeend && new Date(r.eventdatetimeend) < new Date();
-              const noSurvey = !r.surveyid; const canSubmitSurvey = hasAttended
-              && eventEnded && noSurvey; %> <% if (canSubmitSurvey) { %>
-              <a
-                href="/registrations/<%= r.registrationid %>/survey"
-                class="btn btn-sm btn-primary"
-              >
-                <i class="bi bi-clipboard-check"></i> Submit Survey
-              </a>
-              <% } else if (r.surveyid) { %>
-              <span class="badge bg-success"
-                ><i class="bi bi-check-circle-fill"></i> Survey Completed</span
-              >
-              <% } else { %> — <% } %>
+              // 2. Event is in the past, 3. No survey submitted yet
+              const hasAttended = r.registrationattendedflag == 1;
+              const eventEnded = r.eventdatetimeend && new Date(r.eventdatetimeend) < new Date();
+              const noSurvey = !r.surveyid;
+              const canSubmitSurvey = hasAttended && eventEnded && noSurvey;
+              const eventUpcoming = r.eventdatetimestart && new Date(r.eventdatetimestart) > new Date(); %>
+              <div class="d-flex flex-column gap-2">
+                <div>
+                  <% if (canSubmitSurvey) { %>
+                  <a
+                    href="/registrations/<%= r.registrationid %>/survey"
+                    class="btn btn-sm btn-primary"
+                  >
+                    <i class="bi bi-clipboard-check"></i> Submit Survey
+                  </a>
+                  <% } else if (r.surveyid) { %>
+                  <span class="badge bg-success">
+                    <i class="bi bi-check-circle-fill"></i> Survey Completed
+                  </span>
+                  <% } else { %> <span class="text-muted">ƒ?"</span> <% } %>
+                </div>
+                <% if (eventUpcoming) { %>
+                <form
+                  action="/registrations/<%= r.registrationid %>/unregister"
+                  method="POST"
+                  class="d-inline"
+                >
+                  <input type="hidden" name="redirectTo" value="/registrations" />
+                  <button type="submit" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-x-circle"></i> Unregister
+                  </button>
+                </form>
+                <% } %>
+              </div>
             </td>
           </tr>
           <% }) %>

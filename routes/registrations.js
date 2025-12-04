@@ -50,11 +50,18 @@ router.get("/register", requireAuth, async (req, res) => {
       event.registrationClosed = event.eventregistrationdeadline && new Date(event.eventregistrationdeadline) < now;
     });
 
+    let successMessage = null;
+    if (req.query.success === "registered") {
+      successMessage = "Successfully registered for the event!";
+    } else if (req.query.success === "unregistered") {
+      successMessage = "You have been unregistered from the event.";
+    }
+
     res.render("registrations/register", {
       events,
       user: req.session.user,
-      error: null,
-      success: req.query.success === 'registered' ? 'Successfully registered for the event!' : null,
+      error: req.query.error || null,
+      success: successMessage,
     });
   } catch (err) {
     console.error("Fetch events error:", err);
@@ -121,6 +128,61 @@ router.post("/register/:eventId", requireAuth, async (req, res) => {
   } catch (err) {
     console.error("Register for event error:", err);
     res.status(500).send("Server error");
+  }
+});
+
+// Unregister current user (or admin) from an event
+router.post("/:id/unregister", requireAuth, async (req, res) => {
+  const registrationId = req.params.id;
+  const allowedRedirects = ["/registrations", "/registrations/register"];
+  const redirectTo = allowedRedirects.includes(req.body.redirectTo)
+    ? req.body.redirectTo
+    : "/registrations";
+  const redirectWithMessage = (type, value) =>
+    `${redirectTo}?${type}=${encodeURIComponent(value)}`;
+
+  try {
+    const registration = await db("registrations as r")
+      .join(
+        "eventoccurrences as eo",
+        "r.eventoccurrenceid",
+        "eo.eventoccurrenceid"
+      )
+      .select("r.registrationid", "r.userid", "eo.eventdatetimestart")
+      .where("r.registrationid", registrationId)
+      .first();
+
+    if (!registration) {
+      return res.redirect(redirectWithMessage("error", "Registration not found."));
+    }
+
+    const isOwner = registration.userid === req.session.user.userid;
+    const isAdmin = req.session.user.role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).send("Unauthorized");
+    }
+
+    if (
+      registration.eventdatetimestart &&
+      new Date(registration.eventdatetimestart) <= new Date()
+    ) {
+      return res.redirect(
+        redirectWithMessage(
+          "error",
+          "You cannot unregister from an event that has already started."
+        )
+      );
+    }
+
+    await db("registrations").where({ registrationid: registrationId }).del();
+
+    return res.redirect(redirectWithMessage("success", "unregistered"));
+  } catch (err) {
+    console.error("Unregister from event error:", err);
+    return res.redirect(
+      redirectWithMessage("error", "Unable to unregister from the event.")
+    );
   }
 });
 
@@ -279,9 +341,16 @@ router.get("/", requireAuth, async (req, res) => {
       .where("r.userid", userId)
       .orderBy("eo.eventdatetimestart", "desc");
 
+    let successMessage = null;
+    if (req.query.success === "unregistered") {
+      successMessage = "You have been unregistered from the event.";
+    }
+
     res.render("registrations/index", {
       registrations,
       user: req.session.user,
+      success: successMessage,
+      error: req.query.error || null,
     });
   } catch (err) {
     console.error("Fetch registrations error:", err);
