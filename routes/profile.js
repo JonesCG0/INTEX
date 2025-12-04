@@ -30,7 +30,7 @@ router.get("/", async (req, res) => {
 router.get("/edit", async (req, res) => {
   try {
     const userRecord = await db("users")
-      .select("userid", "username", "password", "photo", "userrole as role")
+      .select("*")
       .where({ userid: req.session.user.userid })
       .first();
 
@@ -51,14 +51,32 @@ router.get("/edit", async (req, res) => {
 
 // Edit profile submit (users can update their own profile)
 router.post("/edit", upload.single("photoFile"), async (req, res) => {
-  const { username, password, existingPhoto } = req.body;
+  const {
+    username,
+    password,
+    existingPhoto,
+    userfirstname,
+    userlastname,
+    useremail,
+    userdob,
+    userphone,
+    usercity,
+    userstate,
+    userzip,
+    userschooloremployer,
+    userfieldofinterest,
+    guardianfirstname,
+    guardianlastname,
+    guardianemail
+  } = req.body;
+
   const userid = req.session.user.userid;
   const cleanUsername = typeof username === "string" ? username.trim() : "";
   const cleanPassword = typeof password === "string" ? password.trim() : "";
 
   if (!cleanUsername) {
     const userRecord = await db("users")
-      .select("userid", "username", "password", "photo", "userrole as role")
+      .select("*")
       .where({ userid })
       .first();
 
@@ -79,6 +97,19 @@ router.post("/edit", upload.single("photoFile"), async (req, res) => {
     const updateData = {
       username: cleanUsername,
       photo: photoUrl,
+      userfirstname: userfirstname || null,
+      userlastname: userlastname || null,
+      useremail: useremail || null,
+      userdob: userdob || null,
+      userphone: userphone || null,
+      usercity: usercity || null,
+      userstate: userstate || null,
+      userzip: userzip || null,
+      userschooloremployer: userschooloremployer || null,
+      userfieldofinterest: userfieldofinterest || null,
+      guardianfirstname: guardianfirstname || null,
+      guardianlastname: guardianlastname || null,
+      guardianemail: guardianemail || null,
     };
 
     if (cleanPassword) {
@@ -87,14 +118,16 @@ router.post("/edit", upload.single("photoFile"), async (req, res) => {
 
     await db("users").where({ userid }).update(updateData);
 
-    // Update session with new username
+    // Update session with new username and name
     req.session.user.username = cleanUsername;
+    if (userfirstname) req.session.user.userfirstname = userfirstname;
+    if (userlastname) req.session.user.userlastname = userlastname;
 
     res.redirect("/profile");
   } catch (err) {
     console.error("Update profile error:", err);
     const userRecord = await db("users")
-      .select("userid", "username", "password", "photo", "userrole as role")
+      .select("*")
       .where({ userid })
       .first();
 

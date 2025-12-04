@@ -9,7 +9,7 @@
 
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-lg-6">
+    <div class="col-lg-8">
       <div class="card">
         <% if (error) { %>
           <div class="alert alert-danger">
@@ -18,29 +18,129 @@
         <% } %>
 
         <form action="/profile/edit" method="POST" enctype="multipart/form-data">
-          <div class="mb-3">
-            <label class="form-label">Username</label>
-            <input name="username" class="form-control" value="<%= userRecord.username %>" required>
+
+          <!-- Account Information -->
+          <div class="mb-4">
+            <h5 class="border-bottom pb-2 mb-3">
+              <i class="bi bi-person-badge"></i> Account Information
+            </h5>
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input name="username" class="form-control" value="<%= userRecord.username %>" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">New Password</label>
+              <input name="password" type="password" class="form-control" placeholder="Leave blank to keep current password">
+              <small class="text-muted">Only fill this if you want to change the password</small>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Profile Photo</label>
+              <% if (userRecord.photo) { %>
+                <div class="mb-2">
+                  <img src="<%= userRecord.photo %>" alt="Current photo"
+                       style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--accent-color);">
+                  <p class="text-muted mt-2"><small>Current photo</small></p>
+                </div>
+              <% } %>
+              <input name="photoFile" type="file" class="form-control" accept="image/*">
+              <small class="text-muted">Upload a new photo to replace the current one</small>
+              <input type="hidden" name="existingPhoto" value="<%= userRecord.photo || '' %>">
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">New Password</label>
-            <input name="password" type="password" class="form-control" placeholder="Leave blank to keep current password">
-            <small class="text-muted">Only fill this if you want to change the password</small>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Profile Photo</label>
-            <% if (userRecord.photo) { %>
-              <div class="mb-2">
-                <img src="<%= userRecord.photo %>" alt="Current photo"
-                     style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--accent-color);">
-                <p class="text-muted mt-2"><small>Current photo</small></p>
+          <!-- Personal Information -->
+          <div class="mb-4">
+            <h5 class="border-bottom pb-2 mb-3">
+              <i class="bi bi-person"></i> Personal Information
+            </h5>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">First Name</label>
+                <input name="userfirstname" class="form-control" value="<%= userRecord.userfirstname || '' %>">
               </div>
-            <% } %>
-            <input name="photoFile" type="file" class="form-control" accept="image/*">
-            <small class="text-muted">Upload a new photo to replace the current one</small>
-            <input type="hidden" name="existingPhoto" value="<%= userRecord.photo || '' %>">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Last Name</label>
+                <input name="userlastname" class="form-control" value="<%= userRecord.userlastname || '' %>">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input name="useremail" type="email" class="form-control" value="<%= userRecord.useremail || '' %>">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Date of Birth</label>
+              <input name="userdob" type="date" class="form-control"
+                     value="<%= userRecord.userdob ? new Date(userRecord.userdob).toISOString().split('T')[0] : '' %>">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Phone</label>
+              <input name="userphone" type="tel" class="form-control" value="<%= userRecord.userphone || '' %>">
+            </div>
+          </div>
+
+          <!-- Address Information -->
+          <div class="mb-4">
+            <h5 class="border-bottom pb-2 mb-3">
+              <i class="bi bi-geo-alt"></i> Address
+            </h5>
+            <div class="mb-3">
+              <label class="form-label">City</label>
+              <input name="usercity" class="form-control" value="<%= userRecord.usercity || '' %>">
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">State</label>
+                <input name="userstate" class="form-control" value="<%= userRecord.userstate || '' %>">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">ZIP Code</label>
+                <input name="userzip" class="form-control" value="<%= userRecord.userzip || '' %>">
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Information -->
+          <div class="mb-4">
+            <h5 class="border-bottom pb-2 mb-3">
+              <i class="bi bi-info-circle"></i> Additional Information
+            </h5>
+            <div class="mb-3">
+              <label class="form-label">School/Employer</label>
+              <input name="userschooloremployer" class="form-control" value="<%= userRecord.userschooloremployer || '' %>">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Field of Interest</label>
+              <input name="userfieldofinterest" class="form-control" value="<%= userRecord.userfieldofinterest || '' %>">
+            </div>
+          </div>
+
+          <!-- Guardian Information -->
+          <div class="mb-4">
+            <h5 class="border-bottom pb-2 mb-3">
+              <i class="bi bi-shield-check"></i> Guardian Information
+            </h5>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Guardian First Name</label>
+                <input name="guardianfirstname" class="form-control" value="<%= userRecord.guardianfirstname || '' %>">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Guardian Last Name</label>
+                <input name="guardianlastname" class="form-control" value="<%= userRecord.guardianlastname || '' %>">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Guardian Email</label>
+              <input name="guardianemail" type="email" class="form-control" value="<%= userRecord.guardianemail || '' %>">
+            </div>
           </div>
 
           <div class="d-grid gap-2 d-md-flex">

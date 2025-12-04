@@ -53,9 +53,20 @@ router.get("/", requireAuth, async (req, res) => {
 // Show single survey
 router.get("/:id", requireAdmin, async (req, res) => {
   try {
-    const survey = await db("surveys")
-      .select("*")
-      .where({ surveyid: req.params.id })
+    const survey = await db("surveys as s")
+      .join("registrations as r", "s.registrationid", "r.registrationid")
+      .join("eventoccurrences as eo", "r.eventoccurrenceid", "eo.eventoccurrenceid")
+      .join("eventtemplates as et", "eo.eventtemplateid", "et.eventtemplateid")
+      .select(
+        "s.*",
+        "et.eventname",
+        "et.eventtype",
+        "et.eventdescription",
+        "eo.eventdatetimestart",
+        "eo.eventdatetimeend",
+        "eo.eventlocation"
+      )
+      .where({ "s.surveyid": req.params.id })
       .first();
 
     if (!survey) {
