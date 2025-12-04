@@ -68,10 +68,16 @@
             <div id="selectedEventInfo" class="mt-2"></div>
           </div>
         </div>
+
         <div class="d-flex justify-content-end">
           <button type="submit" class="btn btn-warning">
             <i class="bi bi-person-plus-fill"></i> Register User for Event
           </button>
+        </div>
+        <div class="d-flex justify-content-end mt-3">
+          <a href="/events" class="btn btn-outline-secondary me-2">
+            <i class="bi bi-arrow-left"></i> Back to Events
+          </a>
         </div>
       </form>
       <div id="adminRegisterMessage" class="mt-3"></div>
@@ -245,6 +251,9 @@
   </div>
   <% } %> <% if (user && user.role === 'participant') { %>
   <div class="mt-3">
+    <a href="/events" class="btn btn-outline-secondary me-2">
+      <i class="bi bi-arrow-left"></i> Back to Events
+    </a>
     <a href="/registrations" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> View My Registrations
     </a>

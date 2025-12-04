@@ -12,61 +12,113 @@
     <div class="col-lg-8">
       <div class="card">
         <% if (error) { %>
-          <div class="alert alert-danger">
-            <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
-          </div>
+        <div class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+        </div>
         <% } %>
 
         <form action="/participants/new" method="POST">
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label for="participantfirstname" class="form-label">First Name</label>
-              <input type="text" id="participantfirstname" name="participantfirstname" class="form-control" placeholder="First name">
+              <label for="participantfirstname" class="form-label"
+                >First Name</label
+              >
+              <input
+                type="text"
+                id="participantfirstname"
+                name="participantfirstname"
+                class="form-control"
+                placeholder="First name"
+              />
             </div>
 
             <div class="col-md-6 mb-3">
-              <label for="participantlastname" class="form-label">Last Name</label>
-              <input type="text" id="participantlastname" name="participantlastname" class="form-control" placeholder="Last name">
+              <label for="participantlastname" class="form-label"
+                >Last Name</label
+              >
+              <input
+                type="text"
+                id="participantlastname"
+                name="participantlastname"
+                class="form-control"
+                placeholder="Last name"
+              />
             </div>
           </div>
 
           <div class="mb-3">
             <label for="participantemail" class="form-label">Email</label>
-            <input type="email" id="participantemail" name="participantemail" class="form-control" placeholder="email@example.com">
+            <input
+              type="email"
+              id="participantemail"
+              name="participantemail"
+              class="form-control"
+              placeholder="email@example.com"
+            />
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
               <label for="participantphone" class="form-label">Phone</label>
-              <input type="text" id="participantphone" name="participantphone" class="form-control" placeholder="(555) 123-4567">
+              <input
+                type="text"
+                id="participantphone"
+                name="participantphone"
+                class="form-control"
+                placeholder="(555) 123-4567"
+              />
             </div>
 
             <div class="col-md-6 mb-3">
               <label for="participantzip" class="form-label">ZIP Code</label>
-              <input type="text" id="participantzip" name="participantzip" class="form-control" placeholder="12345">
+              <input
+                type="text"
+                id="participantzip"
+                name="participantzip"
+                class="form-control"
+                placeholder="12345"
+              />
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label for="participantdob" class="form-label">Date of Birth</label>
-              <input type="date" id="participantdob" name="participantdob" class="form-control">
-            </div>
-
-            <div class="col-md-6 mb-3">
-              <label for="participantrole" class="form-label">Role</label>
-              <input type="text" id="participantrole" name="participantrole" class="form-control" placeholder="Student, Mentor, etc.">
+              <label for="participantdob" class="form-label"
+                >Date of Birth</label
+              >
+              <input
+                type="date"
+                id="participantdob"
+                name="participantdob"
+                class="form-control"
+              />
             </div>
           </div>
 
           <div class="mb-3">
-            <label for="participantschooloremployer" class="form-label">School or Employer</label>
-            <input type="text" id="participantschooloremployer" name="participantschooloremployer" class="form-control" placeholder="Organization name">
+            <label for="participantschooloremployer" class="form-label"
+              >School or Employer</label
+            >
+            <input
+              type="text"
+              id="participantschooloremployer"
+              name="participantschooloremployer"
+              class="form-control"
+              placeholder="Organization name"
+            />
           </div>
 
           <div class="mb-3">
-            <label for="participantfieldofinterest" class="form-label">Field of Interest</label>
-            <input type="text" id="participantfieldofinterest" name="participantfieldofinterest" class="form-control" placeholder="Technology, Arts, Business, etc.">
+            <label for="participantfieldofinterest" class="form-label"
+              >Field of Interest</label
+            >
+            <input
+              type="text"
+              id="participantfieldofinterest"
+              name="participantfieldofinterest"
+              class="form-control"
+              placeholder="Technology, Arts, Business, etc."
+            />
           </div>
 
           <div class="d-grid gap-2 d-md-flex">
