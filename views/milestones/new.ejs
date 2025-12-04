@@ -53,7 +53,12 @@
             />
             <datalist id="participantList">
               <% users.forEach(u => { %>
-                <option value="ID: <%= u.userid %> - <%= u.userfirstname %> <%= u.userlastname %>" data-userid="<%= u.userid %>">
+                <option
+                  value="ID: <%= u.userid %> - <%= u.userfirstname %> <%= u.userlastname %>"
+                  data-userid="<%= u.userid %>"
+                  data-first-name="<%= u.userfirstname %>"
+                  data-last-name="<%= u.userlastname %>"
+                >
                   <%= u.useremail %>
                 </option>
               <% }); %>
@@ -80,8 +85,58 @@
   // Handle participant selection
   const participantSearch = document.getElementById('participantSearch');
   const useridInput = document.getElementById('userid');
+  const participantList = document.getElementById('participantList');
+
+  const participantOptions = participantList
+    ? Array.from(participantList.querySelectorAll('option')).map(option => {
+        const firstName = option.dataset.firstName || '';
+        const lastName = option.dataset.lastName || '';
+        return {
+          value: option.value,
+          userId: Number(option.dataset.userid),
+          firstName,
+          lastName,
+          sortFirst: firstName.toLowerCase(),
+          sortLast: lastName.toLowerCase(),
+          emailText: option.textContent
+        };
+      })
+    : [];
+
+  const alphabeticalSort = (a, b) => {
+    const firstCmp = a.sortFirst.localeCompare(b.sortFirst);
+    if (firstCmp !== 0) return firstCmp;
+    const lastCmp = a.sortLast.localeCompare(b.sortLast);
+    if (lastCmp !== 0) return lastCmp;
+    return a.userId - b.userId;
+  };
+
+  const numericSort = (a, b) => a.userId - b.userId;
+
+  const renderParticipantOptions = (data) => {
+    if (!participantList) return;
+    participantList.innerHTML = '';
+    data.forEach(opt => {
+      const option = document.createElement('option');
+      option.value = opt.value;
+      option.dataset.userid = opt.userId;
+      option.dataset.firstName = opt.firstName;
+      option.dataset.lastName = opt.lastName;
+      option.textContent = opt.emailText;
+      participantList.appendChild(option);
+    });
+  };
+
+  const updateParticipantSort = (term) => {
+    if (!participantOptions.length) return;
+    const trimmed = term.trim();
+    const useNumeric = trimmed !== '' && /^[0-9]+$/.test(trimmed);
+    const sorted = participantOptions.slice().sort(useNumeric ? numericSort : alphabeticalSort);
+    renderParticipantOptions(sorted);
+  };
 
   participantSearch.addEventListener('input', function() {
+    updateParticipantSort(this.value);
     const selectedValue = this.value;
 
     // Extract user ID from the format "ID: 123 - FirstName LastName"
@@ -93,6 +148,8 @@
       useridInput.value = '';
     }
   });
+
+  updateParticipantSort('');
 
   // Validate that a user is selected before submitting
   const form = participantSearch.closest('form');
