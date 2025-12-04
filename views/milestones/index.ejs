@@ -159,10 +159,10 @@
                 action="/milestones/<%= m.milestoneid %>/delete"
                 method="POST"
                 style="display: inline"
+                onsubmit="return confirmMilestoneDelete(<%= JSON.stringify(m.milestonetitle || 'this milestone') %>);"
               >
                 <button
                   class="btn btn-sm btn-danger"
-                  onclick="return confirm('Delete milestone "<%= m.milestonetitle %>"? This cannot be undone.');"
                 >
                   <i class="bi bi-trash-fill"></i> Delete
                 </button>
@@ -184,5 +184,11 @@
     </div>
   </div>
 </div>
+
+<script>
+  function confirmMilestoneDelete(title) {
+    return window.confirm('Delete milestone "' + title + '"? This cannot be undone.');
+  }
+</script>
 
 <%- include('../partials/footer-scripts') %>
