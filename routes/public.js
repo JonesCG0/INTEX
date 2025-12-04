@@ -166,7 +166,7 @@ router.post("/support/donate", async (req, res) => {
   if (!cleanAmount) {
     errors.push("Please enter a donation amount of at least $1.00");
   }
-// re-render form 
+  // re-render form
   const renderSupport = (status = {}, overrideValues = null) =>
     res.status(status.code || (errors.length ? 400 : 200)).render("support", {
       user: req.session.user || null,
@@ -189,7 +189,7 @@ router.post("/support/donate", async (req, res) => {
 
   try {
     let donationRecord = null;
-// Run everything in a database
+    // Run everything in a database
     await db.transaction(async (trx) => {
       let donorUser;
 
@@ -328,6 +328,10 @@ router.get("/redundancy", (req, res) => {
 
 router.get("/tableau", (req, res) => {
   res.render("tableau");
+});
+
+router.get("/rick", (req, res) => {
+  res.redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 });
 
 module.exports = router;
