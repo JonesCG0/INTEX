@@ -142,11 +142,11 @@
                   minute: '2-digit'
                 }) %>
               <% } else { %>
-                ƒ?"
+                <span class="text-muted fst-italic">Not recorded</span>
               <% } %>
             </td>
             <td><strong>$<%= d.donationamount || '0.00' %></strong></td>
-            <td><%= d.userfirstname || 'ƒ?"' %> <%= d.userlastname || 'ƒ?"' %></td>
+            <td><%= d.userfirstname || 'Not provided' %> <%= d.userlastname || 'Not provided' %></td>
             <% if (user && user.role === 'admin') { %>
             <td>
               <a
