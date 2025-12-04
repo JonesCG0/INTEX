@@ -33,7 +33,15 @@ async function uploadToS3(file) {
     ContentType: file.mimetype
   });
 
-  await s3.send(command);
+  try {
+    await s3.send(command);
+  } catch (err) {
+    if (err.name === 'CredentialsProviderError') {
+      console.warn('AWS credentials missing; skipping S3 upload.');
+      return null;
+    }
+    throw err;
+  }
 
   return `https://${S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${key}`;
 }

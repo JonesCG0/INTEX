@@ -95,7 +95,10 @@ router.post("/edit", upload.single("photoFile"), async (req, res) => {
     let photoUrl = existingPhoto || null;
 
     if (req.file) {
-      photoUrl = await uploadToS3(req.file);
+      const uploadedPhoto = await uploadToS3(req.file);
+      if (uploadedPhoto) {
+        photoUrl = uploadedPhoto;
+      }
     }
 
     // build the update object with the fields that changed. 
@@ -123,8 +126,11 @@ router.post("/edit", upload.single("photoFile"), async (req, res) => {
 // update in the database
     await db("users").where({ userid }).update(updateData);
 
-    // Update session with new username and name
+    // Update session cache so nav and other UI instantly reflect the changes
     req.session.user.username = cleanUsername;
+    if (typeof photoUrl !== "undefined") {
+      req.session.user.photo = photoUrl;
+    }
     if (userfirstname) req.session.user.userfirstname = userfirstname;
     if (userlastname) req.session.user.userlastname = userlastname;
 
