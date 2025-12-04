@@ -223,9 +223,20 @@
             </td>
             <td>
               <% if (event.isRegistered) { %>
-              <button class="btn btn-sm btn-success" disabled>
-                <i class="bi bi-check-lg"></i> Registered
-              </button>
+              <form
+                action="/registrations/<%= event.registrationid %>/unregister"
+                method="POST"
+                style="display: inline"
+              >
+                <input
+                  type="hidden"
+                  name="redirectTo"
+                  value="/registrations/register"
+                />
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-x-circle"></i> Unregister
+                </button>
+              </form>
               <% } else if (event.isFull || event.registrationClosed) { %>
               <button class="btn btn-sm btn-secondary" disabled>
                 <i class="bi bi-x-lg"></i> Unavailable
