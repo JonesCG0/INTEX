@@ -73,6 +73,17 @@
         transition: color 0.3s ease;
       }
 
+      .nav-link.dropdown-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .nav-link.dropdown-toggle::after {
+        margin-left: 0.1rem;
+        align-self: center;
+      }
+
       .nav-link:hover {
         color: var(--accent-color) !important;
       }

@@ -125,3 +125,14 @@ footer {
   color: white;
   text-align: center;
 }
+
+.nav-link.dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-link.dropdown-toggle::after {
+  margin-left: 0.1rem;
+  align-self: center;
+}
