@@ -13,6 +13,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// make STATIC_BASE_URL available to all views
+app.use((req, res, next) => {
+  res.locals.STATIC_BASE_URL =
+    process.env.STATIC_BASE_URL ||
+    `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION || "us-east-2"}.amazonaws.com/static`;
+  next();
+});
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "dev-secret",
