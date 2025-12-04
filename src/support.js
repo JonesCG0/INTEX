@@ -7,6 +7,7 @@ const db = require("../db");
 const multer = require("multer");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { hashPassword, verifyPassword } = require("../utils/passwords");
+const { deleteUserWithRelations } = require("../utils/userCleanup");
 
 const app = express();
 
@@ -382,16 +383,20 @@ app.post(
 
 // Delete user - admin only
 app.post("/users/:userid/delete", requireAdmin, async (req, res) => {
-  const userid = req.params.userid;
+  const userid = Number(req.params.userid);
+
+  if (!Number.isInteger(userid) || userid <= 0) {
+    return res.status(400).send("Invalid user id");
+  }
 
   try {
-    await db('users')
-      .where({ userid })
-      .del();
+    await deleteUserWithRelations(userid);
     res.redirect("/users");
   } catch (err) {
     console.error("Delete user error:", err);
-    res.status(500).send("Server error");
+    res
+      .status(500)
+      .send("Unable to delete user because related data cleanup failed.");
   }
 });
 
