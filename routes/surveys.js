@@ -11,7 +11,7 @@ router.get("/", requireAuth, async (req, res) => {
   try {
     const sortBy = req.query.sortBy || "surveyid";
     const sortOrder = req.query.sortOrder || "asc";
-
+    // Join the surveys - registrations- users - event occurences - event templates
     const surveys = await db("surveys as s")
       .join("registrations as r", "s.registrationid", "r.registrationid")
       .join("users as u", "r.userid", "u.userid")

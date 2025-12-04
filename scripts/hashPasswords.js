@@ -3,18 +3,22 @@ require("dotenv").config();
 const db = require("../db");
 const { hashPassword } = require("../utils/passwords");
 
+// Detect if password is already bcrypt hash
 function isBcryptHash(value) {
   return typeof value === "string" && /^\$2[aby]\$\d{2}\$/.test(value);
 }
 
+// main migration 
 async function migratePasswords() {
   console.log("Starting password hash migration...");
+  // pulls all the users
   const users = await db("users").select("userid", "username", "password");
 
-  let updated = 0;
-  let skipped = 0;
-  let warnings = 0;
+  let updated = 0; // count of new hases written
+  let skipped = 0; // users already using bcrypt
+  let warnings = 0; // users with missing/invalid passowrd values
 
+  // skip if the password is already valid
   for (const user of users) {
     if (isBcryptHash(user.password)) {
       skipped += 1;

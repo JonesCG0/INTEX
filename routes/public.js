@@ -143,8 +143,10 @@ router.post("/support/donate", async (req, res) => {
   const sessionUser = req.session.user || null;
 
   const errors = [];
+  // cleans the user entered values
   const cleanFirstName = sanitizeText(firstName);
   const cleanLastName = sanitizeText(lastName);
+  // validate email if provided
   let cleanEmail = null;
   if (hasText(email)) {
     cleanEmail = sanitizeEmail(email);
@@ -164,7 +166,7 @@ router.post("/support/donate", async (req, res) => {
   if (!cleanAmount) {
     errors.push("Please enter a donation amount of at least $1.00");
   }
-
+// re-render form 
   const renderSupport = (status = {}, overrideValues = null) =>
     res.status(status.code || (errors.length ? 400 : 200)).render("support", {
       user: req.session.user || null,
@@ -187,7 +189,7 @@ router.post("/support/donate", async (req, res) => {
 
   try {
     let donationRecord = null;
-
+// Run everything in a database
     await db.transaction(async (trx) => {
       let donorUser;
 
@@ -230,6 +232,7 @@ router.post("/support/donate", async (req, res) => {
       }
     });
 
+    // sends thank you email if the user entered an email
     if (cleanEmail) {
       const donorFirstName = cleanFirstName || firstName || null;
       const donorLastName = cleanLastName || lastName || null;
