@@ -12,8 +12,60 @@ const {
 } = require("../utils/validators");
 const { formatAsDateInput } = require("../utils/dateHelpers");
 
+const PARTICIPANT_ROLE = "participant";
+const PARTICIPANT_SELECT_COLUMNS = [
+  "userid as participantid",
+  "userfirstname as participantfirstname",
+  "userlastname as participantlastname",
+  "useremail as participantemail",
+  "userphone as participantphone",
+  "userzip as participantzip",
+  "userdob as participantdob",
+  "userrole as participantrole",
+  "userschooloremployer as participantschooloremployer",
+  "userfieldofinterest as participantfieldofinterest",
+];
+const PARTICIPANT_SORTABLE_COLUMNS = {
+  participantid: "userid",
+  participantfirstname: "userfirstname",
+  participantlastname: "userlastname",
+  participantemail: "useremail",
+  participantphone: "userphone",
+  participantzip: "userzip",
+  participantdob: "userdob",
+  participantrole: "userrole",
+  participantschooloremployer: "userschooloremployer",
+  participantfieldofinterest: "userfieldofinterest",
+};
+
+function resolveSortOptions(query) {
+  const requestedSortBy = query.sortBy;
+  const sortBy = PARTICIPANT_SORTABLE_COLUMNS[requestedSortBy]
+    ? requestedSortBy
+    : "participantid";
+  const requestedOrder =
+    typeof query.sortOrder === "string" ? query.sortOrder.toLowerCase() : "asc";
+  const sortOrder = requestedOrder === "desc" ? "desc" : "asc";
+
+  return {
+    sortBy,
+    sortOrder,
+    sortColumn: PARTICIPANT_SORTABLE_COLUMNS[sortBy],
+  };
+}
+
+function baseParticipantQuery() {
+  return db("users")
+    .select(PARTICIPANT_SELECT_COLUMNS)
+    .where({ userrole: PARTICIPANT_ROLE });
+}
+
+function getParticipantById(participantId) {
+  return baseParticipantQuery().where({ userid: participantId }).first();
+}
+
 function buildParticipantPayload(body) {
-  const payload = {
+  const participant = {
     participantfirstname: sanitizeText(body.participantfirstname),
     participantlastname: sanitizeText(body.participantlastname),
     participantemail: null,
@@ -27,28 +79,40 @@ function buildParticipantPayload(body) {
 
   const errors = [];
 
-  if (!payload.participantfirstname || !payload.participantlastname) {
+  if (!participant.participantfirstname || !participant.participantlastname) {
     errors.push("Participant first and last name are required");
   }
 
   if (hasText(body.participantemail)) {
-    payload.participantemail = sanitizeEmail(body.participantemail);
-    if (!payload.participantemail) {
+    participant.participantemail = sanitizeEmail(body.participantemail);
+    if (!participant.participantemail) {
       errors.push("Participant email must be valid");
     }
   }
 
-  if (!payload.participantphone) {
+  if (!participant.participantphone) {
     errors.push("Participant phone number must include at least 10 digits");
   }
 
-  if (!payload.participantzip) {
+  if (!participant.participantzip) {
     errors.push("Participant ZIP code must be 5 or 9 digits");
   }
 
-  if (!payload.participantdob) {
+  if (!participant.participantdob) {
     errors.push("Participant date of birth must be a valid YYYY-MM-DD value");
   }
+
+  const payload = {
+    userfirstname: participant.participantfirstname,
+    userlastname: participant.participantlastname,
+    useremail: participant.participantemail,
+    userphone: participant.participantphone,
+    userzip: participant.participantzip,
+    userdob: participant.participantdob,
+    userrole: PARTICIPANT_ROLE,
+    userschooloremployer: participant.participantschooloremployer,
+    userfieldofinterest: participant.participantfieldofinterest,
+  };
 
   return { payload, errors };
 }
@@ -56,12 +120,9 @@ function buildParticipantPayload(body) {
 // List all participants
 router.get("/", requireAuth, async (req, res) => {
   try {
-    const sortBy = req.query.sortBy || "participantid";
-    const sortOrder = req.query.sortOrder || "asc";
+    const { sortBy, sortOrder, sortColumn } = resolveSortOptions(req.query);
+    const participants = await baseParticipantQuery().orderBy(sortColumn, sortOrder);
 
-    const participants = await db("participants")
-      .select("*")
-      .orderBy(sortBy, sortOrder);
     res.render("participants/index", {
       participants,
       user: req.session.user,
@@ -90,11 +151,9 @@ router.post("/new", requireAdmin, async (req, res) => {
   }
 
   try {
-    const [created] = await db("participants")
-      .insert(payload)
-      .returning("participantid");
+    const [created] = await db("users").insert(payload).returning("userid");
 
-    res.redirect(`/participants/${created.participantid}`);
+    res.redirect(`/participants/${created.userid}`);
   } catch (err) {
     console.error("Create participant error:", err);
     res.status(500).render("participants/new", {
@@ -107,10 +166,7 @@ router.post("/new", requireAdmin, async (req, res) => {
 // Show single participant
 router.get("/:id", requireAdmin, async (req, res) => {
   try {
-    const participant = await db("participants")
-      .select("*")
-      .where({ participantid: req.params.id })
-      .first();
+    const participant = await getParticipantById(req.params.id);
 
     if (!participant) {
       return res.status(404).send("Participant not found");
@@ -129,10 +185,7 @@ router.get("/:id", requireAdmin, async (req, res) => {
 // Edit participant form
 router.get("/:id/edit", requireAdmin, async (req, res) => {
   try {
-    const participant = await db("participants")
-      .select("*")
-      .where({ participantid: req.params.id })
-      .first();
+    const participant = await getParticipantById(req.params.id);
 
     if (!participant) {
       return res.status(404).send("Participant not found");
@@ -160,10 +213,7 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
   let existing;
 
   try {
-    existing = await db("participants")
-      .select("*")
-      .where({ participantid: participantId })
-      .first();
+    existing = await getParticipantById(participantId);
   } catch (err) {
     console.error("Fetch participant for update error:", err);
     return res.status(500).send("Server error");
@@ -199,7 +249,7 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
   }
 
   try {
-    await db("participants").where({ participantid: participantId }).update(payload);
+    await db("users").where({ userid: participantId }).update(payload);
     res.redirect(`/participants/${participantId}`);
   } catch (err) {
     console.error("Update participant error:", err);
