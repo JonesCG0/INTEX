@@ -1,5 +1,8 @@
+
+// Import the database conneciton
 const pool = require('../db');
 
+// Get all events and show them to the events/index page
 exports.getAllEvents = async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM events ORDER BY eventid');
@@ -13,6 +16,7 @@ exports.getAllEvents = async (req, res) => {
   }
 };
 
+// get a single event by its ID and then show the event/show page
 exports.getEventById = async (req, res) => {
   try {
     const result = await pool.query(
@@ -34,16 +38,19 @@ exports.getEventById = async (req, res) => {
   }
 };
 
+// Create a new event
 exports.createEvent = async (req, res) => {
   // Add your create logic here
   res.redirect('/events');
 };
 
+// update an existing event 
 exports.updateEvent = async (req, res) => {
   // Add your update logic here
   res.redirect(`/events/${req.params.id}`);
 };
 
+// Delete and event by ID
 exports.deleteEvent = async (req, res) => {
   try {
     await pool.query('DELETE FROM events WHERE eventid = $1', [req.params.id]);

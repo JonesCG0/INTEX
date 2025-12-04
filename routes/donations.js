@@ -1,3 +1,4 @@
+// validation
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
@@ -8,6 +9,7 @@ const {
   sanitizeDecimal,
   sanitizeInt,
 } = require("../utils/validators");
+// donation helper functions
 const { findUserById, recordDonation } = require("../utils/donationService");
 
 // List all donations
@@ -15,7 +17,7 @@ router.get("/", requireAuth, async (req, res) => {
   try {
     const sortBy = req.query.sortBy || "donationid";
     const sortOrder = req.query.sortOrder || "asc";
-
+    // join the donations with the users table so names can be shown
     const donations = await db("donations")
       .select("*")
       .join("users", "donations.userid", "users.userid")
@@ -65,6 +67,7 @@ router.post("/new", requireAuth, async (req, res) => {
       .render("donations/new", { error: errors[0], user: req.session.user });
   }
 
+  // uses a trnsaction for safety find the user and then create the donation
   try {
     await db.transaction(async (trx) => {
       const userRecord = await findUserById(cleanUserId, trx);
@@ -72,7 +75,7 @@ router.post("/new", requireAuth, async (req, res) => {
       if (!userRecord) {
         throw new Error("USER_NOT_FOUND");
       }
-
+// insert the donation using service helper and cleaned
       await recordDonation(
         {
           userid: cleanUserId,

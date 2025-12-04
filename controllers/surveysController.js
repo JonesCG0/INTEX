@@ -1,5 +1,7 @@
+// Connect to the database
 const pool = require('../db');
 
+// get all the surveys
 exports.getAllSurveys = async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM surveys ORDER BY surveyid');
@@ -13,6 +15,7 @@ exports.getAllSurveys = async (req, res) => {
   }
 };
 
+// get a single survey ID and then show the details page
 exports.getSurveyById = async (req, res) => {
   try {
     const result = await pool.query(
@@ -34,11 +37,13 @@ exports.getSurveyById = async (req, res) => {
   }
 };
 
+// create a new survey
 exports.createSurvey = async (req, res) => {
   // Add your create logic here
   res.redirect('/surveys');
 };
 
+// delete a survey by ID
 exports.deleteSurvey = async (req, res) => {
   try {
     await pool.query('DELETE FROM surveys WHERE surveyid = $1', [req.params.id]);

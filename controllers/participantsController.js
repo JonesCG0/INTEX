@@ -1,5 +1,7 @@
+// Connecting to the database so we can run Queryies
 const pool = require('../db');
 
+// Get the participants and display them on the participants/index page
 exports.getAllParticipants = async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM participants ORDER BY participantid');
@@ -13,6 +15,7 @@ exports.getAllParticipants = async (req, res) => {
   }
 };
 
+// Get a single participant and show their details
 exports.getParticipantById = async (req, res) => {
   try {
     const result = await pool.query(
@@ -34,16 +37,19 @@ exports.getParticipantById = async (req, res) => {
   }
 };
 
+// Create a new participant
 exports.createParticipant = async (req, res) => {
   // Add your create logic here
   res.redirect('/participants');
 };
 
+// Update a participants information
 exports.updateParticipant = async (req, res) => {
   // Add your update logic here
   res.redirect(`/participants/${req.params.id}`);
 };
 
+// Delete a participant
 exports.deleteParticipant = async (req, res) => {
   try {
     await pool.query('DELETE FROM participants WHERE participantid = $1', [req.params.id]);

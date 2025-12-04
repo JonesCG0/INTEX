@@ -1,9 +1,11 @@
+
+// authentication middleware so we can restrict access
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 
-// Dashboard
+// Dashboard - Admins only
 router.get("/", requireAdmin, async (req, res) => {
   try {
     res.render("dashboard", {
@@ -15,4 +17,5 @@ router.get("/", requireAdmin, async (req, res) => {
   }
 });
 
+// Export the router so that app can usethis file. 
 module.exports = router;

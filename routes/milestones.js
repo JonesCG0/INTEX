@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require("../db");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 
-// List all milestones
+// List all milestones - any logged in user. 
 router.get("/", requireAuth, async (req, res) => {
   try {
     const sortBy = req.query.sortBy || "milestoneid";

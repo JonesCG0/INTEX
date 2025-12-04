@@ -12,6 +12,8 @@ const {
 } = require("../utils/validators");
 const { formatAsDateInput } = require("../utils/dateHelpers");
 
+// column mapping (users table -> particpant style aliases)
+// \select the user fields 
 const PARTICIPANT_FIELD_MAP = {
   participantid: "userid",
   participantfirstname: "userfirstname",
@@ -25,10 +27,12 @@ const PARTICIPANT_FIELD_MAP = {
   participantfieldofinterest: "userfieldofinterest",
 };
 
+// Builds a select list in the format: Column as alias. 
 const participantSelectColumns = Object.entries(PARTICIPANT_FIELD_MAP).map(
   ([alias, column]) => `${column} as ${alias}`
 );
 
+// save and valid fields. 
 function resolveSort(sortByRaw, sortOrderRaw) {
   const defaultSortBy = "participantid";
   const safeSortBy = PARTICIPANT_FIELD_MAP[sortByRaw] ? sortByRaw : defaultSortBy;
@@ -37,6 +41,7 @@ function resolveSort(sortByRaw, sortOrderRaw) {
   return { sortBy: safeSortBy, sortOrder, sortColumn };
 }
 
+// sanitizes the form inputs into database ready fields. 
 function buildParticipantPayload(body) {
   const payload = {
     userfirstname: sanitizeText(body.participantfirstname),
@@ -83,7 +88,7 @@ function buildParticipantPayload(body) {
   return { payload, errors };
 }
 
-// List all participants
+// List all participants requires authorization
 router.get("/", requireAuth, async (req, res) => {
   try {
     const { sortBy, sortOrder, sortColumn } = resolveSort(
@@ -189,6 +194,7 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
   const participantId = req.params.id;
   let existing;
 
+  // make sure the participant exists before updating. 
   try {
     existing = await db("users")
       .select(participantSelectColumns)
@@ -205,6 +211,7 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
 
   const { payload, errors } = buildParticipantPayload(req.body);
 
+  // helper to create a view model with the correct DOB formatting. 
   const buildParticipantViewModel = (source) => ({
     ...source,
     participantdobInputValue:
@@ -227,7 +234,7 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
       user: req.session.user,
     });
   }
-
+// actually update 
   try {
     await db("users").where({ userid: participantId }).update(payload);
     res.redirect(`/participants/${participantId}`);

@@ -4,14 +4,16 @@ const db = require("../db");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 const { formatAsDatetimeLocalInput } = require("../utils/dateHelpers");
 
-// ---------------------------------------------------------------------------
-// List all events
-// ---------------------------------------------------------------------------
+
+// List all events EventOccurences joined with the event templates
+// any logged in user cna see
+
 router.get("/", requireAuth, async (req, res) => {
   try {
     const sortBy = req.query.sortBy || "eventoccurrenceid";
     const sortOrder = req.query.sortOrder || "asc";
 
+      // joines the occurences and template so the row has all the event info
     const events = await db
       .select("*")
       .from("eventoccurrences")
@@ -33,9 +35,10 @@ router.get("/", requireAuth, async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------------------------
+
 // New event form (ADMIN)
-// ---------------------------------------------------------------------------
+// shows a page with template dropdown options
+
 router.get("/new", requireAdmin, async (req, res) => {
   try {
     // Fetch all event templates to populate the dropdowns
@@ -60,10 +63,10 @@ router.get("/new", requireAdmin, async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------------------------
+
 // Create event (ADMIN)
 // Creates a new template + a single occurrence based on title + date
-// ---------------------------------------------------------------------------
+
 router.post("/new", requireAdmin, async (req, res) => {
   // Helper function to fetch event templates
   const getEventTemplates = async () => {
@@ -79,6 +82,7 @@ router.post("/new", requireAdmin, async (req, res) => {
     }
   };
 
+  // must have a template id and a start date
   if (!req.body.eventTemplateID || !req.body.eventdatetimestart) {
     const eventTemplates = await getEventTemplates();
     return res.status(400).render("events/new", {
@@ -118,11 +122,13 @@ router.post("/new", requireAdmin, async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------------------------
-// Show single event (ADMIN)
-// ---------------------------------------------------------------------------
+
+// Show single event 
+// logged in user
+
 router.get("/:id", requireAuth, async (req, res) => {
   try {
+    // join to bring the template info in
     const event = await db("eventoccurrences")
       .join(
         "eventtemplates",
@@ -147,9 +153,9 @@ router.get("/:id", requireAuth, async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------------------------
-// Edit event form (ADMIN)
-// ---------------------------------------------------------------------------
+
+// Edit event form (ADMIN ONLY)
+
 router.get("/:id/edit", requireAdmin, async (req, res) => {
   try {
     const event = await db("eventoccurrences as eo")
@@ -174,7 +180,7 @@ router.get("/:id/edit", requireAdmin, async (req, res) => {
     if (!event) {
       return res.status(404).send("Event not found");
     }
-
+    // convers date values to datetime format
     event.dateInputValue = formatAsDatetimeLocalInput(event.date);
     event.eventdatetimeendInputValue = formatAsDatetimeLocalInput(
       event.eventdatetimeend
@@ -194,10 +200,9 @@ router.get("/:id/edit", requireAdmin, async (req, res) => {
   }
 });
 
-// ---------------------------------------------------------------------------
-// Update event (ADMIN)
+// Update event (ADMIN ONLY)
 // Updates event occurrence and template details
-// ---------------------------------------------------------------------------
+
 router.post("/:id/edit", requireAdmin, async (req, res) => {
   const { title, date, eventdatetimeend, eventlocation, eventcapacity, eventregistrationdeadline } = req.body;
   const eventId = req.params.id;

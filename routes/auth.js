@@ -1,3 +1,6 @@
+
+// some requirements
+// validators
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
@@ -9,8 +12,10 @@ const {
   sanitizeZip,
   sanitizeISODate,
 } = require("../utils/validators");
+// password hashing and verification helpers
 const { hashPassword, verifyPassword } = require("../utils/passwords");
 
+// ensure the role is admin or participants
 function ensureValidRole(role) {
   if (typeof role !== "string") {
     return null;
@@ -24,12 +29,13 @@ function ensureValidRole(role) {
   return null;
 }
 
-// Login form
+// Login form 
 router.get("/login", (req, res) => {
   res.render("auth/login", { error: null });
 });
 
 // Login submit
+// sanitizestext to help with security. 
 router.post("/login", async (req, res) => {
   const cleanUsername = sanitizeText(req.body.username);
   const cleanPassword =
@@ -40,7 +46,7 @@ router.post("/login", async (req, res) => {
       error: "Username and password are required",
     });
   }
-
+// looks up the user by username
   try {
     const user = await db("users")
       .select(
@@ -59,14 +65,14 @@ router.post("/login", async (req, res) => {
         error: "Invalid username or password",
       });
     }
-
+// compares the submitted password with the saved hashed password. 
     const validPassword = await verifyPassword(cleanPassword, user.password);
     if (!validPassword) {
       return res.render("auth/login", {
         error: "Invalid username or password",
       });
     }
-
+// validates the stored role for the user
     const validRole = ensureValidRole(user.role);
     if (!validRole) {
       console.warn("User has unsupported role value", {
@@ -77,7 +83,7 @@ router.post("/login", async (req, res) => {
         error: "Invalid username or password",
       });
     }
-
+// save user data into session after they login.
     req.session.user = {
       userid: user.userid,
       userfirstname: user.userfirstname || user.username,
@@ -98,7 +104,7 @@ router.get("/signup", (req, res) => {
   res.render("auth/signup", { error: null });
 });
 
-// Signup submit
+// Signup submit - creates a new participant user. 
 router.post("/signup", async (req, res) => {
   const {
     username,
@@ -116,6 +122,7 @@ router.post("/signup", async (req, res) => {
     participantZip,
   } = req.body;
 
+  // Cleans all the fields
   const errors = [];
   const cleanUsername = sanitizeText(username);
   const cleanPassword = typeof password === "string" ? password.trim() : "";
@@ -137,7 +144,7 @@ router.post("/signup", async (req, res) => {
       errors.push("Guardian email must be valid");
     }
   }
-
+//  validates the required fields. 
   if (!cleanUsername) {
     errors.push("Username is required");
   }
@@ -175,11 +182,11 @@ router.post("/signup", async (req, res) => {
       .select("userid")
       .where({ username: cleanUsername })
       .first();
-
+// checks to see if the username is taken.
     if (existingUser) {
       return res.render("auth/signup", { error: "Username already taken" });
     }
-
+// hashes the password securely
     const passwordHash = await hashPassword(cleanPassword);
 
     const newUserPayload = {
@@ -198,11 +205,11 @@ router.post("/signup", async (req, res) => {
       guardianemail: guardianEmail,
       useremail: guardianEmail,
     };
-
+//  inserts a new user
     const [newUser] = await db("users")
       .insert(newUserPayload)
       .returning(["userid", "username", "userrole as role", "photo"]);
-
+// saves the new user into session so they are logged in. 
     req.session.user = {
       userid: newUser.userid,
       username: newUser.username,

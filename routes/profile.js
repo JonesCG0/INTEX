@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../db");
+// filel upload with s3 helper
 const { upload, uploadToS3 } = require("../s3");
+// password hashing
 const { hashPassword } = require("../utils/passwords");
 
 // View profile (any logged-in user can view their own profile)
@@ -29,6 +31,7 @@ router.get("/", async (req, res) => {
 // Edit profile form (users can edit their own profile)
 router.get("/edit", async (req, res) => {
   try {
+    // only ge the records we need for displaying or editing
     const userRecord = await db("users")
       .select("userid", "username", "password", "photo", "userrole as role")
       .where({ userid: req.session.user.userid })
@@ -50,6 +53,7 @@ router.get("/edit", async (req, res) => {
 });
 
 // Edit profile submit (users can update their own profile)
+// processes the uploaded file. 
 router.post("/edit", upload.single("photoFile"), async (req, res) => {
   const { username, password, existingPhoto } = req.body;
   const userid = req.session.user.userid;
@@ -68,7 +72,7 @@ router.post("/edit", upload.single("photoFile"), async (req, res) => {
       user: req.session.user,
     });
   }
-
+//  if user uplaoded a new file upload it to S3 and get the URL
   try {
     let photoUrl = existingPhoto || null;
 
@@ -76,6 +80,7 @@ router.post("/edit", upload.single("photoFile"), async (req, res) => {
       photoUrl = await uploadToS3(req.file);
     }
 
+    // build the update object with the fields that changed. 
     const updateData = {
       username: cleanUsername,
       photo: photoUrl,
@@ -84,7 +89,7 @@ router.post("/edit", upload.single("photoFile"), async (req, res) => {
     if (cleanPassword) {
       updateData.password = await hashPassword(cleanPassword);
     }
-
+// update in the database
     await db("users").where({ userid }).update(updateData);
 
     // Update session with new username

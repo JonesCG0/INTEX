@@ -7,14 +7,18 @@ const {
   sanitizeEmail,
   sanitizeDecimal,
 } = require("../utils/validators");
+// Donation helpers
 const {
   findOrCreateSupportUser,
   findUserById,
   getAnonymousDonorUser,
   recordDonation,
 } = require("../utils/donationService");
+// email utility
 const { sendEmail } = require("../utils/mailer");
 
+// support donation metadata table
+// stores data for the public donations
 const SUPPORT_METADATA_TABLE = "support_donations";
 let metadataTableReady = false;
 
@@ -58,6 +62,7 @@ async function ensureSupportDonationMetadataTable() {
   }
 }
 
+// helps with count and sum queries
 async function safeCount(builderFn) {
   try {
     const [row] = await builderFn();
@@ -67,6 +72,7 @@ async function safeCount(builderFn) {
     return 0;
   }
 }
+
 
 async function safeDonationTotal() {
   try {
@@ -114,6 +120,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// displays the donation form
 router.get("/support", (req, res) => {
   res.render("support", {
     user: req.session.user || null,
@@ -129,6 +136,8 @@ router.get("/support", (req, res) => {
   });
 });
 
+// Supports the donation submission
+// 
 router.post("/support/donate", async (req, res) => {
   const { firstName, lastName, email, amount, message } = req.body;
   const sessionUser = req.session.user || null;
