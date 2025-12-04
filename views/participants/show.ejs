@@ -19,9 +19,9 @@
           <div class="col-md-6">
             <p><strong><i class="bi bi-hash"></i> ID:</strong> <%= participant.participantid %></p>
             <p><strong><i class="bi bi-envelope-fill"></i> Email:</strong>
-              <a href="mailto:<%= participant.participantemail %>"><%= participant.participantemail || '—' %></a>
+              <a href="mailto:<%= participant.participantemail %>"><%= participant.participantemail || '-' %></a>
             </p>
-            <p><strong><i class="bi bi-telephone-fill"></i> Phone:</strong> <%= participant.participantphone || '—' %></p>
+            <p><strong><i class="bi bi-telephone-fill"></i> Phone:</strong> <%= participant.participantphone || '-' %></p>
           </div>
           <div class="col-md-6">
             <p><strong><i class="bi bi-calendar3"></i> Date of Birth:</strong>
@@ -32,22 +32,22 @@
                   day: 'numeric'
                 }) %>
               <% } else { %>
-                —
+                -
               <% } %>
             </p>
             <p><strong><i class="bi bi-person-badge"></i> Role:</strong>
-              <span class="badge bg-primary"><%= participant.participantrole || '—' %></span>
+              <span class="badge bg-primary"><%= participant.participantrole || '-' %></span>
             </p>
-            <p><strong><i class="bi bi-mailbox"></i> ZIP Code:</strong> <%= participant.participantzip || '—' %></p>
+            <p><strong><i class="bi bi-mailbox"></i> ZIP Code:</strong> <%= participant.participantzip || '-' %></p>
           </div>
         </div>
 
         <div class="row mb-3">
           <div class="col-md-6">
-            <p><strong><i class="bi bi-building"></i> School/Employer:</strong> <%= participant.participantschooloremployer || '—' %></p>
+            <p><strong><i class="bi bi-building"></i> School/Employer:</strong> <%= participant.participantschooloremployer || '-' %></p>
           </div>
           <div class="col-md-6">
-            <p><strong><i class="bi bi-star-fill"></i> Field of Interest:</strong> <%= participant.participantfieldofinterest || '—' %></p>
+            <p><strong><i class="bi bi-star-fill"></i> Field of Interest:</strong> <%= participant.participantfieldofinterest || '-' %></p>
           </div>
         </div>
 

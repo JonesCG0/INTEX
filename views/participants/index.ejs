@@ -141,11 +141,11 @@
           <tr>
             <td>
               <strong
-                ><%= p.participantfirstname || '—' %> <%= p.participantlastname
+                ><%= p.participantfirstname || '-' %> <%= p.participantlastname
                 || '' %></strong
               >
             </td>
-            <td><%= p.participantemail || '—' %></td>
+            <td><%= p.participantemail || '-' %></td>
             <td>
               <% if (p.participantdob) { %>
                 <%= new Date(p.participantdob).toLocaleString('en-US', {
@@ -154,18 +154,18 @@
                   day: 'numeric'
                 }) %>
               <% } else { %>
-                —
+                -
               <% } %>
             </td>
             <td>
               <span class="badge bg-primary"
-                ><%= p.participantrole || '—' %></span
+                ><%= p.participantrole || '-' %></span
               >
             </td>
-            <td><%= p.participantphone || '—' %></td>
-            <td><%= p.participantzip || '—' %></td>
-            <td><%= p.participantschooloremployer || '—' %></td>
-            <td><%= p.participantfieldofinterest || '—' %></td>
+            <td><%= p.participantphone || '-' %></td>
+            <td><%= p.participantzip || '-' %></td>
+            <td><%= p.participantschooloremployer || '-' %></td>
+            <td><%= p.participantfieldofinterest || '-' %></td>
             <% if (user && user.role === 'admin') { %>
             <td>
               <a

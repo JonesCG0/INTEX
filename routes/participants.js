@@ -12,43 +12,73 @@ const {
 } = require("../utils/validators");
 const { formatAsDateInput } = require("../utils/dateHelpers");
 
+const PARTICIPANT_FIELD_MAP = {
+  participantid: "userid",
+  participantfirstname: "userfirstname",
+  participantlastname: "userlastname",
+  participantemail: "useremail",
+  participantphone: "userphone",
+  participantzip: "userzip",
+  participantdob: "userdob",
+  participantrole: "userrole",
+  participantschooloremployer: "userschooloremployer",
+  participantfieldofinterest: "userfieldofinterest",
+};
+
+const participantSelectColumns = Object.entries(PARTICIPANT_FIELD_MAP).map(
+  ([alias, column]) => `${column} as ${alias}`
+);
+
+function resolveSort(sortByRaw, sortOrderRaw) {
+  const defaultSortBy = "participantid";
+  const safeSortBy = PARTICIPANT_FIELD_MAP[sortByRaw] ? sortByRaw : defaultSortBy;
+  const sortColumn = PARTICIPANT_FIELD_MAP[safeSortBy];
+  const sortOrder = sortOrderRaw === "desc" ? "desc" : "asc";
+  return { sortBy: safeSortBy, sortOrder, sortColumn };
+}
+
 function buildParticipantPayload(body) {
   const payload = {
-    participantfirstname: sanitizeText(body.participantfirstname),
-    participantlastname: sanitizeText(body.participantlastname),
-    participantemail: null,
-    participantphone: sanitizePhone(body.participantphone),
-    participantzip: sanitizeZip(body.participantzip),
-    participantdob: sanitizeISODate(body.participantdob),
-    participantrole: sanitizeText(body.participantrole),
-    participantschooloremployer: sanitizeText(body.participantschooloremployer),
-    participantfieldofinterest: sanitizeText(body.participantfieldofinterest),
+    userfirstname: sanitizeText(body.participantfirstname),
+    userlastname: sanitizeText(body.participantlastname),
+    useremail: null,
+    userphone: sanitizePhone(body.participantphone),
+    userzip: sanitizeZip(body.participantzip),
+    userdob: sanitizeISODate(body.participantdob),
+    userrole: sanitizeText(body.participantrole),
+    userschooloremployer: sanitizeText(body.participantschooloremployer),
+    userfieldofinterest: sanitizeText(body.participantfieldofinterest),
   };
 
   const errors = [];
 
-  if (!payload.participantfirstname || !payload.participantlastname) {
+  if (!payload.userfirstname || !payload.userlastname) {
     errors.push("Participant first and last name are required");
   }
 
   if (hasText(body.participantemail)) {
-    payload.participantemail = sanitizeEmail(body.participantemail);
-    if (!payload.participantemail) {
+    payload.useremail = sanitizeEmail(body.participantemail);
+    if (!payload.useremail) {
       errors.push("Participant email must be valid");
     }
   }
 
-  if (!payload.participantphone) {
+  if (!payload.userphone) {
     errors.push("Participant phone number must include at least 10 digits");
   }
 
-  if (!payload.participantzip) {
+  if (!payload.userzip) {
     errors.push("Participant ZIP code must be 5 or 9 digits");
   }
 
-  if (!payload.participantdob) {
+  if (!payload.userdob) {
     errors.push("Participant date of birth must be a valid YYYY-MM-DD value");
   }
+
+  payload.userrole =
+    payload.userrole && payload.userrole.toLowerCase() === "admin"
+      ? "admin"
+      : "participant";
 
   return { payload, errors };
 }
@@ -56,12 +86,14 @@ function buildParticipantPayload(body) {
 // List all participants
 router.get("/", requireAuth, async (req, res) => {
   try {
-    const sortBy = req.query.sortBy || "participantid";
-    const sortOrder = req.query.sortOrder || "asc";
+    const { sortBy, sortOrder, sortColumn } = resolveSort(
+      req.query.sortBy,
+      req.query.sortOrder
+    );
 
-    const participants = await db("participants")
-      .select("*")
-      .orderBy(sortBy, sortOrder);
+    const participants = await db("users")
+      .select(participantSelectColumns)
+      .orderBy(sortColumn, sortOrder);
     res.render("participants/index", {
       participants,
       user: req.session.user,
@@ -90,11 +122,9 @@ router.post("/new", requireAdmin, async (req, res) => {
   }
 
   try {
-    const [created] = await db("participants")
-      .insert(payload)
-      .returning("participantid");
+    const [created] = await db("users").insert(payload).returning(["userid"]);
 
-    res.redirect(`/participants/${created.participantid}`);
+    res.redirect(`/participants/${created.userid}`);
   } catch (err) {
     console.error("Create participant error:", err);
     res.status(500).render("participants/new", {
@@ -107,9 +137,9 @@ router.post("/new", requireAdmin, async (req, res) => {
 // Show single participant
 router.get("/:id", requireAdmin, async (req, res) => {
   try {
-    const participant = await db("participants")
-      .select("*")
-      .where({ participantid: req.params.id })
+    const participant = await db("users")
+      .select(participantSelectColumns)
+      .where({ userid: req.params.id })
       .first();
 
     if (!participant) {
@@ -129,9 +159,9 @@ router.get("/:id", requireAdmin, async (req, res) => {
 // Edit participant form
 router.get("/:id/edit", requireAdmin, async (req, res) => {
   try {
-    const participant = await db("participants")
-      .select("*")
-      .where({ participantid: req.params.id })
+    const participant = await db("users")
+      .select(participantSelectColumns)
+      .where({ userid: req.params.id })
       .first();
 
     if (!participant) {
@@ -160,9 +190,9 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
   let existing;
 
   try {
-    existing = await db("participants")
-      .select("*")
-      .where({ participantid: participantId })
+    existing = await db("users")
+      .select(participantSelectColumns)
+      .where({ userid: participantId })
       .first();
   } catch (err) {
     console.error("Fetch participant for update error:", err);
@@ -199,7 +229,7 @@ router.post("/:id/edit", requireAdmin, async (req, res) => {
   }
 
   try {
-    await db("participants").where({ participantid: participantId }).update(payload);
+    await db("users").where({ userid: participantId }).update(payload);
     res.redirect(`/participants/${participantId}`);
   } catch (err) {
     console.error("Update participant error:", err);
