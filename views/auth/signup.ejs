@@ -87,6 +87,16 @@
         box-shadow: 0 0 0 0.2rem rgba(212, 101, 76, 0.15);
       }
 
+      .form-control.is-invalid {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.2);
+      }
+
+      .form-control.is-valid {
+        border-color: #198754;
+        box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.2);
+      }
+
       .btn-signup {
         background: linear-gradient(135deg, #FFd8d1, #f9afb1);
         border: none;
@@ -139,7 +149,7 @@
       </div>
       <% } %>
 
-      <form action="/auth/signup" method="POST">
+      <form id="signupForm" action="/auth/signup" method="POST" novalidate>
         <div class="mb-3">
           <label class="form-label">Parent/Guardian First Name</label>
           <input
@@ -251,7 +261,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Password</label>
+          <label class="form-label">Password (8 Characters)</label>
           <input
             name="password"
             type="password"
@@ -262,7 +272,7 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label">Confirm Password</label>
+          <label class="form-label">Confirm Password (8 Characters)</label>
           <input
             name="confirmPassword"
             type="password"
@@ -297,6 +307,66 @@
       </div>
     </div>
 
+    <script>
+      (() => {
+        const form = document.getElementById("signupForm");
+        if (!form) return;
+
+        const controls = Array.from(form.querySelectorAll(".form-control"));
+
+        const shouldValidate = (field) => {
+          if (!field.required && field.value.trim() === "") {
+            return false;
+          }
+          return true;
+        };
+
+        const updateFieldState = (field) => {
+          if (!shouldValidate(field)) {
+            field.classList.remove("is-invalid", "is-valid");
+            return;
+          }
+
+          if (field.checkValidity()) {
+            field.classList.add("is-valid");
+            field.classList.remove("is-invalid");
+          } else {
+            field.classList.add("is-invalid");
+            field.classList.remove("is-valid");
+          }
+        };
+
+        controls.forEach((field) => {
+          field.addEventListener("blur", () => {
+            field.dataset.touched = "true";
+            updateFieldState(field);
+          });
+
+          field.addEventListener("input", () => {
+            if (field.dataset.touched === "true") {
+              updateFieldState(field);
+            }
+          });
+        });
+
+        form.addEventListener("submit", (event) => {
+          let formIsValid = true;
+
+          controls.forEach((field) => {
+            field.dataset.touched = "true";
+            updateFieldState(field);
+            if (!field.checkValidity()) {
+              formIsValid = false;
+            }
+          });
+
+          if (!formIsValid) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        });
+      })();
+    </script>
     <script src="/teapot.js"></script>
   </body>
 </html>
