@@ -1,4 +1,17 @@
 # INTEX
+Section 1.8
+SuitsOTLoose
+Carson Jones, Merrick Morgan, Cameron Webb, Tobin Whitworth
+
+## ACCESS
+- Website can be accessed at https://jonescg0.net/
+- Default admin credentials 
+    Username: admin
+    Password: adminaccountpassword
+- Default user credentials
+    Username: user
+    Password: adminaccountpassword
+- All of the tools are listed under the tool tab in the Navigation Bar once logged in.
 
 INTEX is a Node.js + Express web application that helps program administrators manage participants, events, registrations, surveys, milestones, and fundraising activity. Authenticated staff members get a full dashboard to organize data, while the public landing and support pages highlight program impact and capture online donations.
 
@@ -86,6 +99,9 @@ sql/            # SQL helpers/snippets for DB fixes
 - Keep your `.env` synced with teammates using a secret manager instead of committing it.
 - When working on database changes, prefer Knex migrations or versioned SQL scripts under `sql/` to keep environments reproducible.
 - The landing page stats and donation flows rely on aggregate queries; ensure your local database has sample data so UI cards render correctly.
+
+## Dropbox Link
+- https://www.dropbox.com/scl/fo/52y50oqgfnt5i7dse85se/AN-VkqZcxctwXvzFfh5ueIg?rlkey=rhnmhbxdestfzmbsik6ajos53&st=mn45ay59&dl=0
 
 ## Support & Questions
 If you run into setup issues or find a bug, open an issue or contact the INTEX dev team with details about your environment, steps to reproduce, and any relevant logs.
