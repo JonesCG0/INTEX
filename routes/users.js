@@ -5,6 +5,7 @@ const { upload, uploadToS3 } = require("../s3");
 const { requireAuth, requireAdmin } = require("../middleware/auth");
 const { sanitizeText } = require("../utils/validators");
 const { hashPassword } = require("../utils/passwords");
+const { deleteUserWithRelations } = require("../utils/userCleanup");
 
 function parseRole(rawRole) {
   if (typeof rawRole !== "string") {
@@ -159,14 +160,20 @@ router.post(
 
 // Delete user - admin only
 router.post("/:userid/delete", requireAdmin, async (req, res) => {
-  const userid = req.params.userid;
+  const userid = Number(req.params.userid);
+
+  if (!Number.isInteger(userid) || userid <= 0) {
+    return res.status(400).send("Invalid user id");
+  }
 
   try {
-    await db("users").where({ userid }).del();
+    await deleteUserWithRelations(userid);
     res.redirect("/users");
   } catch (err) {
     console.error("Delete user error:", err);
-    res.status(500).send("Server error");
+    res
+      .status(500)
+      .send("Unable to delete user because related data cleanup failed.");
   }
 });
 
