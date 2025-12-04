@@ -217,6 +217,11 @@ router.post("/signup", async (req, res) => {
       photo: newUser.photo || null,
     };
 
+    req.flash(
+      "success",
+      "Thanks for signing up! Your Ella Rises participant account is ready."
+    );
+
     res.redirect("/");
   } catch (err) {
     console.error("Signup error:", err);

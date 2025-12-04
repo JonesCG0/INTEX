@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
+const flash = require("connect-flash");
 const path = require("path");
 
 const app = express();
@@ -14,13 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // make STATIC_BASE_URL available to all views
-app.use((req, res, next) => {
-  res.locals.STATIC_BASE_URL =
-    process.env.STATIC_BASE_URL ||
-    `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION || "us-east-2"}.amazonaws.com/static`;
-  next();
-});
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "dev-secret",
@@ -28,6 +22,18 @@ app.use(
     saveUninitialized: false,
   })
 );
+app.use(flash());
+
+app.use((req, res, next) => {
+  res.locals.STATIC_BASE_URL =
+    process.env.STATIC_BASE_URL ||
+    `https://${process.env.S3_BUCKET}.s3.${process.env.AWS_REGION || "us-east-2"}.amazonaws.com/static`;
+  res.locals.user = (req.session && req.session.user) || null;
+  res.locals.successMessages = req.flash("success");
+  res.locals.errorMessages = req.flash("error");
+  res.locals.infoMessages = req.flash("info");
+  next();
+});
 
 // ---------- IMPORT MIDDLEWARE ----------
 const { requireAuth } = require("./middleware/auth");

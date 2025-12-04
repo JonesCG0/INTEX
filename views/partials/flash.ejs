@@ -1,0 +1,38 @@
+<%
+  const hasSuccess = Array.isArray(successMessages) && successMessages.length > 0;
+  const hasErrors = Array.isArray(errorMessages) && errorMessages.length > 0;
+  const hasInfo = Array.isArray(infoMessages) && infoMessages.length > 0;
+%>
+<% if (hasSuccess || hasErrors || hasInfo) { %>
+  <div class="container mt-3">
+    <% if (hasSuccess) { %>
+      <% successMessages.forEach(function(message) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <i class="bi bi-check-circle-fill me-2"></i>
+          <%= message %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% }) %>
+    <% } %>
+
+    <% if (hasErrors) { %>
+      <% errorMessages.forEach(function(message) { %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          <%= message %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% }) %>
+    <% } %>
+
+    <% if (hasInfo) { %>
+      <% infoMessages.forEach(function(message) { %>
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+          <i class="bi bi-info-circle-fill me-2"></i>
+          <%= message %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+<% } %>
