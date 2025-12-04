@@ -73,7 +73,6 @@ async function safeCount(builderFn) {
   }
 }
 
-
 async function safeDonationTotal() {
   try {
     const row = await db("donations").sum({ total: "donationamount" }).first();
@@ -94,7 +93,8 @@ router.get("/", async (req, res) => {
     const donationSum = await db("donations")
       .sum({ total: "donationamount" })
       .first();
-    const totalDonations = donationSum && donationSum.total ? Number(donationSum.total) : 0;
+    const totalDonations =
+      donationSum && donationSum.total ? Number(donationSum.total) : 0;
 
     res.render("landing", {
       user: req.session.user || null,
@@ -137,7 +137,7 @@ router.get("/support", (req, res) => {
 });
 
 // Supports the donation submission
-// 
+//
 router.post("/support/donate", async (req, res) => {
   const { firstName, lastName, email, amount, message } = req.body;
   const sessionUser = req.session.user || null;
@@ -200,7 +200,11 @@ router.post("/support/donate", async (req, res) => {
         }
       } else if (cleanEmail) {
         donorUser = await findOrCreateSupportUser(
-          { firstName: cleanFirstName, lastName: cleanLastName, email: cleanEmail },
+          {
+            firstName: cleanFirstName,
+            lastName: cleanLastName,
+            email: cleanEmail,
+          },
           trx
         );
       } else {
@@ -308,6 +312,22 @@ router.post("/support/donate", async (req, res) => {
 // Easter egg: 418 I'm a teapot
 router.get("/teapot", (req, res) => {
   res.status(418).render("teapot");
+});
+
+router.get("/dom", (req, res) => {
+  res.render("dom");
+});
+
+router.get("/chopped", (req, res) => {
+  res.render("chopped");
+});
+
+router.get("/redundancy", (req, res) => {
+  res.render("redundancy");
+});
+
+router.get("/tableau", (req, res) => {
+  res.render("tableau");
 });
 
 module.exports = router;

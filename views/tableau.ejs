@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tableau</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: linear-gradient(135deg, #ffd8d1, #f9afb1);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden;
+      }
+
+      .teapot-container {
+        text-align: center;
+        color: white;
+        animation: fadeIn 0.5s ease-in;
+      }
+
+      @keyframes steam {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        25% {
+          transform: translateY(-10px) rotate(-5deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(0deg);
+        }
+        75% {
+          transform: translateY(-10px) rotate(5deg);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      h1 {
+        font-size: 4rem;
+        font-weight: 700;
+        margin: 30px 0 20px 0;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      p {
+        font-size: 1.5rem;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .error-code {
+        font-size: 6rem;
+        font-weight: 900;
+        margin-bottom: 20px;
+        opacity: 0.9;
+        text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.4);
+      }
+
+      .btn-home {
+        background: white;
+        color: #d4654c;
+        border: none;
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-radius: 50px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-home:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        color: #d4654c;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-30px) rotate(10deg);
+        }
+      }
+
+      img {
+        height: 40vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="teapot-container">
+      <h1>
+        I told my friend I visualize everything in Tableau. They said, ‘That
+        explains a lot.’
+      </h1>
+      <img src="/tableau.jpeg" alt="tableau" />
+      <br />
+      <br />
+      <a href="/" class="btn-home">Return Home</a>
+    </div>
+
+    <script>
+      // Add some fun confetti effect
+      const colors = ["#D4654C", "#8B6F47", "#E8A87C", "#FAF8F5"];
+
+      function createConfetti() {
+        const confetti = document.createElement("div");
+        confetti.style.position = "fixed";
+        confetti.style.width = "10px";
+        confetti.style.height = "10px";
+        confetti.style.backgroundColor =
+          colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = Math.random() * window.innerWidth + "px";
+        confetti.style.top = "-10px";
+        confetti.style.borderRadius = "50%";
+        confetti.style.pointerEvents = "none";
+        confetti.style.zIndex = "1000";
+        document.body.appendChild(confetti);
+
+        let posY = -10;
+        let posX = parseInt(confetti.style.left);
+        const fallSpeed = Math.random() * 3 + 2;
+        const drift = Math.random() * 2 - 1;
+
+        const fall = setInterval(() => {
+          posY += fallSpeed;
+          posX += drift;
+          confetti.style.top = posY + "px";
+          confetti.style.left = posX + "px";
+
+          if (posY > window.innerHeight) {
+            clearInterval(fall);
+            confetti.remove();
+          }
+        }, 20);
+      }
+
+      // Create confetti periodically
+      setInterval(createConfetti, 200);
+    </script>
+  </body>
+</html>
