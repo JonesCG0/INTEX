@@ -228,9 +228,24 @@
 
             <% if (user && user.role === 'admin') { %>
             <td>
-              <a href="/surveys/<%= s.surveyid %>" class="btn btn-sm btn-info">
+              <a href="/surveys/<%= s.surveyid %>" class="btn btn-sm btn-info me-1">
                 <i class="bi bi-eye-fill"></i> View
               </a>
+              <a href="/surveys/<%= s.surveyid %>/edit" class="btn btn-sm btn-primary me-1">
+                <i class="bi bi-pencil-fill"></i> Edit
+              </a>
+              <form
+                action="/surveys/<%= s.surveyid %>/delete"
+                method="POST"
+                style="display: inline"
+              >
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="return confirm('Delete survey #<%= s.surveyid %>? This cannot be undone.');"
+                >
+                  <i class="bi bi-trash-fill"></i> Delete
+                </button>
+              </form>
             </td>
             <% } %>
           </tr>

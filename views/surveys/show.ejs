@@ -146,6 +146,20 @@
         <hr>
 
         <div class="d-grid gap-2 d-md-flex">
+          <% if (user && user.role === 'admin') { %>
+          <a href="/surveys/<%= survey.surveyid %>/edit" class="btn btn-primary">
+            <i class="bi bi-pencil-fill"></i> Edit Survey
+          </a>
+          <form
+            action="/surveys/<%= survey.surveyid %>/delete"
+            method="POST"
+            onsubmit="return confirm('Delete survey #<%= survey.surveyid %>? This cannot be undone.');"
+          >
+            <button type="submit" class="btn btn-danger">
+              <i class="bi bi-trash-fill"></i> Delete Survey
+            </button>
+          </form>
+          <% } %>
           <a href="/surveys" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Back to Surveys
           </a>
