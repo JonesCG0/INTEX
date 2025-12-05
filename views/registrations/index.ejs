@@ -47,7 +47,7 @@
           <% registrations.forEach(r => { %>
           <tr>
             <td>
-              <strong><%= r.eventname || '—' %></strong>
+              <strong><%= r.eventname || 'Untitled Event' %></strong>
               <% if (r.eventdescription) { %>
               <br /><small class="text-muted"
                 ><%= r.eventdescription.substring(0, 60) %><%=
@@ -58,7 +58,7 @@
             <td>
               <% if (r.eventtype) { %>
               <span class="badge bg-secondary"><%= r.eventtype %></span>
-              <% } else { %> — <% } %>
+              <% } else { %> <span class="text-muted">N/A</span> <% } %>
             </td>
             <td>
               <% if (r.eventdatetimestart) { %> <%= new
@@ -69,9 +69,9 @@
                 >to <%= new Date(r.eventdatetimeend).toLocaleTimeString('en-US',
                 { hour: '2-digit', minute: '2-digit' }) %></small
               >
-              <% } %> <% } else { %> — <% } %>
+              <% } %> <% } else { %> <span class="text-muted">N/A</span> <% } %>
             </td>
-            <td><%= r.eventlocation || '—' %></td>
+            <td><%= r.eventlocation || 'N/A' %></td>
             <td>
               <% if (r.registrationstatus) { %> <% let badgeClass =
               'bg-secondary'; if (r.registrationstatus.toLowerCase() ===
@@ -82,19 +82,19 @@
               <span class="badge <%= badgeClass %>"
                 ><%= r.registrationstatus %></span
               >
-              <% } else { %> — <% } %>
+              <% } else { %> <span class="text-muted">N/A</span> <% } %>
             </td>
             <td>
               <% if (r.registrationcheckintime) { %> <%= new
               Date(r.registrationcheckintime).toLocaleString('en-US', { year:
               'numeric', month: 'short', day: 'numeric', hour: '2-digit',
-              minute: '2-digit' }) %> <% } else { %> — <% } %>
+              minute: '2-digit' }) %> <% } else { %> <span class="text-muted">&mdash;</span> <% } %>
             </td>
             <td>
               <% if (r.registrationcreatedat) { %> <%= new
               Date(r.registrationcreatedat).toLocaleDateString('en-US', { year:
-              'numeric', month: 'short', day: 'numeric' }) %> <% } else { %> —
-              <% } %>
+              'numeric', month: 'short', day: 'numeric' }) %> <% } else { %>
+              <span class="text-muted">&mdash;</span> <% } %>
             </td>
             <td>
               <% // Check if user can submit a survey: 1. Has attended flag =1,
@@ -117,7 +117,7 @@
                   <span class="badge bg-success">
                     <i class="bi bi-check-circle-fill"></i> Survey Completed
                   </span>
-                  <% } else { %> <span class="text-muted">ƒ?"</span> <% } %>
+                  <% } else { %> <span class="text-muted">No survey available</span> <% } %>
                 </div>
                 <% if (eventUpcoming) { %>
                 <form
